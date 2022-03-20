@@ -48,7 +48,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
 
   Months n = Months();
 
-
   @override
   void initState() {
     super.initState();
@@ -107,28 +106,32 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
         controller: _tabController,
         children: <Widget>[
           PageView.builder(
-                  controller: controller,
-                  itemBuilder: (BuildContext context, int index) {
-                    int temporaryM = index;
-                    while (temporaryM >= 12) {
-                      temporaryM -= 11;
-                    }
-                    monthIAmIn = n.month[temporaryM].toString();
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(monthIAmIn, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
-                          ),
-                        ),
-                        calendarWidget(index),
-                      ],
-                    );
-                  },
+            controller: controller,
+            itemBuilder: (BuildContext context, int index) {
+              int temporaryM = index;
+              while (temporaryM >= 12) {
+                temporaryM -= 11;
+              }
+              monthIAmIn = n.month[temporaryM].toString();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        monthIAmIn,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
+                      ),
+                    ),
+                  ),
+                  calendarWidget(index),
+                ],
+              );
+            },
           ),
           Center(
             child: Text("To do"),
@@ -144,9 +147,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
     );
   }
 
-
   Widget calendarWidget(int userMonth) {
-
     var systemColor = MediaQuery.of(context).platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
     var days = {
@@ -161,8 +162,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
     Months monthView;
     if (n.now.month == userMonth) {
       monthView = n;
-    }
-    else {
+    } else {
       monthView = Months.otherYears(userMonth, n.now.year);
     }
 
@@ -179,7 +179,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
             Color textColor;
             Widget textStyleToday = Text(day.toString());
 
-            if (day == monthView.now.day && monthView.now.month == n.now.month) {
+            if (day == monthView.now.day &&
+                monthView.now.month == n.now.month) {
               textColor = Colors.white;
               textStyleToday = CircleAvatar(
                 backgroundColor: Colors.red[400]!,
