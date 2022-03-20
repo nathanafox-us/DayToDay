@@ -58,8 +58,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-assets:
-  - icons/icons8-calendar-48.png
+  assets:
+    - assets/icons/icons8-calendar-48.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
