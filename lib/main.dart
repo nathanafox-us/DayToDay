@@ -1,4 +1,5 @@
 import 'package:day_to_day/Months.dart';
+import 'package:day_to_day/ToDoList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -133,9 +134,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
               );
             },
           ),
-          Center(
-            child: Text("To do"),
-          ),
+          ToDoList(),
           Center(
             child: Text("Projects"),
           ),
