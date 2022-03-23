@@ -1,13 +1,17 @@
 import 'package:day_to_day/Months.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() {
-  runApp(const DayToDay());
+  runApp(DayToDay());
 }
 
 class DayToDay extends StatelessWidget {
-  const DayToDay({Key? key}) : super(key: key);
+  final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
+  DayToDay({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,21 @@ class DayToDay extends StatelessWidget {
          ThemeMode.light for light theme,
          ThemeMode.dark for dark theme
       */
-      home: const MyStatefulWidget(),
+      home: FutureBuilder(
+        future: _fbApp,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            print('You have an error! ${snapshot.error.toString()}');
+            return Text('Something went wrong!');
+          } else if (snapshot.hasData) {
+            return MyStatefulWidget();
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -159,6 +177,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
       5: "Fri",
       6: "Sat"
     };
+
     Months monthView;
     if (n.now.month == userMonth) {
       monthView = n;
