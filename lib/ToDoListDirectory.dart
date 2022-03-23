@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:day_to_day/ToDoList.dart';
 
-class ToDoListDirectory extends StatefulWidget {
-  _ToDoListDirectoryState createState() => _ToDoListDirectoryState();
-}
-
-class _ToDoListDirectoryState extends State<ToDoListDirectory> {
+class ToDoListDirectory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -29,7 +25,7 @@ class _ToDoListDirectoryState extends State<ToDoListDirectory> {
           // might have to use the normal routing style
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ToDoList(index);
+              return ToDoList();
             }));
           }, //will need to fix so it goes to the right note page
         ));
