@@ -5,7 +5,8 @@ import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(DayToDay());
 }
 
@@ -33,6 +34,7 @@ class DayToDay extends StatelessWidget {
          ThemeMode.light for light theme,
          ThemeMode.dark for dark theme
       */
+      //home: const MyStatefulWidget(),
       home: FutureBuilder(
         future: _fbApp,
         builder: (context, snapshot) {
@@ -40,7 +42,7 @@ class DayToDay extends StatelessWidget {
             print('You have an error! ${snapshot.error.toString()}');
             return Text('Something went wrong!');
           } else if (snapshot.hasData) {
-            return MyStatefulWidget();
+            return const MyStatefulWidget();
           } else {
             return Center(
               child: CircularProgressIndicator(),
@@ -249,6 +251,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
   }
 
   void _tapDate(int i) {
+    DatabaseReference _day = FirebaseDatabase.instance.ref().child("test");
+    _day.set("Day tapped: ${i}");
     print(i);
   }
 }
