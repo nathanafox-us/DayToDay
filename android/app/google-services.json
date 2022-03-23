@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "786002759666",
+    "firebase_url": "https://daytoday-13eb8-default-rtdb.firebaseio.com",
+    "project_id": "daytoday-13eb8",
+    "storage_bucket": "daytoday-13eb8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786002759666:android:b4043d2d34ca40b2f8a56b",
+        "android_client_info": {
+          "package_name": "com.example.day_to_day"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "786002759666-4ug4i0edqr6ggc7ivmoql24t213mv50t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF3fRHl0fYMtcDAgRUGhTKSJV2xMX2jLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "786002759666-4ug4i0edqr6ggc7ivmoql24t213mv50t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
