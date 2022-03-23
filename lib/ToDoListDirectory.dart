@@ -26,9 +26,10 @@ class _ToDoListDirectoryState extends State<ToDoListDirectory> {
                 " To Do List",
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
+          // might have to use the normal routing style
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ToDoList();
+              return ToDoList(index);
             }));
           }, //will need to fix so it goes to the right note page
         ));
