@@ -5,9 +5,11 @@ class ToDoList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue[100],
-      child: Text("To do list class"),
+    return Center(
+      child: Text(
+        "Notes are in here",
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
     );
   }
 }

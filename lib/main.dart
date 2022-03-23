@@ -1,5 +1,6 @@
 import 'package:day_to_day/Months.dart';
 import 'package:day_to_day/ToDoList.dart';
+import 'package:day_to_day/ToDoListDirectory.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -134,7 +135,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
               );
             },
           ),
-          ToDoList(),
+          ToDoListDirectory(),
           Center(
             child: Text("Projects"),
           ),
