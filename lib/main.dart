@@ -1,6 +1,6 @@
 import 'package:day_to_day/Months.dart';
-import 'package:day_to_day/ToDoList.dart';
-import 'package:day_to_day/ToDoListDirectory.dart';
+import 'package:day_to_day/to_do_list_directory_widget.dart';
+import 'package:day_to_day/to_do_list_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -91,11 +91,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
     String monthIAmIn = n.currentMonth;
     return Scaffold(
       appBar: AppBar(
+        //backgroundColor: Colors.red[400]!,
         title: const Text('DayToDay'),
         //backgroundColor: Colors.black,
         bottom: TabBar(
-          indicatorColor: Colors.red[400]!,
-          labelColor: labelColorChange,
+          indicatorColor: Colors.white,
+          labelColor: Colors.white,
           controller: _tabController,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: <Widget>[
@@ -155,7 +156,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
               );
             },
           ),
-          ToDoListDirectory(),
+          ToDoListDirectoryWidget(),
           Center(
             child: Text("Projects"),
           ),
