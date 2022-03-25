@@ -1,6 +1,6 @@
 import 'package:day_to_day/Months.dart';
-import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:day_to_day/to_do_list_widget.dart';
+import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -79,12 +79,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
 
   @override
   Widget build(BuildContext context) {
-    var systemColor = MediaQuery
-        .of(context)
-        .platformBrightness;
+    var systemColor = MediaQuery.of(context).platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
     Color labelColorChange;
-    var equation = ((myCalendar.getCurrentYear() - 1980) * 12 + myCalendar.getCurrentMonth()) - 1;
+    var equation = ((myCalendar.getCurrentYear() - 1980) * 12 +
+            myCalendar.getCurrentMonth()) -
+        1;
     PageController pageController = PageController(
       initialPage: equation,
     );
@@ -143,7 +143,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
             ),
             splashRadius: 20,
           ),
-
           InkWell(
             onTap: () => onFindMyDayPressed(equation, pageController),
             splashColor: Colors.red[400]!,
@@ -218,13 +217,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
     );
   }
 
-
   void onFindMyDayPressed(int i, PageController controller) {
     controller.animateToPage(i,
         duration: const Duration(seconds: 2), curve: Curves.ease);
   }
 
   void onSearchButtonPressed() {}
-
-
 }
