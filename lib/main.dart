@@ -3,9 +3,9 @@ import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:day_to_day/to_do_list_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:day_to_day/Calendar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +52,7 @@ class DayToDay extends StatelessWidget {
           }
         },
       ),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -68,7 +69,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
-  Months n = Months();
+  Calendar myCalendar = Calendar();
 
   @override
   void initState() {
@@ -78,22 +79,98 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
 
   @override
   Widget build(BuildContext context) {
-    var systemColor = MediaQuery.of(context).platformBrightness;
+    var systemColor = MediaQuery
+        .of(context)
+        .platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
     Color labelColorChange;
-    final PageController controller = PageController(initialPage: n.now.month);
+    var equation = ((myCalendar.getCurrentYear() - 1980) * 12 + myCalendar.getCurrentMonth()) - 1;
+    PageController pageController = PageController(
+      initialPage: equation,
+    );
 
     if (darkMode) {
       labelColorChange = Colors.red[400]!;
     } else {
       labelColorChange = Colors.red[400]!;
     }
-    String monthIAmIn = n.currentMonth;
+
     return Scaffold(
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Ex1'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Ex2'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         //backgroundColor: Colors.red[400]!,
         title: const Text('DayToDay'),
         //backgroundColor: Colors.black,
+        actions: [
+          IconButton(
+            onPressed: () => onSearchButtonPressed(),
+            icon: Image.asset(
+              "assets/icons/search-icon.png",
+            ),
+            splashRadius: 20,
+          ),
+
+          InkWell(
+            onTap: () => onFindMyDayPressed(equation, pageController),
+            splashColor: Colors.red[400]!,
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(200),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(color: Colors.red[400]!),
+                shape: BoxShape.circle,
+              ),
+              height: 10.0,
+              width: 25.0,
+              child: Center(
+                child: Text(myCalendar.getCurrentDay().toString()),
+              ),
+            ),
+          ),
+          /*IconButton(
+            onPressed: () => onFindMyDayPressed(equation, pageController),
+            icon: Image.asset(
+              "assets/icons/find-the-day.png",
+            ),
+            splashRadius: 20,
+          ),*/
+        ],
         bottom: TabBar(
           indicatorColor: Colors.white,
           labelColor: Colors.white,
@@ -128,34 +205,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          PageView.builder(
-            controller: controller,
-            itemBuilder: (BuildContext context, int index) {
-              int temporaryM = index;
-              while (temporaryM >= 12) {
-                temporaryM -= 11;
-              }
-              monthIAmIn = n.month[temporaryM].toString();
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        monthIAmIn,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
-                      ),
-                    ),
-                  ),
-                  calendarWidget(index),
-                ],
-              );
-            },
-          ),
+          myCalendar.calendarWidget(pageController, context),
           ToDoListDirectoryWidget(),
           Center(
             child: Text("Projects"),
@@ -168,92 +218,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
     );
   }
 
-  Widget calendarWidget(int userMonth) {
-    var systemColor = MediaQuery.of(context).platformBrightness;
-    bool darkMode = systemColor == Brightness.dark;
-    var days = {
-      0: "Sun",
-      1: "Mon",
-      2: "Tues",
-      3: "Wed",
-      4: "Thu",
-      5: "Fri",
-      6: "Sat"
-    };
 
-    Months monthView;
-    if (n.now.month == userMonth) {
-      monthView = n;
-    } else {
-      monthView = Months.otherYears(userMonth, n.now.year);
-    }
-
-    return Expanded(
-      child: GridView.builder(
-          itemCount: monthView.daysInMonth + monthView.monthStart,
-          scrollDirection: Axis.vertical,
-          physics: const ScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 7,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            var day = index + 1 - monthView.monthStart;
-            Color textColor;
-            Widget textStyleToday = Text(day.toString());
-
-            if (day == monthView.now.day &&
-                monthView.now.month == n.now.month) {
-              textColor = Colors.white;
-              textStyleToday = CircleAvatar(
-                backgroundColor: Colors.red[400]!,
-                child: Text(
-                  day.toString(),
-                  style: TextStyle(color: textColor),
-                ),
-                maxRadius: 12,
-              );
-            }
-
-            if (index < monthView.monthStart) {
-              Color colorCard;
-
-              if (darkMode) {
-                colorCard = Colors.black;
-              } else {
-                colorCard = Colors.white;
-              }
-              return Card(
-                color: colorCard,
-                elevation: 0,
-              );
-            } else {
-              while (index >= 7) {
-                index = index - 7;
-              }
-              return Card(
-                child: InkWell(
-                  splashColor: Colors.deepOrangeAccent,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      textStyleToday,
-                      Text(
-                        days[index].toString(),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  onTap: () => _tapDate(day),
-                ),
-              );
-            }
-          }),
-    );
+  void onFindMyDayPressed(int i, PageController controller) {
+    controller.animateToPage(i,
+        duration: const Duration(seconds: 2), curve: Curves.ease);
   }
 
-  void _tapDate(int i) {
-    DatabaseReference _day = FirebaseDatabase.instance.ref().child("test");
-    _day.set("Day tapped: ${i}");
-    print(i);
-  }
+  void onSearchButtonPressed() {}
+
+
 }
