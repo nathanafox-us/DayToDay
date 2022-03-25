@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:day_to_day/to_do_list_directory_widget.dart';
+import 'package:day_to_day/to_do_list_widget.dart';
 import 'package:day_to_day/to_do_list.dart';
 
 // test of ToDoList class to use to make the directory and individual lists
