@@ -208,9 +208,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
           myCalendar.calendarWidget(pageController, context),
           ToDoListDirectoryWidget(),
           Center(
-            child: Text("To do"),
-          ),
-          Center(
             child: Text("Projects"),
           ),
           Center(
