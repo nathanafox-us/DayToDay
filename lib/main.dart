@@ -1,4 +1,5 @@
-import 'package:day_to_day/to_do_list_widget.dart';
+import 'package:day_to_day/Months.dart';
+import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -81,12 +82,9 @@ class _MyStatefulWidgetState extends State<AppWidget>
 
   @override
   Widget build(BuildContext context) {
-    var systemColor = MediaQuery
-        .of(context)
-        .platformBrightness;
+    var systemColor = MediaQuery.of(context).platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
     Color labelColorChange;
-
 
     if (darkMode) {
       labelColorChange = Colors.red[400]!;
@@ -198,10 +196,6 @@ class _MyStatefulWidgetState extends State<AppWidget>
       ),
     );
   }
-
-
-
-
   void onSearchButtonPressed() {}
   void onAddEventButtonPressed() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {

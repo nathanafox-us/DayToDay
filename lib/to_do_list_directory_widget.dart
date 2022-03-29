@@ -1,49 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:day_to_day/to_do_list_widget.dart';
 import 'package:day_to_day/to_do_list.dart';
 
-class ToDoListWidget extends StatefulWidget {
-  final ToDoList list;
+// test of ToDoList class to use to make the directory and individual lists
+List<ToDoList> initializeTest(int size) {
+  DateTime todaysDate =
+      DateTime.now(); // temporary holder before backend implementation
+  List<ToDoList> lists = [];
 
-  // probably change this to the normal constructor in the future
-  const ToDoListWidget(this.list);
+  for (int i = 0; i < size; i++) {
+    String title = todaysDate.month.toString() +
+        "/" +
+        (todaysDate.day - i).toString() +
+        "/" +
+        todaysDate.year.toString() +
+        " To Do List";
 
-  @override
-  _ToDoListWidgetState createState() => _ToDoListWidgetState();
+    var list = ToDoList(title);
+    lists.add(list);
+  }
+
+  return lists;
 }
 
-class _ToDoListWidgetState extends State<ToDoListWidget> {
+class ToDoListDirectoryWidget extends StatelessWidget {
+  const ToDoListDirectoryWidget({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.list.title),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: ListView.builder(
-          itemCount: widget.list.items.length,
-          itemBuilder: (context, int index) {
-            // do we want to keep the cards or make it so there is a bar underneath each list item?
-            return Card(
-                //color: Colors.red[400], if we want the cards to be colored
-                child: CheckboxListTile(
-                    dense: true,
-                    activeColor: Colors.red[400],
-                    controlAffinity: ListTileControlAffinity.leading,
-                    value: widget.list.checked[index],
-                    onChanged: (value) {
-                      setState(() {
-                        widget.list.checked[index] = value;
-                      });
-                    },
-                    title: Text(
-                      widget.list.items[index],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white),
-                    )));
-          }),
+    List<ToDoList> lists = initializeTest(20);
+    // makes the list
+    return ListView.builder(
+      itemCount: lists.length, //change for when backedn is running
+
+      // for loop to make each card of teh list
+      itemBuilder: (context, int index) {
+        return Card(
+            child: ListTile(
+          // change the text when backend is running
+          title: Text(
+            lists[index].title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          // might have to use the normal routing style
+          // tap functionality
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return ToDoListWidget(lists[index]);
+            }));
+          }, //will need to fix so it goes to the right note page
+        ));
+      },
     );
   }
 }
