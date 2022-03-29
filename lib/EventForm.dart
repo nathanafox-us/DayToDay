@@ -1,3 +1,4 @@
+import 'package:day_to_day/Calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:day_to_day/Events.dart';
 class EventForm extends StatefulWidget {
@@ -47,6 +48,28 @@ class EventFormState extends State<EventForm> {
             ),
             onTap: () => onToggled(true),
           ),
+          Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Align(
+                child: TextButton(
+
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Cancel", style: TextStyle(fontSize: 25, color: Colors.red[200]),),
+                ),
+                alignment: Alignment.bottomCenter,
+              ),
+              TextButton(
+
+                onPressed: () {
+                  },
+                child: Text("Save", style: TextStyle(fontSize: 25, color: Colors.red[200]),),
+              ),
+            ],
+          )
 
         ],
       ),

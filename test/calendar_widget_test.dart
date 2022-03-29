@@ -15,29 +15,29 @@ void main() {
 
   });
   testWidgets('Test if modal bottom sheet pops up for quick navigation', (WidgetTester tester) async {
-    // Enter text and add the item...
     await tester.pumpWidget(const MaterialApp(home: Material(child: CalendarWidget())));
-    //final Size windowSize = MediaQueryData.fromWindow(window).size;
-    // Swipe the item to dismiss it.
     await tester.tap(find.text('March '));
-    //await tester.pump();
-    // Build the widget until the dismiss animation ends.
     await tester.pumpAndSettle();
 
     // Ensure that the item is no longer on screen.
     expect(find.text('2022'), findsOneWidget);
   });
   testWidgets('Test if add event button brings up new page', (WidgetTester tester) async {
-    // Enter text and add the item...
-    await tester.pumpWidget(MaterialApp(home: Material(child: AppWidget())));
-    //final Size windowSize = MediaQueryData.fromWindow(window).size;
-    // Swipe the item to dismiss it.
+    await tester.pumpWidget(const MaterialApp(home: Material(child: AppWidget())));
     await tester.tap(find.byType(FloatingActionButton));
-    //await tester.pump();
-    // Build the widget until the dismiss animation ends.
     await tester.pumpAndSettle();
 
     // Ensure that the item is no longer on screen.
     expect(find.text('All Day'), findsOneWidget);
+  });
+  testWidgets('Test if cancel button on event add page goes back to calendar', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: Material(child: AppWidget())));
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(TextButton).first);
+    await tester.pumpAndSettle();
+
+    // Ensure that the item is no longer on screen.
+    expect(find.text('March '), findsOneWidget);
   });
 }

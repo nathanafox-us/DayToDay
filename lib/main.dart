@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/Calendar.dart';
 import 'package:day_to_day/EventForm.dart';
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(DayToDay());
@@ -57,7 +58,6 @@ class DayToDay extends StatelessWidget {
 
 class AppWidget extends StatefulWidget {
   const AppWidget({Key? key}) : super(key: key);
-
   @override
   State<AppWidget> createState() => _MyStatefulWidgetState();
 }
@@ -67,9 +67,6 @@ class _MyStatefulWidgetState extends State<AppWidget>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
-  //Calendar myCalendar = Calendar();
-
-  PageController pageController = PageController(initialPage: (CalendarState().getCurrentYear() - 1980) * 12 + CalendarState().getCurrentMonth() - 1);
 
   @override
   void initState() {
@@ -208,6 +205,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
   void onSearchButtonPressed() {}
   void onAddEventButtonPressed() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      print(CalendarState().getClicked());
       return const EventForm();
     }));
   }

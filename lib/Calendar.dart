@@ -2,7 +2,6 @@ import 'package:day_to_day/Months.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 
 class CalendarWidget extends StatefulWidget {
@@ -93,22 +92,24 @@ class CalendarState extends State<CalendarWidget> {
                 children: [
                   Row(
                     children: [
-                      InkWell(
-                        child: Container(
-                          padding: const EdgeInsets.only(bottom: 16, top: 10),
-                          child: Align(
-                            //alignment: Alignment.center,
-                            child: Text(
-                              monthIAmIn + ' ' + year,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 25),
+                      Center(
+                        child: InkWell(
+                          child: Container(
+                            padding: const EdgeInsets.only(bottom: 16, top: 10),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                monthIAmIn + ' ' + year,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 25),
+                              ),
                             ),
                           ),
+                          onTap: () {
+                            onYearPressed(context, pageController);
+                          },
+                          borderRadius: BorderRadius.circular(200),
                         ),
-                        onTap: () {
-                          onYearPressed(context, pageController);
-                        },
-                        borderRadius: BorderRadius.circular(200),
                       ),
                       Padding(
                           child: InkWell(
@@ -127,7 +128,7 @@ class CalendarState extends State<CalendarWidget> {
                               ),
                             ),
                           ),
-                        padding: EdgeInsets.only(left: 120, right: 15),
+                        padding: const EdgeInsets.only(left: 120, right: 15),
                       ),
                     ],
                     //mainAxisSize: MainAxisSize.min,
@@ -146,6 +147,7 @@ class CalendarState extends State<CalendarWidget> {
                           childAspectRatio: 2 / 2,
                         ),
                         itemBuilder: (BuildContext context, int index) {
+
                           if (index < 7) {
                             Color colorB;
                             if (darkMode) {
@@ -281,6 +283,9 @@ class CalendarState extends State<CalendarWidget> {
 
   int getCurrentYear() {
     return n.now.year;
+  }
+  int getClicked() {
+    return clickedPosition;
   }
 
   void onYearPressed(BuildContext context, PageController pageController) {
