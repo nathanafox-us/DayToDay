@@ -1,11 +1,9 @@
-import 'package:day_to_day/Months.dart';
-import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:day_to_day/to_do_list_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/Calendar.dart';
+import 'package:day_to_day/EventForm.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +42,7 @@ class DayToDay extends StatelessWidget {
             print('You have an error! ${snapshot.error.toString()}');
             return Text('Something went wrong!');
           } else if (snapshot.hasData) {
-            return const MyStatefulWidget();
+            return const AppWidget();
           } else {
             return Center(
               child: CircularProgressIndicator(),
@@ -57,24 +55,31 @@ class DayToDay extends StatelessWidget {
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
+class AppWidget extends StatefulWidget {
+  const AppWidget({Key? key}) : super(key: key);
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+  State<AppWidget> createState() => _MyStatefulWidgetState();
 }
 
 /// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
-class _MyStatefulWidgetState extends State<MyStatefulWidget>
+class _MyStatefulWidgetState extends State<AppWidget>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
-  Calendar myCalendar = Calendar();
+  //Calendar myCalendar = Calendar();
+
+  PageController pageController = PageController(initialPage: (CalendarState().getCurrentYear() - 1980) * 12 + CalendarState().getCurrentMonth() - 1);
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+  }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -84,17 +89,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
         .platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
     Color labelColorChange;
-    var equation = ((myCalendar.getCurrentYear() - 1980) * 12 + myCalendar.getCurrentMonth()) - 1;
-    PageController pageController = PageController(
-      initialPage: equation,
-    );
+
 
     if (darkMode) {
       labelColorChange = Colors.red[400]!;
     } else {
       labelColorChange = Colors.red[400]!;
     }
-
     return Scaffold(
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -131,10 +132,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => onAddEventButtonPressed(),
+        child: const Icon(Icons.add,size: 45, color: Colors.white,),
+        backgroundColor: Colors.blueGrey,
+      ),
       appBar: AppBar(
-        //backgroundColor: Colors.red[400]!,
         title: const Text('DayToDay'),
-        //backgroundColor: Colors.black,
         actions: [
           IconButton(
             onPressed: () => onSearchButtonPressed(),
@@ -142,26 +146,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
               "assets/icons/search-icon.png",
             ),
             splashRadius: 20,
-          ),
-
-          InkWell(
-            onTap: () => onFindMyDayPressed(equation, pageController),
-            splashColor: Colors.red[400]!,
-            customBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(200),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(color: Colors.red[400]!),
-                shape: BoxShape.circle,
-              ),
-              height: 10.0,
-              width: 25.0,
-              child: Center(
-                child: Text(myCalendar.getCurrentDay().toString()),
-              ),
-            ),
           ),
           /*IconButton(
             onPressed: () => onFindMyDayPressed(equation, pageController),
@@ -205,7 +189,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          myCalendar.calendarWidget(pageController, context),
+          CalendarWidget(),
           ToDoListDirectoryWidget(),
           Center(
             child: Text("Projects"),
@@ -219,12 +203,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
   }
 
 
-  void onFindMyDayPressed(int i, PageController controller) {
-    controller.animateToPage(i,
-        duration: const Duration(seconds: 2), curve: Curves.ease);
-  }
+
 
   void onSearchButtonPressed() {}
+  void onAddEventButtonPressed() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return const EventForm();
+    }));
+  }
 
 
 }

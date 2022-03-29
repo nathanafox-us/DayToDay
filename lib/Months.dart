@@ -22,6 +22,21 @@ class Months {
     12: "December"
   };
 
+  var monthShort = {
+    1: "Jan",
+    2: "Feb",
+    3: "Mar",
+    4: "Apr",
+    5: "May",
+    6: "Jun",
+    7: "Jul",
+    8: "Aug",
+    9: "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec"
+  };
+
   Months() {
     monthStartConstruct = DateTime(now.year, now.month, 1);
     currentMonth = month[now.month].toString();
@@ -42,6 +57,10 @@ class Months {
     currentMonth = month[monthPosition].toString();
     monthStart = monthStartConstruct.weekday;
     daysInMonth = DateTime(now.year, monthPosition + 1, 0).day;
+  }
+
+  String? getMonthShort(int index) {
+    return monthShort[index];
   }
 
 }
