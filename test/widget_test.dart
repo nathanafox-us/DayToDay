@@ -11,20 +11,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:day_to_day/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('All tabs are in the app', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(DayToDay());
+    await tester.pumpWidget(MaterialApp(home: Material(child: AppWidget())));
 
     // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    var tabFinder = find.byType(TabBar);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    var textFinder = find.text('Calendar');
+    await tester.dragUntilVisible(textFinder, tabFinder, Offset(50.0, 0.0));
+    expect(textFinder, findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    textFinder = find.text('To-do');
+    await tester.dragUntilVisible(textFinder, tabFinder, Offset(50.0, 0.0));
+    expect(textFinder, findsOneWidget);
+
+    textFinder = find.text('Projects');
+    await tester.dragUntilVisible(textFinder, tabFinder, Offset(50.0, 0.0));
+    expect(textFinder, findsOneWidget);
+
+    textFinder = find.text('Homework');
+    await tester.dragUntilVisible(textFinder, tabFinder, Offset(50.0, 0.0));
+    expect(textFinder, findsOneWidget);
   });
 }
