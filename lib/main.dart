@@ -1,3 +1,4 @@
+import 'package:day_to_day/Inherited.dart';
 import 'package:day_to_day/Months.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:flutter/material.dart';
@@ -17,44 +18,64 @@ class DayToDay extends StatelessWidget {
   DayToDay({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "DayToDay",
-      theme: ThemeData(
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: Colors.white,
+  Widget build(BuildContext context) => InheritedState(
+      child: MaterialApp(
+        title: "DayToDay",
+        theme: ThemeData(
+          timePickerTheme: TimePickerThemeData(
+            //backgroundColor: Colors.red[200],
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            hourMinuteShape: const CircleBorder(),
+          ),
 
-        /* light theme settings */
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        /* dark theme settings */
-        scaffoldBackgroundColor: Colors.black,
-      ),
-      themeMode: ThemeMode.system,
-      /* ThemeMode.system to follow system theme,
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: Colors.white,
+
+          /* light theme settings */
+        ),
+        darkTheme: ThemeData(
+          timePickerTheme: TimePickerThemeData(
+            backgroundColor: Colors.grey[900],
+            dayPeriodTextColor: Colors.white,
+            entryModeIconColor: Colors.white,
+            dialTextColor: Colors.white,
+            hourMinuteTextColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            hourMinuteShape: const CircleBorder(),
+          ),
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+                primary: Colors.red[200],
+                secondary: Colors.redAccent[200],
+                  brightness: Brightness.dark,
+            ),
+          brightness: Brightness.dark,
+
+          scaffoldBackgroundColor: Colors.black,
+        ),
+        themeMode: ThemeMode.system,
+        /* ThemeMode.system to follow system theme,
          ThemeMode.light for light theme,
          ThemeMode.dark for dark theme
       */
-      //home: const MyStatefulWidget(),
-      home: FutureBuilder(
-        future: _fbApp,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            print('You have an error! ${snapshot.error.toString()}');
-            return Text('Something went wrong!');
-          } else if (snapshot.hasData) {
-            return const AppWidget();
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+        //home: const MyStatefulWidget(),
+        home: FutureBuilder(
+          future: _fbApp,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              print('You have an error! ${snapshot.error.toString()}');
+              return const Text('Something went wrong!');
+            } else if (snapshot.hasData) {
+              return const AppWidget();
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
+        debugShowCheckedModeBanner: false,
       ),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  );
 }
 
 class AppWidget extends StatefulWidget {
@@ -91,6 +112,17 @@ class _MyStatefulWidgetState extends State<AppWidget>
     } else {
       labelColorChange = Colors.red[400]!;
     }
+    Color? appBarC;
+    Color? appBarT;
+    if (darkMode) {
+      appBarC = Colors.grey[800];
+      appBarT = Colors.white;
+    }
+    else {
+      appBarC = Colors.white10;
+      appBarT = Colors.black;
+    }
+
     return Scaffold(
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -133,7 +165,8 @@ class _MyStatefulWidgetState extends State<AppWidget>
         backgroundColor: Colors.blueGrey,
       ),
       appBar: AppBar(
-        title: const Text('DayToDay'),
+        title: Text('DayToDay', style: TextStyle(color: appBarT),),
+        backgroundColor: appBarC,
         actions: [
           IconButton(
             onPressed: () => onSearchButtonPressed(),
@@ -199,7 +232,9 @@ class _MyStatefulWidgetState extends State<AppWidget>
   void onSearchButtonPressed() {}
   void onAddEventButtonPressed() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      print(CalendarState().getClicked());
+      int? clicked = StateWidget.of(context)?.clicked;
+
+      print(clicked);
       return const EventForm();
     }));
   }

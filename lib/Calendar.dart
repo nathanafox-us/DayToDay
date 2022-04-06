@@ -1,3 +1,4 @@
+import 'package:day_to_day/Inherited.dart';
 import 'package:day_to_day/Months.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
@@ -46,222 +47,224 @@ class CalendarState extends State<CalendarWidget> {
       6: "Sat"
     };
 
-    return Column(
-      children: [
-        Expanded(
-          //Builds separate page for each month of every year since 1980
-          child: PageView.builder(
-            controller: pageController,
-            scrollDirection: Axis.vertical,
-            itemBuilder: (BuildContext context, int index) {
-              int temporaryM = index;
+    return InheritedState(
+        child: Column(
+          children: [
+            Expanded(
+              //Builds separate page for each month of every year since 1980
+              child: PageView.builder(
+                controller: pageController,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (BuildContext context, int index) {
+                  int temporaryM = index;
 
-              int yearsPassed = 1;
-              if (index > 12) {
-                temporaryM = (temporaryM % 12) + 1;
-              }
-              int userMonth = temporaryM;
+                  int yearsPassed = 1;
+                  if (index > 12) {
+                    temporaryM = (temporaryM % 12) + 1;
+                  }
+                  int userMonth = temporaryM;
 
-              var yearEarly = 1980;
-              yearsPassed = (index / 12).floor();
-              int earlyYear = yearEarly + yearsPassed;
-              String monthIAmIn = n.currentMonth;
-              if (n.now.month == userMonth && n.now.year == earlyYear) {
-                monthView = n;
-              } else {
-                monthView = Months.otherYears(userMonth, earlyYear);
-              }
-              int mdw = monthView.monthStart;
-              if (monthView.monthStart == 7) {
-                mdw = 0;
-              }
-              monthIAmIn = n.month[temporaryM].toString();
+                  var yearEarly = 1980;
+                  yearsPassed = (index / 12).floor();
+                  int earlyYear = yearEarly + yearsPassed;
+                  String monthIAmIn = n.currentMonth;
+                  if (n.now.month == userMonth && n.now.year == earlyYear) {
+                    monthView = n;
+                  } else {
+                    monthView = Months.otherYears(userMonth, earlyYear);
+                  }
+                  int mdw = monthView.monthStart;
+                  if (monthView.monthStart == 7) {
+                    mdw = 0;
+                  }
+                  monthIAmIn = n.month[temporaryM].toString();
 
-              String year = (yearEarly + yearsPassed).toString();
+                  String year = (yearEarly + yearsPassed).toString();
 
-              if (getCurrentYear().toString() == year) {
-                year = "";
-              }
-              Color clickedColor = Colors.white70;
-              pageController.addListener(() {
-                clickedPosition = -2;
-              });
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
+                  if (getCurrentYear().toString() == year) {
+                    year = "";
+                  }
+                  Color clickedColor = Colors.white70;
+                  pageController.addListener(() {
+                    clickedPosition = -2;
+                  });
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Center(
-                        child: InkWell(
-                          child: Container(
-                            padding: const EdgeInsets.only(bottom: 16, top: 10),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                monthIAmIn + ' ' + year,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 25),
-                              ),
-                            ),
-                          ),
-                          onTap: () {
-                            onYearPressed(context, pageController);
-                          },
-                          borderRadius: BorderRadius.circular(200),
-                        ),
-                      ),
-                      Padding(
-                          child: InkWell(
-                            onTap: () => onFindMyDayPressed(),
-                            splashColor: Colors.red[400]!,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border.all(color: Colors.red[400]!),
-                                shape: BoxShape.circle,
-                              ),
-                              height: 25.0,
-                              width: 25.0,
-                              child: Center(
-                                child: Text(CalendarState().getCurrentDay().toString()),
-                              ),
-                            ),
-                          ),
-                        padding: const EdgeInsets.only(left: 120, right: 15),
-                      ),
-                    ],
-                    //mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                  ),
-
-                  Expanded(
-                    //Builds grid of days based on number of days in month
-                    child: GridView.builder(
-                        itemCount: monthView.daysInMonth + mdw + 7,
-                        scrollDirection: Axis.vertical,
-                        physics: const ScrollPhysics(),
-                        gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 7,
-                          childAspectRatio: 2 / 2,
-                        ),
-                        itemBuilder: (BuildContext context, int index) {
-
-                          if (index < 7) {
-                            Color colorB;
-                            if (darkMode) {
-                              colorB = Colors.black;
-                            } else {
-                              colorB = Colors.white;
-                            }
-                            return SizedBox(
-                              height: 27,
-                              child: Card(
-                                elevation: 0,
-                                color: colorB,
-                                child: Text(
-                                  days[index].toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold, fontSize: 20),
+                      Row(
+                        children: [
+                          Center(
+                            child: InkWell(
+                              child: Container(
+                                padding: const EdgeInsets.only(bottom: 16, top: 10),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    monthIAmIn + ' ' + year,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold, fontSize: 25),
+                                  ),
                                 ),
                               ),
-                            );
-                          } else if (index >= 7) {
-                            index -= 7;
-                          }
-                          index += 1;
-                          int day;
-                          bool skip = false;
-                          if (mdw != 0) {
-                            day = index - monthView.monthStart;
-                          } else {
-                            day = index;
-                            skip = true;
-                          }
-                          Color textColor;
-                          Widget textStyleToday = Text((day).toString());
-
-                          if ((day) == monthView.now.day &&
-                              monthView.now.month == n.now.month &&
-                              monthView.now.year == n.now.year) {
-                            textColor = Colors.white;
-                            textStyleToday = CircleAvatar(
-                              backgroundColor: Colors.red[400]!,
-                              child: Text(
-                                day.toString(),
-                                style: TextStyle(
-                                    color: textColor, fontWeight: FontWeight.bold),
+                              onTap: () {
+                                onYearPressed(context, pageController);
+                              },
+                              borderRadius: BorderRadius.circular(200),
+                            ),
+                          ),
+                          Padding(
+                            child: InkWell(
+                              onTap: () => onFindMyDayPressed(),
+                              splashColor: Colors.red[400]!,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  border: Border.all(color: Colors.red[400]!),
+                                  shape: BoxShape.circle,
+                                ),
+                                height: 25.0,
+                                width: 25.0,
+                                child: Center(
+                                  child: Text(CalendarState().getCurrentDay().toString()),
+                                ),
                               ),
-                              maxRadius: 12,
-                            );
-                          }
-                          if (clickedPosition - 2 == index -2) {
-                            clickedColor = Colors.red[200]!;
-                          }
-                          else {
-                            clickedColor =   Colors.white70;
-                          }
+                            ),
+                            padding: const EdgeInsets.only(left: 120, right: 15),
+                          ),
+                        ],
+                        //mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                      ),
 
-                          int dayLetters = index - 1;
+                      Expanded(
+                        //Builds grid of days based on number of days in month
+                        child: GridView.builder(
+                            itemCount: monthView.daysInMonth + mdw + 7,
+                            scrollDirection: Axis.vertical,
+                            physics: const ScrollPhysics(),
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 7,
+                              childAspectRatio: 2 / 2,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
 
-                          if (index <= monthView.monthStart && !skip) {
-                            Color colorCard;
-                            if (darkMode) {
-                              colorCard = Colors.black;
-                            } else {
-                              colorCard = Colors.white;
-                            }
-                            return Card(
-                              color: colorCard,
-                              elevation: 0,
-                            );
-                          } else {
-                            if (dayLetters >= 7) {
-                              dayLetters = (dayLetters % 7);
-                            }
-
-                            return Align(
-                              child: SizedBox(
-                                height: 200,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(color: clickedColor, width: 1),
-                                    borderRadius: BorderRadius.circular(10),
+                              if (index < 7) {
+                                Color colorB;
+                                if (darkMode) {
+                                  colorB = Colors.black;
+                                } else {
+                                  colorB = Colors.white;
+                                }
+                                return SizedBox(
+                                  height: 27,
+                                  child: Card(
+                                    elevation: 0,
+                                    color: colorB,
+                                    child: Text(
+                                      days[index].toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 20),
+                                    ),
                                   ),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(50),
-                                    splashColor: Colors.deepOrangeAccent,
-                                    child: Align(
-                                      alignment: Alignment.topCenter,
-                                      child: Column(
-                                        children: [
-                                          textStyleToday,
-                                        ],
+                                );
+                              } else if (index >= 7) {
+                                index -= 7;
+                              }
+                              index += 1;
+                              int day;
+                              bool skip = false;
+                              if (mdw != 0) {
+                                day = index - monthView.monthStart;
+                              } else {
+                                day = index;
+                                skip = true;
+                              }
+                              Color textColor;
+                              Widget textStyleToday = Text((day).toString());
+
+                              if ((day) == monthView.now.day &&
+                                  monthView.now.month == n.now.month &&
+                                  monthView.now.year == n.now.year) {
+                                textColor = Colors.white;
+                                textStyleToday = CircleAvatar(
+                                  backgroundColor: Colors.red[400]!,
+                                  child: Text(
+                                    day.toString(),
+                                    style: TextStyle(
+                                        color: textColor, fontWeight: FontWeight.bold),
+                                  ),
+                                  maxRadius: 12,
+                                );
+                              }
+                              if (clickedPosition == day) {
+                                clickedColor = Colors.red[200]!;
+                              }
+                              else {
+                                clickedColor =   Colors.white70;
+                              }
+
+                              int dayLetters = index - 1;
+
+                              if (index <= monthView.monthStart && !skip) {
+                                Color colorCard;
+                                if (darkMode) {
+                                  colorCard = Colors.black;
+                                } else {
+                                  colorCard = Colors.white;
+                                }
+                                return Card(
+                                  color: colorCard,
+                                  elevation: 0,
+                                );
+                              } else {
+                                if (dayLetters >= 7) {
+                                  dayLetters = (dayLetters % 7);
+                                }
+
+                                return SizedBox(
+                                    height: 200,
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(color: clickedColor, width: 1),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(50),
+                                        splashColor: Colors.deepOrangeAccent,
+                                        child: Align(
+                                          alignment: Alignment.topCenter,
+                                          child: Column(
+                                            children: [
+                                              textStyleToday,
+                                            ],
+                                          ),
+                                        ),
+                                        onTap: () => _tapDate(day, yearEarly + yearsPassed, userMonth),
                                       ),
                                     ),
-                                    onTap: () => _tapDate(index),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        }),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
+                                  );
+                              }
+                            }),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
 
-      ],
+          ],
+        ),
     );
   }
 
-  void _tapDate(int i) {
+  void _tapDate(int i, int year, int month) {
     setState(() {
       clickedPosition = i;
     });
+    final access = StateWidget.of(context);
+    access?.updateClicked(i, year, month);
     DatabaseReference _day = FirebaseDatabase.instance.ref().child("test");
     _day.set("Day tapped: ${i}");
     print(i);
@@ -270,7 +273,7 @@ class CalendarState extends State<CalendarWidget> {
   void navigationPress(int month, int year, BuildContext context) {
     Navigator.pop(context);
     pageController.animateToPage(year * 12 + month,
-        duration: Duration(seconds: 1), curve: Curves.easeIn);
+        duration: const Duration(seconds: 1), curve: Curves.easeIn);
   }
 
   int getCurrentMonth() {
@@ -360,7 +363,7 @@ class CalendarState extends State<CalendarWidget> {
                     child: ElevatedButton(
                       child: Text(
                         n.getMonthShort(month + 1).toString(),
-                        style: const TextStyle(fontSize: 13),
+                        style: const TextStyle(fontSize: 12),
                       ),
                       onPressed: () =>
                           navigationPress(month, year, context),
