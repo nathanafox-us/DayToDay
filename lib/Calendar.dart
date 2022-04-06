@@ -3,7 +3,6 @@ import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({Key? key}) : super(key: key);
 
@@ -25,6 +24,7 @@ class CalendarState extends State<CalendarWidget> {
 
     super.initState();
   }
+
   @override
   void dispose() {
     pageController.dispose();
@@ -112,29 +112,29 @@ class CalendarState extends State<CalendarWidget> {
                         ),
                       ),
                       Padding(
-                          child: InkWell(
-                            onTap: () => onFindMyDayPressed(),
-                            splashColor: Colors.red[400]!,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border.all(color: Colors.red[400]!),
-                                shape: BoxShape.circle,
-                              ),
-                              height: 25.0,
-                              width: 25.0,
-                              child: Center(
-                                child: Text(CalendarState().getCurrentDay().toString()),
-                              ),
+                        child: InkWell(
+                          onTap: () => onFindMyDayPressed(),
+                          splashColor: Colors.red[400]!,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              border: Border.all(color: Colors.red[400]!),
+                              shape: BoxShape.circle,
+                            ),
+                            height: 25.0,
+                            width: 25.0,
+                            child: Center(
+                              child: Text(
+                                  CalendarState().getCurrentDay().toString()),
                             ),
                           ),
+                        ),
                         padding: const EdgeInsets.only(left: 120, right: 15),
                       ),
                     ],
                     //mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.end,
                   ),
-
                   Expanded(
                     //Builds grid of days based on number of days in month
                     child: GridView.builder(
@@ -142,12 +142,11 @@ class CalendarState extends State<CalendarWidget> {
                         scrollDirection: Axis.vertical,
                         physics: const ScrollPhysics(),
                         gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 7,
                           childAspectRatio: 2 / 2,
                         ),
                         itemBuilder: (BuildContext context, int index) {
-
                           if (index < 7) {
                             Color colorB;
                             if (darkMode) {
@@ -163,7 +162,8 @@ class CalendarState extends State<CalendarWidget> {
                                 child: Text(
                                   days[index].toString(),
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.bold, fontSize: 20),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
                                 ),
                               ),
                             );
@@ -191,16 +191,16 @@ class CalendarState extends State<CalendarWidget> {
                               child: Text(
                                 day.toString(),
                                 style: TextStyle(
-                                    color: textColor, fontWeight: FontWeight.bold),
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold),
                               ),
                               maxRadius: 12,
                             );
                           }
-                          if (clickedPosition - 2 == index -2) {
+                          if (clickedPosition - 2 == index - 2) {
                             clickedColor = Colors.red[200]!;
-                          }
-                          else {
-                            clickedColor =   Colors.white70;
+                          } else {
+                            clickedColor = Colors.white70;
                           }
 
                           int dayLetters = index - 1;
@@ -226,7 +226,8 @@ class CalendarState extends State<CalendarWidget> {
                                 height: 200,
                                 child: Card(
                                   shape: RoundedRectangleBorder(
-                                    side: BorderSide(color: clickedColor, width: 1),
+                                    side: BorderSide(
+                                        color: clickedColor, width: 1),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: InkWell(
@@ -253,7 +254,6 @@ class CalendarState extends State<CalendarWidget> {
             },
           ),
         ),
-
       ],
     );
   }
@@ -263,7 +263,7 @@ class CalendarState extends State<CalendarWidget> {
       clickedPosition = i;
     });
     DatabaseReference _day = FirebaseDatabase.instance.ref().child("test");
-    _day.set("Day tapped: ${i}");
+    _day.set("Day tapped: $i");
     print(i);
   }
 
@@ -284,6 +284,7 @@ class CalendarState extends State<CalendarWidget> {
   int getCurrentYear() {
     return n.now.year;
   }
+
   int getClicked() {
     return clickedPosition;
   }
@@ -306,10 +307,11 @@ class CalendarState extends State<CalendarWidget> {
   }
 
   void onFindMyDayPressed() {
-
     if (pageController.hasClients) {
-      pageController.animateToPage(((getCurrentYear() - 1980) * 12 + getCurrentMonth()) - 1,
-          duration: const Duration(seconds: 2), curve: Curves.easeIn);
+      pageController.animateToPage(
+          ((getCurrentYear() - 1980) * 12 + getCurrentMonth()) - 1,
+          duration: const Duration(seconds: 2),
+          curve: Curves.easeIn);
     }
   }
 
@@ -330,12 +332,14 @@ class CalendarState extends State<CalendarWidget> {
               InkWell(
                 child: Text(
                   display,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
                   var firstYearRange = 1980 + ((year / 12).floor() * 12);
                   setState(() {
-                    display = (firstYearRange.toString() + "-" +
+                    display = (firstYearRange.toString() +
+                        "-" +
                         (firstYearRange + 12).toString());
                     print(display);
                   });
@@ -349,10 +353,10 @@ class CalendarState extends State<CalendarWidget> {
                 ),
                 itemBuilder: (BuildContext context, int month) {
                   Color monthName;
-                  if (month + 1 == getCurrentMonth() && year == getCurrentYear() - 1980) {
+                  if (month + 1 == getCurrentMonth() &&
+                      year == getCurrentYear() - 1980) {
                     monthName = Colors.red[200]!;
-                  }
-                  else {
+                  } else {
                     monthName = Colors.blueGrey;
                   }
                   return Container(
@@ -362,8 +366,7 @@ class CalendarState extends State<CalendarWidget> {
                         n.getMonthShort(month + 1).toString(),
                         style: const TextStyle(fontSize: 13),
                       ),
-                      onPressed: () =>
-                          navigationPress(month, year, context),
+                      onPressed: () => navigationPress(month, year, context),
                       style: ElevatedButton.styleFrom(
                         primary: monthName,
                         side: const BorderSide(width: 1.0, color: Colors.red),
