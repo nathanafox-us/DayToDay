@@ -1,5 +1,5 @@
-import 'package:day_to_day/Inherited.dart';
-import 'package:day_to_day/Months.dart';
+import 'package:day_to_day/inherited.dart';
+import 'package:day_to_day/months.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
@@ -47,6 +47,10 @@ class EventFormState extends State<EventForm> {
   String colorChosenText = "Default";
   TimeOfDay fromObj = TimeOfDay.now();
   TimeOfDay toObj = TimeOfDay.now();
+  int hourF = 0;
+  int minuteF = 0;
+  int minuteT = 0;
+  int hourT = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +88,7 @@ class EventFormState extends State<EventForm> {
       pastSixty = true;
       minute = 0;
     }
+
     if (!chosenTFrom && !isSwitched) {
       String minuteStr = minute.toString();
       if (minute == 0) {
@@ -102,6 +107,8 @@ class EventFormState extends State<EventForm> {
         timeFrom = hour.toString() + ":" + minuteStr + " AM";
       }
       finalTimeFrom = timeFrom;
+      hourF = hour;
+      minuteF = minute;
     }
     if (!chosenTTo && !isSwitched) {
       hour = n.now.hour;
@@ -125,6 +132,8 @@ class EventFormState extends State<EventForm> {
         timeTo = hour.toString() + ":" + minuteStr + " AM";
       }
       finalTimeTo = timeTo;
+      hourT = hour;
+      minuteT = minute;
     }
 
     weekDayN = selectedTime.weekday;
@@ -154,6 +163,7 @@ class EventFormState extends State<EventForm> {
           ", " +
           (selectedTime.year.toString());
     }
+
 
     return InheritedState(
       child: Scaffold(
@@ -328,15 +338,16 @@ class EventFormState extends State<EventForm> {
                     //print(title);
                     if (selectedTimeTo != null) {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
-                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1);
+                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD,
+                          (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT);
                     }
                     else {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
-                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month, selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1);
+                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month,
+                          selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT);
                     }
                     streamController.add(true);
                     Navigator.pop(context);
-
                   },
                   child: Text(
                     "Save",
@@ -416,6 +427,9 @@ class EventFormState extends State<EventForm> {
       if (userChosenTimeFrom != null) {
         chosenTFrom = true;
         fromObj = userChosenTimeFrom;
+        hourF = userChosenTimeFrom.hour;
+        minuteF = userChosenTimeFrom.minute;
+
         setState(() {
           timeFrom = userChosenTimeFrom.format(context);
           finalTimeFrom = userChosenTimeFrom.format(context);
@@ -430,6 +444,8 @@ class EventFormState extends State<EventForm> {
       if (userChosenTimeTo != null) {
         chosenTTo = true;
         toObj = userChosenTimeTo;
+        minuteT = userChosenTimeTo.minute;
+        hourT = userChosenTimeTo.hour;
         setState(() {
           timeTo = userChosenTimeTo.format(context);
           finalTimeTo = userChosenTimeTo.format(context);

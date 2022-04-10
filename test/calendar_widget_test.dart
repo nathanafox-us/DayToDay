@@ -1,5 +1,5 @@
 
-import 'package:day_to_day/Calendar.dart';
+import 'package:day_to_day/calendar.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

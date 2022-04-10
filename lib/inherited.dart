@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Events.dart';
+import 'events.dart';
 import 'globals.dart' as globals;
 
 class InheritedState extends StatefulWidget {
@@ -30,37 +30,42 @@ class _InheritedStateState extends State<InheritedState> {
   }
 
   void addEvent(int dayFrom, int yearFrom, int monthFrom, String title, String timeF, String timeT, int dayTo, int monthTo, int yearTo, Color color,
-      TimeOfDay toT, TimeOfDay fromT, bool allDay, String repeat, int page) {
+      TimeOfDay toT, TimeOfDay fromT, bool allDay, String repeat, int page, int hourF, int hourT, int minuteF, int minuteT) {
+
     int weekDay = DateTime(yearFrom, monthFrom, dayFrom).weekday;
+    DateTime from = DateTime(yearFrom, monthFrom, dayFrom, hourF, minuteF);
+    DateTime to = DateTime(yearTo, monthTo, dayTo, hourT, minuteT);
+
     if (repeat == "Everyday") {
-      globals.everyDay.add(Events(monthFrom, yearFrom, dayFrom, title, timeF, timeT, dayTo, monthTo, yearTo, color,
-          fromT, toT, allDay, repeat, page, weekDay));
+      globals.everyDay.add(events(title, timeF, timeT, color,
+          fromT, toT, allDay, page, weekDay, from, to));
     }
     else if (repeat == "Every week") {
-      globals.everyWeek.add(Events(monthFrom, yearFrom, dayFrom, title, timeF, timeT, dayTo, monthTo, yearTo, color,
-          fromT, toT, allDay, repeat, page, weekDay));
+      globals.everyWeek.add(events(title, timeF, timeT, color,
+          fromT, toT, allDay, page, weekDay, from, to));
     }
     else if (repeat == "Every month") {
-      globals.everyMonth.add(Events(monthFrom, yearFrom, dayFrom, title, timeF, timeT, dayTo, monthTo, yearTo, color,
-          fromT, toT, allDay, repeat, page, weekDay));
+      globals.everyMonth.add(events(title, timeF, timeT, color,
+          fromT, toT, allDay, page, weekDay, from, to));
     }
     else if (repeat == "Every year") {
-      globals.everyYear.add(Events(monthFrom, yearFrom, dayFrom, title, timeF, timeT, dayTo, monthTo, yearTo, color,
-          fromT, toT, allDay, repeat, page, weekDay));
+      globals.everyYear.add(events(title, timeF, timeT, color,
+          fromT, toT, allDay, page, weekDay, from, to));
     }
     else {
-      if (globals.events[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] != null) {
-        globals.events[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(Events(monthFrom, yearFrom, dayFrom, title, timeF, timeT, dayTo, monthTo, yearTo, color,
-            fromT, toT, allDay, repeat, page, weekDay));
+      if (globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] != null) {
+        globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(events(title, timeF, timeT, color,
+            fromT, toT, allDay, page, weekDay, from, to));
       }
       else {
-        List<Events> temp = [Events(monthFrom, yearFrom, dayFrom, title, timeF, timeT, dayTo, monthTo, yearTo, color, fromT, toT, allDay, repeat, page, weekDay)];
-        globals.events[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
+        List<events> temp = [events(title, timeF, timeT, color,
+            fromT, toT, allDay, page, weekDay, from, to)];
+        globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
 
       }
     }
 
-    globals.events[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.sort((a,b) {
+    globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.sort((a,b) {
       if (a.fromT.hour == b.fromT.hour) {
         return a.fromT.minute.compareTo(b.fromT.minute);
       }

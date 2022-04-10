@@ -1,7 +1,7 @@
-import 'Events.dart';
+import 'events.dart';
 
-Map<String, List<Events>> events = {};
-List<Events> everyDay = [];
-List<Events> everyMonth = [];
-List<Events> everyWeek = [];
-List<Events> everyYear = [];
+Map<String, List<events>> eventsList = {};
+List<events> everyDay = [];
+List<events> everyMonth = [];
+List<events> everyWeek = [];
+List<events> everyYear = [];
