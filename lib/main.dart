@@ -5,10 +5,11 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/Calendar.dart';
 import 'package:day_to_day/EventForm.dart';
-
+import 'package:day_to_day/user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(DayToDay());
 }
 
@@ -68,12 +69,12 @@ class _MyStatefulWidgetState extends State<AppWidget>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
-
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
   }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -129,7 +130,11 @@ class _MyStatefulWidgetState extends State<AppWidget>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => onAddEventButtonPressed(),
-        child: const Icon(Icons.add,size: 45, color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          size: 45,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.blueGrey,
       ),
       appBar: AppBar(
@@ -196,6 +201,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
       ),
     );
   }
+
   void onSearchButtonPressed() {}
   void onAddEventButtonPressed() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -203,6 +209,4 @@ class _MyStatefulWidgetState extends State<AppWidget>
       return const EventForm();
     }));
   }
-
-
 }

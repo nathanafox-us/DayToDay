@@ -1,5 +1,7 @@
+import 'dart:math';
+
 import 'package:day_to_day/Months.dart';
-import 'package:day_to_day/main.dart';
+import 'package:day_to_day/user.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -258,12 +260,24 @@ class CalendarState extends State<CalendarWidget> {
     );
   }
 
-  void _tapDate(int i) {
+  Future<void> _tapDate(int i) async {
     setState(() {
       clickedPosition = i;
     });
-    DatabaseReference _day = FirebaseDatabase.instance.ref().child("test");
-    _day.set("Day tapped: $i");
+
+    User testUser = User();
+    print('User created');
+    testUser.uID = i.toString();
+    testUser.fbTest = Random().nextInt(1000);
+    print('User: ${testUser.uID}');
+    print('fbTest: ${testUser.fbTest}');
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = database.ref("users");
+    DatabaseReference child = ref.child(testUser.uID);
+    child.set(testUser.fbTest);
+    //DatabaseEvent event = await ref.once();
+    //print(event.snapshot.value);
+
     print(i);
   }
 
