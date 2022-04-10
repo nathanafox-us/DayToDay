@@ -64,6 +64,7 @@ flutter:
     - assets/icons/find-the-day.png
     - assets/icons/search-icon.png
     - assets/icons/clock.png
+    - assets/icons/repeat.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
