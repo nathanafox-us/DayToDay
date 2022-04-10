@@ -1,8 +1,8 @@
-import 'package:day_to_day/Calendar.dart';
 import 'package:day_to_day/Inherited.dart';
 import 'package:day_to_day/Months.dart';
+import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
-import 'package:day_to_day/Events.dart';
+import 'globals.dart' as globals;
 
 class EventForm extends StatefulWidget {
   const EventForm({Key? key}) : super(key: key);
@@ -43,12 +43,15 @@ class EventFormState extends State<EventForm> {
   String? selectedHourTo;
   String finalTimeTo = "";
   String repeatD = "Don't repeat";
-
+  Color colorChosenBubble = Colors.red[200]!;
+  String colorChosenText = "Default";
+  TimeOfDay fromObj = TimeOfDay.now();
+  TimeOfDay toObj = TimeOfDay.now();
 
   @override
   Widget build(BuildContext context) {
     String to;
-    String title;
+    String title = "Default Event";
     int dayF = (StateWidget.of(context)?.clicked)!;
     int weekDayN;
     int hour = n.now.hour;
@@ -72,6 +75,12 @@ class EventFormState extends State<EventForm> {
     }
     if (minute >= 60) {
       hour += 1;
+      if (hour == 24) {
+        hour == 0;
+      }
+      else if (hour == 25) {
+        hour = 1;
+      }
       pastSixty = true;
       minute = 0;
     }
@@ -98,7 +107,7 @@ class EventFormState extends State<EventForm> {
       hour = n.now.hour;
       hour += 1;
       if (pastSixty) {
-        hour +=1;
+        hour += 1;
       }
       String minuteStr = minute.toString();
       if (minute == 0) {
@@ -148,6 +157,7 @@ class EventFormState extends State<EventForm> {
 
     return InheritedState(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -162,6 +172,9 @@ class EventFormState extends State<EventForm> {
                   border: UnderlineInputBorder(),
                   labelText: 'Add Event Title',
                 ),
+                onChanged: (value) {
+                  title = value;
+                },
               ),
             ),
             const Divider(color: Colors.grey,),
@@ -267,6 +280,33 @@ class EventFormState extends State<EventForm> {
                 onRepeat();
               },
             ),
+            const Divider(color: Colors.grey,),
+            InkWell(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children:  [
+                  const Padding(padding: EdgeInsets.only(left: 20)),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorChosenBubble,
+                      shape: BoxShape.circle,
+                    ),
+                    height: 45.0,
+                    width: 25.0,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 25),
+                    child: Text(
+                      colorChosenText,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {
+                onColor();
+              },
+            ),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -284,7 +324,20 @@ class EventFormState extends State<EventForm> {
                   alignment: Alignment.bottomCenter,
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    //print(title);
+                    if (selectedTimeTo != null) {
+                      StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
+                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1);
+                    }
+                    else {
+                      StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
+                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month, selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1);
+                    }
+                    streamController.add(true);
+                    Navigator.pop(context);
+
+                  },
                   child: Text(
                     "Save",
                     style: TextStyle(fontSize: 25, color: Colors.red[200]),
@@ -362,6 +415,7 @@ class EventFormState extends State<EventForm> {
       ));
       if (userChosenTimeFrom != null) {
         chosenTFrom = true;
+        fromObj = userChosenTimeFrom;
         setState(() {
           timeFrom = userChosenTimeFrom.format(context);
           finalTimeFrom = userChosenTimeFrom.format(context);
@@ -375,6 +429,7 @@ class EventFormState extends State<EventForm> {
       ));
       if (userChosenTimeTo != null) {
         chosenTTo = true;
+        toObj = userChosenTimeTo;
         setState(() {
           timeTo = userChosenTimeTo.format(context);
           finalTimeTo = userChosenTimeTo.format(context);
@@ -384,9 +439,7 @@ class EventFormState extends State<EventForm> {
   }
 
   void onRepeat() {
-      setState(() {
 
-      });
       showDialog(context: context, builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
@@ -398,7 +451,7 @@ class EventFormState extends State<EventForm> {
                 child:  Column(
                   children: [
                     RadioListTile(
-                        title: Text("Don't Repeat"),
+                        title: const Text("Don't Repeat"),
                         value: SingingCharacter.none,
                         groupValue: repeatingChoose,
                         onChanged: (SingingCharacter? value) {
@@ -410,7 +463,7 @@ class EventFormState extends State<EventForm> {
                         }
                     ),
                     RadioListTile(
-                        title: Text("Everyday"),
+                        title: const Text("Everyday"),
                         value: SingingCharacter.daily,
                         groupValue: repeatingChoose,
                         onChanged: (SingingCharacter? value) {
@@ -422,7 +475,7 @@ class EventFormState extends State<EventForm> {
                         }
                     ),
                     RadioListTile(
-                        title: Text("Every week"),
+                        title: const Text("Every week"),
                         value: SingingCharacter.weekly,
                         groupValue: repeatingChoose,
                         onChanged: (SingingCharacter? value) {
@@ -434,7 +487,7 @@ class EventFormState extends State<EventForm> {
                         }
                     ),
                     RadioListTile(
-                        title: Text("Every month"),
+                        title: const Text("Every month"),
                         value: SingingCharacter.monthly,
                         groupValue: repeatingChoose,
                         onChanged: (SingingCharacter? value) {
@@ -446,7 +499,7 @@ class EventFormState extends State<EventForm> {
                         }
                     ),
                     RadioListTile(
-                        title: Text("Every year"),
+                        title: const Text("Every year"),
                         value: SingingCharacter.yearly,
                         groupValue: repeatingChoose,
                         onChanged: (SingingCharacter? value) {
@@ -470,5 +523,70 @@ class EventFormState extends State<EventForm> {
 
         });
       });
+  }
+
+  void onColor() {
+    showDialog(context: context, builder: (context) {
+      return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+                elevation: 20,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                child: SizedBox(
+                  height: 300,
+                  child:  Column(
+                    children: [
+                      chooseColor(Colors.red, "Red"),
+                      chooseColor(Colors.green, "Green"),
+                      chooseColor(Colors.blue, "Blue"),
+                      chooseColor(Colors.yellow, "Yellow"),
+                      chooseColor(Colors.orange, "Orange"),
+                      chooseColor(Colors.red[200]!, "Default"),
+
+                    ],
+                  ),
+                )
+            );
+          });
+
+    }).then((value) {
+      setState(() {
+
+      });
+    });
+  }
+  Widget chooseColor(Color color, String text) {
+    return
+      Padding(
+        padding: const EdgeInsets.only(left: 20),
+        child: InkWell(
+          onTap: () {
+            Navigator.pop(context, true);
+            setState(() {
+              colorChosenBubble = color;
+              colorChosenText = text;
+            });
+          },
+          child: Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                ),
+                height: 45.0,
+                width: 25.0,
+                padding: const EdgeInsets.only(right: 50),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Text(text,
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
   }
 }

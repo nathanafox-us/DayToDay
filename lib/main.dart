@@ -6,7 +6,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/Calendar.dart';
 import 'package:day_to_day/EventForm.dart';
+import 'dart:async';
 
+StreamController<bool> streamController = StreamController<bool>.broadcast();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +18,7 @@ Future<void> main() async {
 class DayToDay extends StatelessWidget {
   final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
   DayToDay({Key? key}) : super(key: key);
-
+  bool wic = true;
   @override
   Widget build(BuildContext context) => InheritedState(
       child: MaterialApp(
@@ -125,9 +127,6 @@ class _MyStatefulWidgetState extends State<AppWidget>
 
     return Scaffold(
       drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
         child: ListView(
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
@@ -141,18 +140,14 @@ class _MyStatefulWidgetState extends State<AppWidget>
             ListTile(
               title: const Text('Ex1'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
+
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Ex2'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
+
                 Navigator.pop(context);
               },
             ),
@@ -203,7 +198,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
               //),
             ),
             const Tab(
-              text: "To-do",
+              text: "To-Do",
             ),
             const Tab(
               text: "Projects",
@@ -217,12 +212,12 @@ class _MyStatefulWidgetState extends State<AppWidget>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          CalendarWidget(),
-          ToDoListDirectoryWidget(),
-          Center(
+          CalendarWidget(stream: streamController.stream,),
+          const ToDoListDirectoryWidget(),
+          const Center(
             child: Text("Projects"),
           ),
-          Center(
+          const Center(
             child: Text("HW"),
           )
         ],
@@ -234,9 +229,10 @@ class _MyStatefulWidgetState extends State<AppWidget>
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       int? clicked = StateWidget.of(context)?.clicked;
 
-      print(clicked);
+      //print(clicked);
       return const EventForm();
     }));
+
   }
 
 
