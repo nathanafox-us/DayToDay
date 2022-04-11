@@ -96,15 +96,17 @@ class EventFormState extends State<EventForm> {
       }
 
       if (hour > 12) {
-        hour %= 12;
-        timeFrom = hour.toString() + ":" + minuteStr + " PM";
+        var hourReduced = hour %12;
+        //hour %= 12;
+        timeFrom = hourReduced.toString() + ":" + minuteStr + " PM";
       } else if (hour == 12) {
         timeFrom = hour.toString() + ":" + minuteStr + " PM";
       } else {
+        var hourReduced = hour;
         if (hour == 0) {
-          hour = 12;
+          hourReduced = 12;
         }
-        timeFrom = hour.toString() + ":" + minuteStr + " AM";
+        timeFrom = hourReduced.toString() + ":" + minuteStr + " AM";
       }
       finalTimeFrom = timeFrom;
       hourF = hour;
@@ -121,15 +123,17 @@ class EventFormState extends State<EventForm> {
         minuteStr = minuteStr.toString() + "0";
       }
       if (hour > 12) {
-        hour %= 12;
-        timeTo = hour.toString() + ":" + minuteStr + " PM";
+        var hourReduced = hour % 12;
+        //hour %= 12;
+        timeTo = hourReduced.toString() + ":" + minuteStr + " PM";
       } else if (hour == 12) {
         timeTo = hour.toString() + ":" + minuteStr + " PM";
       } else {
+        var hourReduced = hour;
         if (hour == 0) {
-          hour = 12;
+          hourReduced = 12;
         }
-        timeTo = hour.toString() + ":" + minuteStr + " AM";
+        timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
       }
       finalTimeTo = timeTo;
       hourT = hour;

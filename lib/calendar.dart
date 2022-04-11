@@ -64,11 +64,11 @@ class CalendarState extends State<CalendarWidget> {
 
                 if (clickedPosition == -1) {
                   clickedPosition = getCurrentDay();
-                  if (globals.events[getCurrentDay().toString() +
+                  if (globals.eventsList[getCurrentDay().toString() +
                           getCurrentMonth().toString() +
                           getCurrentYear().toString()] !=
                       null) {
-                    globals.events[getCurrentDay().toString() +
+                    globals.eventsList[getCurrentDay().toString() +
                             getCurrentMonth().toString() +
                             getCurrentYear().toString()]
                         ?.forEach((element) {
@@ -91,45 +91,48 @@ class CalendarState extends State<CalendarWidget> {
                           ),
                         ],
                       ));
-                      if (element.dayFrom == element.dayTo &&
-                          element.monthFrom == element.monthTo &&
-                          element.yearFrom == element.yearTo) {
+                      String timeF = TimeOfDay(hour: element.from.hour, minute: element.from.minute).format(context);
+                      String timeT = TimeOfDay(hour: element.to.hour, minute: element.to.minute).format(context);
+
+                      if (element.from.day == element.to.day &&
+                          element.from.month == element.to.month &&
+                          element.from.year == element.to.year) {
                         dayClicked.add(Center(
-                          child: Text(element.timeF + " - " + element.timeT),
+                          child: Text(timeF + " - " + timeT),
                         ));
-                      } else if (element.yearFrom == element.yearTo) {
+                      } else if (element.from.year == element.to.year) {
                         dayClicked.add(Center(
                           child: Text(
-                              Months().getMonthShort(element.monthFrom)! +
+                              Months().getMonthShort(element.from.month)! +
                                   " " +
-                                  element.dayFrom.toString() +
+                                  element.from.day.toString() +
                                   ", " +
-                                  element.timeF +
+                                  timeF +
                                   " - " +
-                                  Months().getMonthShort(element.monthTo)! +
+                                  Months().getMonthShort(element.to.month)! +
                                   " " +
-                                  element.dayTo.toString() +
+                                  element.to.day.toString() +
                                   ", " +
-                                  element.timeT),
+                                  timeT),
                         ));
                       } else {
                         dayClicked.add(Center(
                           child: Text(
-                              Months().getMonthShort(element.monthFrom)! +
+                              Months().getMonthShort(element.from.month)! +
                                   " " +
-                                  element.dayFrom.toString() +
+                                  element.from.day.toString() +
                                   ", " +
-                                  element.yearFrom.toString() +
+                                  element.from.year.toString() +
                                   ", " +
-                                  element.timeF +
+                                  timeF +
                                   " - " +
-                                  Months().getMonthShort(element.monthTo)! +
+                                  Months().getMonthShort(element.to.month)! +
                                   " " +
-                                  element.dayTo.toString() +
+                                  element.to.day.toString() +
                                   ", " +
-                                  element.yearTo.toString() +
+                                  element.to.year.toString() +
                                   ", " +
-                                  element.timeT),
+                                  timeT),
                         ));
                       }
                     });
@@ -365,7 +368,7 @@ class CalendarState extends State<CalendarWidget> {
                                 for (var element in globals.everyWeek) {
                                   if (temporaryM >= element.page) {
                                     DateTime wee = DateTime(yearEarly + yearsPassed, userMonth, day);
-                                    if (wee.weekday == (element.weekDay)) {
+                                    if (wee.weekday == (element.from.weekday)) {
                                       if (element.from.year == (yearsPassed + yearEarly) && element.from.month == userMonth) {
                                         if (day >= element.from.day) {
                                           dayInfo.add(Container(
@@ -507,7 +510,7 @@ class CalendarState extends State<CalendarWidget> {
     if (globals.everyWeek.isNotEmpty) {
       for (var element in globals.everyWeek) {
         DateTime wee = DateTime(year, month, day);
-        if (wee.weekday == (element.weekDay)) {
+        if (wee.weekday == (element.from.weekday)) {
           if (page >= element.page) {
             if (element.from.year == year && element.from.month == month) {
               if (day >= element.from.day) {
@@ -574,6 +577,8 @@ class CalendarState extends State<CalendarWidget> {
             ),
           ],
         ));
+        String timeF = TimeOfDay(hour: element.from.hour, minute: element.from.minute).format(context);
+        String timeT = TimeOfDay(hour: element.to.hour, minute: element.to.minute).format(context);
         if (element.from.day == element.to.day &&
             element.from.month == element.to.month &&
             element.from.year == element.to.year) {
@@ -583,7 +588,7 @@ class CalendarState extends State<CalendarWidget> {
             ));
           } else {
             dayClicked.add(Center(
-              child: Text(element.timeF + " - " + element.timeT),
+              child: Text(timeF + " - " + timeT),
             ));
           }
         } else if (element.from.year == element.to.year) {
@@ -603,13 +608,13 @@ class CalendarState extends State<CalendarWidget> {
                   " " +
                   element.from.day.toString() +
                   ", " +
-                  element.timeF +
+                  timeF +
                   " - " +
                   Months().getMonthShort(element.to.month)! +
                   " " +
                   element.to.day.toString() +
                   ", " +
-                  element.timeT),
+                  timeT),
             ));
           }
         } else {
@@ -635,7 +640,7 @@ class CalendarState extends State<CalendarWidget> {
                   ", " +
                   element.from.year.toString() +
                   ", " +
-                  element.timeF +
+                  timeF +
                   " - " +
                   Months().getMonthShort(element.to.month)! +
                   " " +
@@ -643,7 +648,7 @@ class CalendarState extends State<CalendarWidget> {
                   ", " +
                   element.to.day.toString() +
                   ", " +
-                  element.timeT),
+                  timeT),
             ));
           }
         }

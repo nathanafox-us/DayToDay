@@ -37,40 +37,40 @@ class _InheritedStateState extends State<InheritedState> {
     DateTime to = DateTime(yearTo, monthTo, dayTo, hourT, minuteT);
 
     if (repeat == "Everyday") {
-      globals.everyDay.add(events(title, timeF, timeT, color,
-          fromT, toT, allDay, page, weekDay, from, to));
+      globals.everyDay.add(events(title, color,
+           allDay, page, from, to));
     }
     else if (repeat == "Every week") {
-      globals.everyWeek.add(events(title, timeF, timeT, color,
-          fromT, toT, allDay, page, weekDay, from, to));
+      globals.everyWeek.add(events(title, color,
+          allDay, page, from, to));
     }
     else if (repeat == "Every month") {
-      globals.everyMonth.add(events(title, timeF, timeT, color,
-          fromT, toT, allDay, page, weekDay, from, to));
+      globals.everyMonth.add(events(title, color,
+           allDay, page, from, to));
     }
     else if (repeat == "Every year") {
-      globals.everyYear.add(events(title, timeF, timeT, color,
-          fromT, toT, allDay, page, weekDay, from, to));
+      globals.everyYear.add(events(title, color,
+           allDay, page, from, to));
     }
     else {
       if (globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] != null) {
-        globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(events(title, timeF, timeT, color,
-            fromT, toT, allDay, page, weekDay, from, to));
+        globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(events(title, color,
+             allDay, page, from, to));
       }
       else {
-        List<events> temp = [events(title, timeF, timeT, color,
-            fromT, toT, allDay, page, weekDay, from, to)];
+        List<events> temp = [events(title, color,
+             allDay, page, from, to)];
         globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
 
       }
     }
 
     globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.sort((a,b) {
-      if (a.fromT.hour == b.fromT.hour) {
-        return a.fromT.minute.compareTo(b.fromT.minute);
+      if (a.from.hour == b.from.hour) {
+        return a.from.minute.compareTo(b.from.minute);
       }
       else {
-        return a.fromT.hour.compareTo(b.fromT.hour);
+        return a.from.hour.compareTo(b.from.hour);
       }
     });
   }
