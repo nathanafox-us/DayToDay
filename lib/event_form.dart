@@ -51,6 +51,7 @@ class EventFormState extends State<EventForm> {
   int minuteT = 0;
   int hourT = 0;
   String tagChosen = "";
+  String eventType = "calendar";
 
   @override
   Widget build(BuildContext context) {
@@ -365,12 +366,12 @@ class EventFormState extends State<EventForm> {
                     if (selectedTimeTo != null) {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
                           finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD,
-                          (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT);
+                          (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, eventType);
                     }
                     else {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
                           finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month,
-                          selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT);
+                          selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, eventType);
                     }
                     streamController.add(true);
                     Navigator.pop(context);
@@ -640,7 +641,7 @@ class EventFormState extends State<EventForm> {
                 elevation: 20,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                 child: SizedBox(
-                  height: 150,
+                  height: 200,
                   child:  Column(
                     children: [
                       Padding(
@@ -655,6 +656,7 @@ class EventFormState extends State<EventForm> {
                             ),
                           ),
                           onTap: () {
+                            eventType = "assignment";
                             setState(() {
                               tagChosen = "Assignments";
                               Navigator.pop(context);
@@ -674,8 +676,29 @@ class EventFormState extends State<EventForm> {
                             ),
                           ),
                           onTap: () {
+                            eventType = "project";
                             setState(() {
                               tagChosen = "Projects";
+                              Navigator.pop(context);
+                            });
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, top: 20,),
+                        child: InkWell(
+                          child: SizedBox(
+                            height: 40,
+                            child: Row(
+                              children: const [
+                                Text("Exams", style: TextStyle(fontSize: 20)),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            eventType = "exam";
+                            setState(() {
+                              tagChosen = "Exams";
                               Navigator.pop(context);
                             });
                           },

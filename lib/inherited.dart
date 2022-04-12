@@ -30,27 +30,27 @@ class _InheritedStateState extends State<InheritedState> {
   }
 
   void addEvent(int dayFrom, int yearFrom, int monthFrom, String title, String timeF, String timeT, int dayTo, int monthTo, int yearTo, Color color,
-      TimeOfDay toT, TimeOfDay fromT, bool allDay, String repeat, int page, int hourF, int hourT, int minuteF, int minuteT) {
+      TimeOfDay toT, TimeOfDay fromT, bool allDay, String repeat, int page, int hourF, int hourT, int minuteF, int minuteT, String eventType) {
 
     DateTime from = DateTime(yearFrom, monthFrom, dayFrom, hourF, minuteF);
     DateTime to = DateTime(yearTo, monthTo, dayTo, hourT, minuteT);
 
     if (repeat == "Everyday") {
       globals.everyDay.add(Events(title, color,
-           allDay, page, from, to));
+           allDay, page, from, to, eventType));
     }
     else if (repeat == "Every week") {
 
       globals.everyWeek.add(Events(title, color,
-          allDay, page, from, to));
+          allDay, page, from, to, eventType));
     }
     else if (repeat == "Every month") {
       globals.everyMonth.add(Events(title, color,
-           allDay, page, from, to));
+           allDay, page, from, to, eventType));
     }
     else if (repeat == "Every year") {
       globals.everyYear.add(Events(title, color,
-           allDay, page, from, to));
+           allDay, page, from, to, eventType));
     }
     else {
       if (globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] != null) {
@@ -58,7 +58,7 @@ class _InheritedStateState extends State<InheritedState> {
           for (int i = 0; i <= to.difference(from).inDays; i++) {
 
             globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(Events(title, color,
-                allDay, page, from, to));
+                allDay, page, from, to, eventType));
             dayFrom += 1;
             if (dayFrom> DateTime(from.year, from.month + 1, 0).day) {
               dayFrom = 1;
@@ -68,7 +68,7 @@ class _InheritedStateState extends State<InheritedState> {
         }
         else {
           globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(Events(title, color,
-              allDay, page, from, to));
+              allDay, page, from, to, eventType));
         }
 
       }
@@ -77,7 +77,7 @@ class _InheritedStateState extends State<InheritedState> {
           for (int i = 0; i <= to.difference(from).inDays; i++) {
 
             List<Events> temp = [Events(title, color,
-                allDay, page, from, to)];
+                allDay, page, from, to, eventType)];
             globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
             dayFrom += 1;
             if (dayFrom> DateTime(from.year, from.month + 1, 0).day) {
@@ -88,7 +88,7 @@ class _InheritedStateState extends State<InheritedState> {
         }
         else {
           List<Events> temp = [Events(title, color,
-              allDay, page, from, to)];
+              allDay, page, from, to, eventType)];
           globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
         }
 

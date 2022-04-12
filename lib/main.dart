@@ -19,6 +19,7 @@ class DayToDay extends StatelessWidget {
   final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
   DayToDay({Key? key}) : super(key: key);
   bool wic = true;
+
   @override
   Widget build(BuildContext context) => InheritedState(
       child: MaterialApp(
@@ -86,7 +87,6 @@ class AppWidget extends StatefulWidget {
   State<AppWidget> createState() => _MyStatefulWidgetState();
 }
 
-/// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
 class _MyStatefulWidgetState extends State<AppWidget>
     with TickerProviderStateMixin {
   late TabController _tabController;
@@ -95,7 +95,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
   @override
   void dispose() {
@@ -182,6 +182,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           controller: _tabController,
+          isScrollable: true,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: <Widget>[
             Tab(
@@ -204,7 +205,10 @@ class _MyStatefulWidgetState extends State<AppWidget>
               text: "Projects",
             ),
             const Tab(
-              text: "Homework",
+              text: "Assignments",
+            ),
+            const Tab(
+              text: "Exams",
             ),
           ],
         ),
@@ -219,6 +223,9 @@ class _MyStatefulWidgetState extends State<AppWidget>
           ),
           const Center(
             child: Text("HW"),
+          ),
+          const Center(
+            child: Text("Exams"),
           )
         ],
       ),
@@ -229,6 +236,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
 
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       int? clicked = StateWidget.of(context)?.clicked;
+
 
       //print(clicked);
       return const EventForm();
