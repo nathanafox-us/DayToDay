@@ -37,28 +37,28 @@ class _InheritedStateState extends State<InheritedState> {
     DateTime to = DateTime(yearTo, monthTo, dayTo, hourT, minuteT);
 
     if (repeat == "Everyday") {
-      globals.everyDay.add(events(title, color,
+      globals.everyDay.add(Events(title, color,
            allDay, page, from, to));
     }
     else if (repeat == "Every week") {
-      globals.everyWeek.add(events(title, color,
+      globals.everyWeek.add(Events(title, color,
           allDay, page, from, to));
     }
     else if (repeat == "Every month") {
-      globals.everyMonth.add(events(title, color,
+      globals.everyMonth.add(Events(title, color,
            allDay, page, from, to));
     }
     else if (repeat == "Every year") {
-      globals.everyYear.add(events(title, color,
+      globals.everyYear.add(Events(title, color,
            allDay, page, from, to));
     }
     else {
       if (globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] != null) {
-        globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(events(title, color,
+        globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(Events(title, color,
              allDay, page, from, to));
       }
       else {
-        List<events> temp = [events(title, color,
+        List<Events> temp = [Events(title, color,
              allDay, page, from, to)];
         globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
 

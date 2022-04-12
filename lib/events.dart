@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class events {
+class Events {
   DateTime from;
   DateTime to;
   int page;
@@ -8,7 +8,7 @@ class events {
   Color color;
   bool allDay;
 
-events(this.title, this.color,
+Events(this.title, this.color,
      this.allDay, this.page, this.from, this.to);
 
 }

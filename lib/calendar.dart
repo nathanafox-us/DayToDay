@@ -485,7 +485,7 @@ class CalendarState extends State<CalendarWidget> {
     setState(() {
       clickedPosition = day;
     });
-    List<events> temp;
+    List<Events> temp;
     if (globals.eventsList[day.toString() + month.toString() + year.toString()] != null) {
       temp = (globals.eventsList[day.toString() + month.toString() + year.toString()])!;
     }
