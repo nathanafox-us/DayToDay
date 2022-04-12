@@ -2,7 +2,6 @@ import 'package:day_to_day/inherited.dart';
 import 'package:day_to_day/months.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
-import 'globals.dart' as globals;
 
 class EventForm extends StatefulWidget {
   const EventForm({Key? key}) : super(key: key);
@@ -51,6 +50,7 @@ class EventFormState extends State<EventForm> {
   int minuteF = 0;
   int minuteT = 0;
   int hourT = 0;
+  String tagChosen = "";
 
   @override
   Widget build(BuildContext context) {
@@ -309,10 +309,10 @@ class EventFormState extends State<EventForm> {
                     width: 25.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 25),
+                    padding: const EdgeInsets.only(left: 25),
                     child: Text(
                       colorChosenText,
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                   ),
                 ],
@@ -321,6 +321,28 @@ class EventFormState extends State<EventForm> {
                 onColor();
               },
             ),
+            const Divider(color: Colors.grey,),
+            InkWell(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children:  [
+                  const Padding(padding: EdgeInsets.only(left: 48)),
+                  Container(
+                    alignment: Alignment.center,
+                    height: 40,
+                    padding: const EdgeInsets.only(left: 25),
+                    child: Text(
+                      "Tag: " + tagChosen,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {
+                onTag();
+              },
+            ),
+            const Divider(color: Colors.grey,),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -608,5 +630,67 @@ class EventFormState extends State<EventForm> {
           ),
         ),
       );
+  }
+
+  void onTag() {
+    showDialog(context: context, builder: (context) {
+      return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+                elevation: 20,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                child: SizedBox(
+                  height: 150,
+                  child:  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, top: 20,),
+                        child: InkWell(
+                          child: SizedBox(
+                            height: 40,
+                            child: Row(
+                              children: const [
+                                Text("Assignments", style: TextStyle(fontSize: 20)),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              tagChosen = "Assignments";
+                              Navigator.pop(context);
+                            });
+                          },
+                        ),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 20, top: 20,),
+                        child: InkWell(
+                          child: SizedBox(
+                            height: 40,
+                            child: Row(
+                              children: const [
+                                Text("Projects", style: TextStyle(fontSize: 20)),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              tagChosen = "Projects";
+                              Navigator.pop(context);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+            );
+          });
+
+    }).then((value) {
+      setState(() {
+
+      });
+    });
   }
 }

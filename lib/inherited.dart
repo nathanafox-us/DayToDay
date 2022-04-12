@@ -32,7 +32,6 @@ class _InheritedStateState extends State<InheritedState> {
   void addEvent(int dayFrom, int yearFrom, int monthFrom, String title, String timeF, String timeT, int dayTo, int monthTo, int yearTo, Color color,
       TimeOfDay toT, TimeOfDay fromT, bool allDay, String repeat, int page, int hourF, int hourT, int minuteF, int minuteT) {
 
-    int weekDay = DateTime(yearFrom, monthFrom, dayFrom).weekday;
     DateTime from = DateTime(yearFrom, monthFrom, dayFrom, hourF, minuteF);
     DateTime to = DateTime(yearTo, monthTo, dayTo, hourT, minuteT);
 
@@ -41,6 +40,7 @@ class _InheritedStateState extends State<InheritedState> {
            allDay, page, from, to));
     }
     else if (repeat == "Every week") {
+
       globals.everyWeek.add(Events(title, color,
           allDay, page, from, to));
     }
@@ -54,13 +54,43 @@ class _InheritedStateState extends State<InheritedState> {
     }
     else {
       if (globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] != null) {
-        globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(Events(title, color,
-             allDay, page, from, to));
+        if (to.difference(from).inDays != 0) {
+          for (int i = 0; i <= to.difference(from).inDays; i++) {
+
+            globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(Events(title, color,
+                allDay, page, from, to));
+            dayFrom += 1;
+            if (dayFrom> DateTime(from.year, from.month + 1, 0).day) {
+              dayFrom = 1;
+              monthFrom +=1;
+            }
+          }
+        }
+        else {
+          globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()]?.add(Events(title, color,
+              allDay, page, from, to));
+        }
+
       }
       else {
-        List<Events> temp = [Events(title, color,
-             allDay, page, from, to)];
-        globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
+        if (to.difference(from).inDays != 0) {
+          for (int i = 0; i <= to.difference(from).inDays; i++) {
+
+            List<Events> temp = [Events(title, color,
+                allDay, page, from, to)];
+            globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
+            dayFrom += 1;
+            if (dayFrom> DateTime(from.year, from.month + 1, 0).day) {
+              dayFrom = 1;
+              monthFrom +=1;
+            }
+          }
+        }
+        else {
+          List<Events> temp = [Events(title, color,
+              allDay, page, from, to)];
+          globals.eventsList[dayFrom.toString() + monthFrom.toString() + yearFrom.toString()] = temp;
+        }
 
       }
     }
