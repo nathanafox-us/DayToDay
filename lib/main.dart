@@ -1,12 +1,12 @@
-import 'package:day_to_day/Inherited.dart';
-import 'package:day_to_day/Months.dart';
+import 'package:day_to_day/inherited.dart';
+import 'package:day_to_day/months.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:day_to_day/Calendar.dart';
-import 'package:day_to_day/EventForm.dart';
 import 'package:day_to_day/user.dart';
+import 'package:day_to_day/calendar.dart';
+import 'package:day_to_day/event_form.dart';
 import 'dart:async';
 
 StreamController<bool> streamController = StreamController<bool>.broadcast();
