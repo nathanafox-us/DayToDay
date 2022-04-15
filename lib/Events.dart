@@ -1,7 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class Events {
-
+  String type = "";
   int monthFrom = 0;
   int monthTo = 0;
   int yearFrom = 0;
@@ -19,8 +21,22 @@ class Events {
   String repeat;
   int weekDay = 0;
 
-Events(this.monthFrom, this.yearFrom, this.dayFrom, this.title, this.timeF, this.timeT, this.dayTo, this.monthTo, this.yearTo, this.color,
-    this.fromT, this.toT, this.allDay, this.repeat, this.page, this.weekDay);
-
-
+  Events(
+      this.monthFrom,
+      this.yearFrom,
+      this.dayFrom,
+      this.title,
+      this.timeF,
+      this.timeT,
+      this.dayTo,
+      this.monthTo,
+      this.yearTo,
+      this.color,
+      this.fromT,
+      this.toT,
+      this.allDay,
+      this.repeat,
+      this.page,
+      this.weekDay,
+      this.type);
 }
