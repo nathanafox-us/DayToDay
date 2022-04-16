@@ -99,46 +99,56 @@ class CalendarState extends State<CalendarWidget> {
                       String timeT = TimeOfDay(
                               hour: element.to.hour, minute: element.to.minute)
                           .format(context);
+                      String repeatingString;
 
                       if (element.from.day == element.to.day &&
                           element.from.month == element.to.month &&
                           element.from.year == element.to.year) {
                         dayClicked.add(Center(
-                          child: Text(timeF + " - " + timeT),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Text(timeF + " - " + timeT),
+                          ),
                         ));
                       } else if (element.from.year == element.to.year) {
                         dayClicked.add(Center(
-                          child: Text(
-                              Months().getMonthShort(element.from.month)! +
-                                  " " +
-                                  element.from.day.toString() +
-                                  ", " +
-                                  timeF +
-                                  " - " +
-                                  Months().getMonthShort(element.to.month)! +
-                                  " " +
-                                  element.to.day.toString() +
-                                  ", " +
-                                  timeT),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Text(
+                                Months().getMonthShort(element.from.month)! +
+                                    " " +
+                                    element.from.day.toString() +
+                                    ", " +
+                                    timeF +
+                                    " - " +
+                                    Months().getMonthShort(element.to.month)! +
+                                    " " +
+                                    element.to.day.toString() +
+                                    ", " +
+                                    timeT),
+                          ),
                         ));
                       } else {
                         dayClicked.add(Center(
-                          child: Text(
-                              Months().getMonthShort(element.from.month)! +
-                                  " " +
-                                  element.from.day.toString() +
-                                  ", " +
-                                  element.from.year.toString() +
-                                  ", " +
-                                  timeF +
-                                  " - " +
-                                  Months().getMonthShort(element.to.month)! +
-                                  " " +
-                                  element.to.day.toString() +
-                                  ", " +
-                                  element.to.year.toString() +
-                                  ", " +
-                                  timeT),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Text(
+                                Months().getMonthShort(element.from.month)! +
+                                    " " +
+                                    element.from.day.toString() +
+                                    ", " +
+                                    element.from.year.toString() +
+                                    ", " +
+                                    timeF +
+                                    " - " +
+                                    Months().getMonthShort(element.to.month)! +
+                                    " " +
+                                    element.to.day.toString() +
+                                    ", " +
+                                    element.to.year.toString() +
+                                    ", " +
+                                    timeT),
+                          ),
                         ));
                       }
                     });
@@ -261,7 +271,7 @@ class CalendarState extends State<CalendarWidget> {
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 3,
                       //Builds grid of days based on number of days in month
                       child: GridView.builder(
                           itemCount: monthView.daysInMonth + mdw,
@@ -649,7 +659,7 @@ class CalendarState extends State<CalendarWidget> {
     } else {
       temp = [];
     }
-
+    List<String> repeatingStrings = [];
     if (globals.everyDay.isNotEmpty) {
       for (var element in globals.everyDay) {
         if (page >= element.page) {
@@ -820,7 +830,7 @@ class CalendarState extends State<CalendarWidget> {
       }
     }
     if (temp.isNotEmpty) {
-      temp.forEach((element) {
+      for (var element in temp) {
         dayClicked.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -935,7 +945,7 @@ class CalendarState extends State<CalendarWidget> {
             ));
           }
         }
-      });
+      }
     } else {
       dayClicked.add(const Text("No events today"));
     }
