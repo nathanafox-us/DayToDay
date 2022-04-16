@@ -1,16 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:day_to_day/register_widget.dart';
 
-class LoginWidget extends StatefulWidget {
-  const LoginWidget({Key? key}) : super(key: key);
+class RegisterWidget extends StatefulWidget {
+  const RegisterWidget({Key? key}) : super(key: key);
 
   @override
-  _LoginWidgetState createState() => _LoginWidgetState();
+  _RegisterWidgetState createState() => _RegisterWidgetState();
 }
 
-class _LoginWidgetState extends State<LoginWidget> {
+class _RegisterWidgetState extends State<RegisterWidget> {
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
 
@@ -18,7 +17,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Login'),
+          title: const Text('Register'),
           centerTitle: true,
           elevation: 0,
         ),
@@ -36,33 +35,26 @@ class _LoginWidgetState extends State<LoginWidget> {
               obscureText: true,
             ),
             ElevatedButton(
-                onPressed: signInEmail,
+                onPressed: registerEmail,
                 style:
                     ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
                 child: const Text(
-                  'Sign In',
+                  'Sign Up',
                   style: TextStyle(fontSize: 18),
-                )),
-            TextButton(
-                onPressed: register,
-                child: const Text('Don\'t have an account? Sign up here.'))
+                ))
           ],
         ));
   }
 
-  Future signInEmail() async {
+  Future registerEmail() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim());
+
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
-  }
-
-  void register() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return const RegisterWidget();
-    }));
   }
 }

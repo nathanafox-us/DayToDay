@@ -140,9 +140,9 @@ class _MyStatefulWidgetState extends State<AppWidget>
               child: Text('Drawer Header'),
             ),
             ListTile(
-              title: const Text('Ex1'),
+              title: const Text('Sign Out'),
               onTap: () {
-                Navigator.pop(context);
+                FirebaseAuth.instance.signOut();
               },
             ),
             ListTile(
