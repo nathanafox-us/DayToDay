@@ -4,7 +4,7 @@ import 'package:day_to_day/Events.dart';
 class User {
   String uID = "TEST";
   int fbTest = 0;
-  List<ToDoList>? lists;
+  List<ToDoList>? lists = [];
   //String is a date, will
   Map<String, List<Events>> events = {};
   List<Events> everyDay = [];
