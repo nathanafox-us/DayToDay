@@ -1,6 +1,8 @@
 import 'package:day_to_day/inherited.dart';
+import 'package:day_to_day/login_widget.dart';
 import 'package:day_to_day/months.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,73 +14,74 @@ StreamController<bool> streamController = StreamController<bool>.broadcast();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(DayToDay());
 }
 
 class DayToDay extends StatelessWidget {
-  final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
   DayToDay({Key? key}) : super(key: key);
   bool wic = true;
 
   @override
   Widget build(BuildContext context) => InheritedState(
-      child: MaterialApp(
-        title: "DayToDay",
-        theme: ThemeData(
-          timePickerTheme: TimePickerThemeData(
-            //backgroundColor: Colors.red[200],
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            hourMinuteShape: const CircleBorder(),
-          ),
-
-          brightness: Brightness.light,
-          scaffoldBackgroundColor: Colors.white,
-
-          /* light theme settings */
-        ),
-        darkTheme: ThemeData(
-          timePickerTheme: TimePickerThemeData(
-            backgroundColor: Colors.grey[900],
-            dayPeriodTextColor: Colors.white,
-            entryModeIconColor: Colors.white,
-            dialTextColor: Colors.white,
-            hourMinuteTextColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            hourMinuteShape: const CircleBorder(),
-          ),
-            colorScheme: ColorScheme.fromSwatch().copyWith(
-                primary: Colors.red[200],
-                secondary: Colors.redAccent[200],
-                  brightness: Brightness.dark,
+        child: MaterialApp(
+          title: "DayToDay",
+          theme: ThemeData(
+            timePickerTheme: TimePickerThemeData(
+              //backgroundColor: Colors.red[200],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              hourMinuteShape: const CircleBorder(),
             ),
-          brightness: Brightness.dark,
+            brightness: Brightness.light,
+            scaffoldBackgroundColor: Colors.white,
 
-          scaffoldBackgroundColor: Colors.black,
-        ),
-        themeMode: ThemeMode.system,
-        /* ThemeMode.system to follow system theme,
+            /* light theme settings */
+          ),
+          darkTheme: ThemeData(
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: Colors.grey[900],
+              dayPeriodTextColor: Colors.white,
+              entryModeIconColor: Colors.white,
+              dialTextColor: Colors.white,
+              hourMinuteTextColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              hourMinuteShape: const CircleBorder(),
+            ),
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+              primary: Colors.red[200],
+              secondary: Colors.redAccent[200],
+              brightness: Brightness.dark,
+            ),
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: Colors.black,
+          ),
+          themeMode: ThemeMode.system,
+          /* ThemeMode.system to follow system theme,
          ThemeMode.light for light theme,
          ThemeMode.dark for dark theme
       */
-        //home: const MyStatefulWidget(),
-        home: FutureBuilder(
-          future: _fbApp,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              print('You have an error! ${snapshot.error.toString()}');
-              return const Text('Something went wrong!');
-            } else if (snapshot.hasData) {
-              return const AppWidget();
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+          //home: const MyStatefulWidget(),
+          home: StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return const AppWidget();
+              } else if (snapshot.hasError) {
+                return const Center(
+                  child: Text('Error'),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return const LoginWidget();
+              }
+            },
+          ),
+          debugShowCheckedModeBanner: false,
         ),
-        debugShowCheckedModeBanner: false,
-      ),
-  );
+      );
 }
 
 class AppWidget extends StatefulWidget {
@@ -91,12 +94,12 @@ class _MyStatefulWidgetState extends State<AppWidget>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
-
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
   }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -119,8 +122,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
     if (darkMode) {
       appBarC = Colors.grey[800];
       appBarT = Colors.white;
-    }
-    else {
+    } else {
       appBarC = Colors.white10;
       appBarT = Colors.black;
     }
@@ -140,14 +142,12 @@ class _MyStatefulWidgetState extends State<AppWidget>
             ListTile(
               title: const Text('Ex1'),
               onTap: () {
-
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Ex2'),
               onTap: () {
-
                 Navigator.pop(context);
               },
             ),
@@ -156,11 +156,18 @@ class _MyStatefulWidgetState extends State<AppWidget>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => onAddEventButtonPressed(),
-        child: const Icon(Icons.add,size: 45, color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          size: 45,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.blueGrey,
       ),
       appBar: AppBar(
-        title: Text('DayToDay', style: TextStyle(color: appBarT),),
+        title: Text(
+          'DayToDay',
+          style: TextStyle(color: appBarT),
+        ),
         backgroundColor: appBarC,
         actions: [
           IconButton(
@@ -216,7 +223,9 @@ class _MyStatefulWidgetState extends State<AppWidget>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          CalendarWidget(stream: streamController.stream,),
+          CalendarWidget(
+            stream: streamController.stream,
+          ),
           const ToDoListDirectoryWidget(),
           const Center(
             child: Text("Projects"),
@@ -231,18 +240,14 @@ class _MyStatefulWidgetState extends State<AppWidget>
       ),
     );
   }
+
   void onSearchButtonPressed() {}
   void onAddEventButtonPressed() {
-
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       int? clicked = StateWidget.of(context)?.clicked;
-
 
       //print(clicked);
       return const EventForm();
     }));
-
   }
-
-
 }
