@@ -13,4 +13,10 @@ class ToDoList {
       checked.add(false);
     }
   }
+  void addItem(String text) {
+    items.add(text);
+    checked.add(false);
+  }
+
 }
+
