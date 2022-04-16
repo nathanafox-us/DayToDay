@@ -1,6 +1,8 @@
 import 'package:day_to_day/inherited.dart';
+import 'package:day_to_day/login_widget.dart';
 import 'package:day_to_day/months.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,14 +15,14 @@ StreamController<bool> streamController = StreamController<bool>.broadcast();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp();
   runApp(DayToDay());
 }
 
 class DayToDay extends StatelessWidget {
-  final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
   DayToDay({Key? key}) : super(key: key);
   bool wic = true;
+
   @override
   Widget build(BuildContext context) => InheritedState(
         child: MaterialApp(
@@ -62,18 +64,19 @@ class DayToDay extends StatelessWidget {
          ThemeMode.dark for dark theme
       */
           //home: const MyStatefulWidget(),
-          home: FutureBuilder(
-            future: _fbApp,
+          home: StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                print('You have an error! ${snapshot.error.toString()}');
-                return const Text('Something went wrong!');
-              } else if (snapshot.hasData) {
+              if (snapshot.hasData) {
                 return const AppWidget();
-              } else {
+              } else if (snapshot.hasError) {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: Text('Error'),
                 );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return const LoginWidget();
               }
             },
           ),
@@ -88,7 +91,6 @@ class AppWidget extends StatefulWidget {
   State<AppWidget> createState() => _MyStatefulWidgetState();
 }
 
-/// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
 class _MyStatefulWidgetState extends State<AppWidget>
     with TickerProviderStateMixin {
   late TabController _tabController;
@@ -96,7 +98,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
 
   @override
@@ -139,9 +141,9 @@ class _MyStatefulWidgetState extends State<AppWidget>
               child: Text('Drawer Header'),
             ),
             ListTile(
-              title: const Text('Ex1'),
+              title: const Text('Sign Out'),
               onTap: () {
-                Navigator.pop(context);
+                FirebaseAuth.instance.signOut();
               },
             ),
             ListTile(
@@ -188,6 +190,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           controller: _tabController,
+          isScrollable: true,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: <Widget>[
             Tab(
@@ -210,7 +213,10 @@ class _MyStatefulWidgetState extends State<AppWidget>
               text: "Projects",
             ),
             const Tab(
-              text: "Homework",
+              text: "Assignments",
+            ),
+            const Tab(
+              text: "Exams",
             ),
           ],
         ),
@@ -227,6 +233,9 @@ class _MyStatefulWidgetState extends State<AppWidget>
           ),
           const Center(
             child: Text("HW"),
+          ),
+          const Center(
+            child: Text("Exams"),
           )
         ],
       ),

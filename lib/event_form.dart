@@ -50,7 +50,8 @@ class EventFormState extends State<EventForm> {
   int minuteF = 0;
   int minuteT = 0;
   int hourT = 0;
-  String tagChosen = "";
+  String tagChosen = "Calendar";
+  String eventType = "calendar";
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +113,7 @@ class EventFormState extends State<EventForm> {
       hourF = hour;
       minuteF = minute;
     }
+    var midnight = 0;
     if (!chosenTTo && !isSwitched) {
       hour = n.now.hour;
       hour += 1;
@@ -122,7 +124,12 @@ class EventFormState extends State<EventForm> {
       if (minute == 0) {
         minuteStr = minuteStr.toString() + "0";
       }
-      if (hour > 12) {
+      if (hour == 24) {
+        var hourReduced = 12;
+        midnight +=1;
+        timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
+      }
+      else if (hour > 12) {
         var hourReduced = hour % 12;
         //hour %= 12;
         timeTo = hourReduced.toString() + ":" + minuteStr + " PM";
@@ -136,6 +143,7 @@ class EventFormState extends State<EventForm> {
         timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
       }
       finalTimeTo = timeTo;
+      print(hour);
       hourT = hour;
       minuteT = minute;
     }
@@ -159,11 +167,12 @@ class EventFormState extends State<EventForm> {
           (selectedTimeTo?.year.toString())!;
     }
     else {
+      var dayOffset = selectedTime.day + midnight;
       to = weekD+
           ", " +
           n.monthShort[selectedTime.month]! +
           " " +
-          (selectedTime.day.toString()) +
+          (dayOffset.toString()) +
           ", " +
           (selectedTime.year.toString());
     }
@@ -365,12 +374,12 @@ class EventFormState extends State<EventForm> {
                     if (selectedTimeTo != null) {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
                           finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD,
-                          (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT);
+                          (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, eventType);
                     }
                     else {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
                           finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month,
-                          selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT);
+                          selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, eventType);
                     }
                     streamController.add(true);
                     Navigator.pop(context);
@@ -640,7 +649,7 @@ class EventFormState extends State<EventForm> {
                 elevation: 20,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                 child: SizedBox(
-                  height: 150,
+                  height: 260,
                   child:  Column(
                     children: [
                       Padding(
@@ -655,6 +664,7 @@ class EventFormState extends State<EventForm> {
                             ),
                           ),
                           onTap: () {
+                            eventType = "assignment";
                             setState(() {
                               tagChosen = "Assignments";
                               Navigator.pop(context);
@@ -674,8 +684,49 @@ class EventFormState extends State<EventForm> {
                             ),
                           ),
                           onTap: () {
+                            eventType = "project";
                             setState(() {
                               tagChosen = "Projects";
+                              Navigator.pop(context);
+                            });
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, top: 20,),
+                        child: InkWell(
+                          child: SizedBox(
+                            height: 40,
+                            child: Row(
+                              children: const [
+                                Text("Exams", style: TextStyle(fontSize: 20)),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            eventType = "exam";
+                            setState(() {
+                              tagChosen = "Exams";
+                              Navigator.pop(context);
+                            });
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, top: 20,),
+                        child: InkWell(
+                          child: SizedBox(
+                            height: 40,
+                            child: Row(
+                              children: const [
+                                Text("Calendar", style: TextStyle(fontSize: 20)),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            eventType = "calendar";
+                            setState(() {
+                              tagChosen = "Calendar";
                               Navigator.pop(context);
                             });
                           },

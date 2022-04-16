@@ -7,8 +7,9 @@ class Events {
   String title = "";
   Color color;
   bool allDay;
+  String eventType;
 
 Events(this.title, this.color,
-     this.allDay, this.page, this.from, this.to);
+     this.allDay, this.page, this.from, this.to, this.eventType);
 
 }
