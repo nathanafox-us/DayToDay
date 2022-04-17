@@ -1,3 +1,4 @@
+import 'package:day_to_day/user_sync.dart';
 import 'package:flutter/material.dart';
 import 'events.dart';
 import 'globals.dart' as globals;
@@ -109,6 +110,7 @@ class _InheritedStateState extends State<InheritedState> {
         }
       }
     }
+    //Sync.sync(DateTime.now());
 
     globals.eventsList[dfStr + mfStr + yearFrom.toString()]?.sort((a, b) {
       if (a.from.hour == b.from.hour) {
