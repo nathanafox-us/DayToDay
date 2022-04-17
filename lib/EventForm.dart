@@ -1,11 +1,13 @@
+import 'package:day_to_day/EventListStorage.dart';
 import 'package:day_to_day/Inherited.dart';
+import 'Events.dart';
 import 'package:day_to_day/Months.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 
 class EventForm extends StatefulWidget {
-  const EventForm({Key? key}) : super(key: key);
+  EventForm({Key? key}) : super(key: key);
 
   @override
   EventFormState createState() => EventFormState();
@@ -47,11 +49,12 @@ class EventFormState extends State<EventForm> {
   String colorChosenText = "Default";
   TimeOfDay fromObj = TimeOfDay.now();
   TimeOfDay toObj = TimeOfDay.now();
+  String type = "Calendar";
+  String title = "Default Event";
 
   @override
   Widget build(BuildContext context) {
     String to;
-    String title = "Default Event";
     int dayF = (StateWidget.of(context)?.clicked)!;
     int weekDayN;
     int hour = n.now.hour;
@@ -178,6 +181,60 @@ class EventFormState extends State<EventForm> {
               ),
             ),
             const Divider(color: Colors.grey,),
+            Padding(padding: const EdgeInsets.only(
+                  top: 12, bottom: 12, left: 20, right: 20),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const Text("Event Type: "),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton( 
+                              style: type.contains("calendar") ? ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.red[200]!, width: 1)) 
+                                            : ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.blue[100]!, width: 1)),
+                              onPressed: () {
+                                setState(() {
+                                  type = "calendar";
+                                });
+                              }, 
+                              child: const Center(child: Text("Calendar"))),
+                            ElevatedButton( 
+                              style: type.contains("assignment") ? ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.red[200]!, width: 1)) 
+                                            : ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.blue[100]!, width: 1)),
+                              onPressed: () {
+                                setState(() {
+                                  type = "assignment";
+                                });
+                              }, 
+                              child: const Center(child: Text("Assignment"))),
+                            ElevatedButton( 
+                              style: type.contains("project") ? ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.red[200]!, width: 1)) 
+                                            : ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.blue[100]!, width: 1)),
+                              onPressed: () {
+                                setState(() {
+                                  type = "project";
+                                });
+                              }, 
+                              child: const Center(child: Text("Project"))),
+                            ElevatedButton( 
+                              style: type.contains("exam") ? ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.red[200]!, width: 1)) 
+                                            : ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.blue[100]!, width: 1)),
+                              onPressed: () {
+                                setState(() {
+                                  type = "exam";
+                                });
+                              }, 
+                              child: const Center(child: Text("Exam")))]
+                  )]),)),
             InkWell(
               child: Row(
                 children: [
@@ -325,14 +382,30 @@ class EventFormState extends State<EventForm> {
                 ),
                 TextButton(
                   onPressed: () {
-                    //print(title);
+                    //If the event was saved, write it to the respective file
+                    //!!!!!!TODO!!!!!
                     if (selectedTimeTo != null) {
+                      Events newEvent = Events(selectedTime.month, selectedTime.year, selectedTime.day, title, 
+                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!,
+                          colorChosenBubble, fromObj, toObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, 0,
+                          type);
+                      
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
-                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1);
+                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, 
+                          colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, 
+                          type);
+                      
                     }
                     else {
+                      Events newEvent = Events(selectedTime.month, selectedTime.year, selectedTime.day, title, 
+                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month, selectedTime.year,
+                          colorChosenBubble, fromObj, toObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, 0,
+                          type);
+                      
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
-                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month, selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1);
+                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month, selectedTime.year, 
+                          colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, 
+                          type);
                     }
                     streamController.add(true);
                     Navigator.pop(context);
@@ -369,41 +442,42 @@ class EventFormState extends State<EventForm> {
 
   Future<void> chooseFromDay(
       BuildContext context, DateTime current, bool fromChoose) async {
-    DateTime? userChosenFrom = (await showDatePicker(
-      builder: (context, child) {
-        return Theme(
-            data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.dark(
-            primary: Colors.red[200]!,
-            onPrimary: Colors.white,
-            onSurface: Colors.white,
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              primary: Colors.red[200],
-            ),
-          ),
-        ), child: child!,
-        )},
-        context: context,
-        initialDate: current,
-        firstDate: DateTime(1980, 1),
-        lastDate: DateTime(2222)))!;
-    if (fromChoose) {
-      if (userChosenFrom != current) {
-        chosenFrom = true;
-        setState(() {
-          selectedTime = userChosenFrom;
+        DateTime? userChosenFrom = (await showDatePicker(
+          builder: (context, child) {
+            return Theme(
+                data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.dark(
+                primary: Colors.red[200]!,
+                onPrimary: Colors.white,
+                onSurface: Colors.white,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: Colors.red[200],
+                ),
+              ),
+            ), child: child!,
+            )},
+            context: context,
+            initialDate: current,
+            firstDate: DateTime(1980, 1),
+            lastDate: DateTime(2222)))!;
 
-        });
-      }
-    } else {
-      chosenTo = true;
-      setState(() {
-        selectedTimeTo = userChosenFrom;
-      });
+        if (fromChoose) {
+          if (userChosenFrom != current) {
+            chosenFrom = true;
+            setState(() {
+              selectedTime = userChosenFrom;
 
-    }
+            });
+          }
+        } else {
+          chosenTo = true;
+          setState(() {
+            selectedTimeTo = userChosenFrom;
+          });
+
+        }
 
   }
 

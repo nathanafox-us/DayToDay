@@ -1,36 +1,38 @@
-import 'package:flutter/material.dart';
+import 'package:day_to_day/globals.dart';
+import 'EventListStorage.dart';
 import 'EventForm.dart';
-import 'globals.dart' as globals;
+import 'package:flutter/material.dart';
 import 'Events.dart';
+import 'globals.dart' as globals;
+//import 'package:firebase_database/firebase_database.dart';
 
-class AssignmentsWidget extends StatefulWidget {
-  List<Events> hw = [];
-  AssignmentsWidget({Key? key}) : super(key: key);
+class ProjectsWidget extends StatefulWidget {
+  List<Events> projects = [];
+  ProjectsWidget({Key? key}) : super(key: key);
 
   @override
-  State<AssignmentsWidget> createState() => AssignmentsState();
+  State<ProjectsWidget> createState() => ProjectsState();
 }
 
-class AssignmentsState extends State<AssignmentsWidget> {
-  int count = 2;
-
+class ProjectsState extends State<ProjectsWidget> {
   @override
   Widget build(BuildContext context) {
-    widget.hw = [];
+    projects = [];
     globals.events.forEach((key, value) {
       for (int i = 0; i < value.length; i++) {
-        if (value[i].type.contains("assign")) {
-          widget.hw.add(value[i]);
+        if (value[i].type.contains("project")) {
+          projects.add(value[i]);
         }
       }
     });
+    print("\n\n\nProjects: " + projects.length.toString());
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text("Assignments List")),
+        title: const Center(child: Text("Projects List")),
         backgroundColor: const Color.fromARGB(255, 255, 82, 82),
       ),
       body: ListView.builder(
-        itemCount: widget.hw.length,
+        itemCount: projects.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
               child: CheckboxListTile(
@@ -40,11 +42,11 @@ class AssignmentsState extends State<AssignmentsWidget> {
                   value: false,
                   onChanged: (value) {
                     setState(() {
-                      widget.hw.removeAt(index);
+                      projects.removeAt(index);
                     });
                   },
                   title: Text(
-                    widget.hw[index].title,
+                    projects[index].title,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,

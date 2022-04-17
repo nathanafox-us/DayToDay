@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'EventForm.dart';
+import 'globals.dart' as globals;
 import 'Events.dart';
-import 'dart:collection';
 
 class ExamsWidget extends StatefulWidget {
-  final projectsList = Queue<Events>();
-
+  List<Events> exams = [];
   ExamsWidget({Key? key}) : super(key: key);
 
   @override
@@ -12,34 +12,37 @@ class ExamsWidget extends StatefulWidget {
 }
 
 class ExamsState extends State<ExamsWidget> {
-  List<String> exams = ["Exam 1", "Exam 2"];
-  int count = 2;
-  List<bool?> checked = [false, false];
-
   @override
   Widget build(BuildContext context) {
+    widget.exams = [];
+    globals.events.forEach((key, value) {
+      for (int i = 0; i < value.length; i++) {
+        if (value[i].type.contains("exam")) {
+          widget.exams.add(value[i]);
+        }
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text("Exams List")),
+        backgroundColor: const Color.fromARGB(255, 255, 82, 82),
       ),
       body: ListView.builder(
-        itemCount: count,
+        itemCount: widget.exams.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
               child: CheckboxListTile(
                   dense: true,
                   activeColor: Colors.red[400],
                   controlAffinity: ListTileControlAffinity.leading,
-                  value: checked[index],
+                  value: false,
                   onChanged: (value) {
                     setState(() {
-                      exams.removeAt(index);
-                      checked.removeAt(index);
-                      count--;
+                      widget.exams.removeAt(index);
                     });
                   },
                   title: Text(
-                    exams[index],
+                    widget.exams[index].title,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
@@ -50,10 +53,12 @@ class ExamsState extends State<ExamsWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            count++;
-            String returnStr = "Exam " + count.toString();
-            exams.add(returnStr);
-            checked.add(false);
+            setState(() {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return EventForm();
+              }));
+            });
+            setState(() {});
           });
         },
         child: const Icon(

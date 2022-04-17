@@ -8,8 +8,10 @@ import 'globals.dart' as globals;
 import 'package:firebase_database/firebase_database.dart';
 
 class CalendarWidget extends StatefulWidget {
-  const CalendarWidget({Key? key, required this.stream}) : super(key: key);
+  CalendarWidget(this.eventList, {Key? key, required this.stream})
+      : super(key: key);
   final Stream<bool> stream;
+  List<Events> eventList;
 
   @override
   State<CalendarWidget> createState() => CalendarState();
@@ -510,7 +512,7 @@ class CalendarState extends State<CalendarWidget> {
       int? clicked = StateWidget.of(context)?.clicked;
 
       //print(clicked);
-      return const EventForm();
+      return EventForm();
     }));
   }
 

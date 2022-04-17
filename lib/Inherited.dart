@@ -42,7 +42,8 @@ class _InheritedStateState extends State<InheritedState> {
       TimeOfDay fromT,
       bool allDay,
       String repeat,
-      int page) {
+      int page,
+      String type) {
     int weekDay = DateTime(yearFrom, monthFrom, dayFrom).weekday;
     if (repeat == "Everyday") {
       globals.everyDay.add(Events(
@@ -62,7 +63,7 @@ class _InheritedStateState extends State<InheritedState> {
           repeat,
           page,
           weekDay,
-          'calendar'));
+          type));
     } else if (repeat == "Every week") {
       globals.everyWeek.add(Events(
           monthFrom,
@@ -81,7 +82,7 @@ class _InheritedStateState extends State<InheritedState> {
           repeat,
           page,
           weekDay,
-          'calendar'));
+          type));
     } else if (repeat == "Every month") {
       globals.everyMonth.add(Events(
           monthFrom,
@@ -100,7 +101,7 @@ class _InheritedStateState extends State<InheritedState> {
           repeat,
           page,
           weekDay,
-          'calendar'));
+          type));
     } else if (repeat == "Every year") {
       globals.everyYear.add(Events(
           monthFrom,
@@ -119,7 +120,7 @@ class _InheritedStateState extends State<InheritedState> {
           repeat,
           page,
           weekDay,
-          'calendar'));
+          type));
     } else {
       if (globals.events[dayFrom.toString() +
               monthFrom.toString() +
@@ -144,7 +145,7 @@ class _InheritedStateState extends State<InheritedState> {
                 repeat,
                 page,
                 weekDay,
-                'calendar'));
+                type));
       } else {
         List<Events> temp = [
           Events(
@@ -164,7 +165,7 @@ class _InheritedStateState extends State<InheritedState> {
               repeat,
               page,
               weekDay,
-              'calendar')
+              type)
         ];
         globals.events[dayFrom.toString() +
             monthFrom.toString() +

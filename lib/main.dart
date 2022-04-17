@@ -1,6 +1,7 @@
+import 'package:day_to_day/Events.dart';
 import 'package:day_to_day/Inherited.dart';
 import 'package:day_to_day/Months.dart';
-import 'package:day_to_day/Projects.dart';
+import 'package:day_to_day/ProjectsWidget.dart';
 import 'package:day_to_day/Assignments.dart';
 import 'package:day_to_day/Exams.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
@@ -9,7 +10,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/Calendar.dart';
 import 'package:day_to_day/EventForm.dart';
+import 'globals.dart';
 import 'dart:async';
+import 'EventListStorage.dart';
 
 StreamController<bool> streamController = StreamController<bool>.broadcast();
 
@@ -22,6 +25,7 @@ class DayToDay extends StatelessWidget {
   final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
   DayToDay({Key? key}) : super(key: key);
   bool wic = true;
+
   @override
   Widget build(BuildContext context) => InheritedState(
         child: MaterialApp(
@@ -70,7 +74,7 @@ class DayToDay extends StatelessWidget {
                 print('You have an error! ${snapshot.error.toString()}');
                 return const Text('Something went wrong!');
               } else if (snapshot.hasData) {
-                return const AppWidget();
+                return AppWidget();
               } else {
                 return const Center(
                   child: CircularProgressIndicator(),
@@ -84,7 +88,9 @@ class DayToDay extends StatelessWidget {
 }
 
 class AppWidget extends StatefulWidget {
-  const AppWidget({Key? key}) : super(key: key);
+  AppWidget({Key? key}) : super(key: key);
+  List<Events> eventList = [];
+
   @override
   State<AppWidget> createState() => _MyStatefulWidgetState();
 }
@@ -108,6 +114,10 @@ class _MyStatefulWidgetState extends State<AppWidget>
 
   @override
   Widget build(BuildContext context) {
+    var pass = EventListStorage("Project").readEvents().then((value) {
+      widget.eventList = value;
+    });
+
     var systemColor = MediaQuery.of(context).platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
     Color labelColorChange;
@@ -221,6 +231,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
         controller: _tabController,
         children: <Widget>[
           CalendarWidget(
+            widget.eventList,
             stream: streamController.stream,
           ),
           const ToDoListDirectoryWidget(),
@@ -238,7 +249,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
       int? clicked = StateWidget.of(context)?.clicked;
 
       //print(clicked);
-      return const EventForm();
+      return EventForm();
     }));
   }
 }
