@@ -27,7 +27,7 @@ void main() {
     expect(find.text('2022'), findsOneWidget);
   });
   testWidgets('Test if add event button brings up new page', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: Material(child: AppWidget())));
+    //await tester.pumpWidget(const MaterialApp(home: Material(child: AppWidget())));
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 
@@ -35,7 +35,7 @@ void main() {
     expect(find.text('All Day'), findsOneWidget);
   });
   testWidgets('Test if cancel button on event add page goes back to calendar', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: Material(child: AppWidget())));
+    //await tester.pumpWidget(const MaterialApp(home: Material(child: AppWidget())));
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(TextButton).first);

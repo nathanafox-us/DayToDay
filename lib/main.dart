@@ -1,12 +1,16 @@
 import 'package:day_to_day/inherited.dart';
 import 'package:day_to_day/login_widget.dart';
+import 'package:day_to_day/events.dart';
+import 'package:day_to_day/projects_widget.dart';
+import 'package:day_to_day/assignments.dart';
+import 'package:day_to_day/exams.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/calendar.dart';
 import 'dart:async';
+import 'event_list_storage.dart';
 
 StreamController<bool> streamController = StreamController<bool>.broadcast();
 
@@ -83,7 +87,9 @@ class DayToDay extends StatelessWidget {
 }
 
 class AppWidget extends StatefulWidget {
-  const AppWidget({Key? key}) : super(key: key);
+  AppWidget({Key? key}) : super(key: key);
+  List<Events> eventList = [];
+
   @override
   State<AppWidget> createState() => _MyStatefulWidgetState();
 }
@@ -106,6 +112,10 @@ class _MyStatefulWidgetState extends State<AppWidget>
 
   @override
   Widget build(BuildContext context) {
+    var pass = EventListStorage("Project").readEvents().then((value) {
+      widget.eventList = value;
+    });
+
     var systemColor = MediaQuery.of(context).platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
     Color labelColorChange;
@@ -175,6 +185,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
           ),*/
         ],
         bottom: TabBar(
+          isScrollable: true,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           controller: _tabController,
@@ -206,26 +217,23 @@ class _MyStatefulWidgetState extends State<AppWidget>
             const Tab(
               text: "Exams",
             ),
+      
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
+
         children: <Widget>[
           CalendarWidget(
             stream: streamController.stream,
           ),
           const ToDoListDirectoryWidget(),
-          const Center(
-            child: Text("Projects"),
-          ),
-          const Center(
-            child: Text("HW"),
-          ),
-          const Center(
-            child: Text("Exams"),
-          )
+          AssignmentsWidget(stream: streamController.stream,),
+          ProjectsWidget(stream: streamController.stream,),
+          ExamsWidget(stream: streamController.stream,),
         ],
+
       ),
     );
   }

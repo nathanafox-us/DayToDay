@@ -9,7 +9,7 @@ class Events {
   bool allDay;
   String type;
 
-Events(this.title, this.color,
-     this.allDay, this.page, this.from, this.to, this.type);
+  Events(this.title, this.color,
+      this.allDay, this.page, this.from, this.to, this.type);
 
 }
