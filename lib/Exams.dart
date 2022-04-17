@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'EventForm.dart';
+import 'event_form.dart';
 import 'globals.dart' as globals;
-import 'Events.dart';
+import 'events.dart';
 
 class ExamsWidget extends StatefulWidget {
   List<Events> exams = [];
@@ -15,7 +15,7 @@ class ExamsState extends State<ExamsWidget> {
   @override
   Widget build(BuildContext context) {
     widget.exams = [];
-    globals.events.forEach((key, value) {
+    globals.eventsList.forEach((key, value) {
       for (int i = 0; i < value.length; i++) {
         if (value[i].type.contains("exam")) {
           widget.exams.add(value[i]);
