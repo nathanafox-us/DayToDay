@@ -9,6 +9,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/calendar.dart';
+import 'package:day_to_day/event_form.dart';
+import 'package:day_to_day/user_sync.dart';
 import 'dart:async';
 import 'event_list_storage.dart';
 

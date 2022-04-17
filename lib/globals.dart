@@ -1,5 +1,7 @@
+import 'to_do_list.dart';
 import 'events.dart';
 
+DateTime timestamp = DateTime.fromMicrosecondsSinceEpoch(0);
 Map<String, List<Events>> eventsList = {};
 List<Events> projects = [];
 List<Events> everyDay = [];
@@ -8,5 +10,4 @@ List<Events> everyWeek = [];
 List<Events> everyYear = [];
 List<Events> assignments = [];
 List<Events> homework = [];
-
-
+Map<String, List<ToDoList>> toDoList = {};

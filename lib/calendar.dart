@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'package:day_to_day/user_sync.dart';
 import 'dart:async';
 import 'package:day_to_day/inherited.dart';
 import 'package:day_to_day/months.dart';
@@ -426,12 +428,16 @@ class CalendarState extends State<CalendarWidget> {
                                           int month = element.from.month;
                                           int yearCalc = element.from.year;
 
-                                          if (dayCalc >
-                                              DateTime(element.from.year,
-                                                      element.from.month + 1, 0)
-                                                  .day) {
-                                            dayCalc = 1;
-                                            month += 1;
+                                        if (dayCalc >
+                                            DateTime(element.from.year,
+                                                    element.from.month + 1, 0)
+                                                .day) {
+                                          dayCalc = 1;
+                                          month += 1;
+                                        }
+                                        if (month > 12) {
+                                          if (month % 12 == 0) {
+                                            yearCalc += month ~/ 12;
                                           }
                                           if (month > 12) {
                                             if (month % 12 == 0) {
@@ -776,6 +782,21 @@ class CalendarState extends State<CalendarWidget> {
     setState(() {
       clickedPosition = day;
     });
+
+    Sync.sync();
+    /* Student testUser = Student();
+    print('User created');
+    testUser.uID = day.toString();
+    testUser.fbTest = Random().nextInt(1000);
+    print('User: ${testUser.uID}');
+    print('fbTest: ${testUser.fbTest}');
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = database.ref("users");
+    DatabaseReference child = ref.child(testUser.uID);
+    child.set(testUser.fbTest); */
+    //DatabaseEvent event = await ref.once();
+    //print(event.snapshot.value);
+
     List<Events> temp;
     if (globals
             .eventsList[day.toString() + month.toString() + year.toString()] !=

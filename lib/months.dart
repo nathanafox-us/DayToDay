@@ -1,5 +1,3 @@
-
-
 class Months {
   DateTime now = DateTime.now();
   DateTime monthStartConstruct = DateTime.now();
@@ -62,5 +60,4 @@ class Months {
   String? getMonthShort(int index) {
     return monthShort[index];
   }
-
 }
