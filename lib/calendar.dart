@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:day_to_day/user.dart';
+import 'package:day_to_day/user_sync.dart';
 import 'dart:async';
 import 'package:day_to_day/inherited.dart';
 import 'package:day_to_day/months.dart';
@@ -654,7 +654,8 @@ class CalendarState extends State<CalendarWidget> {
       clickedPosition = day;
     });
 
-    User testUser = User();
+    Sync.sync();
+    /* Student testUser = Student();
     print('User created');
     testUser.uID = day.toString();
     testUser.fbTest = Random().nextInt(1000);
@@ -663,7 +664,7 @@ class CalendarState extends State<CalendarWidget> {
     FirebaseDatabase database = FirebaseDatabase.instance;
     DatabaseReference ref = database.ref("users");
     DatabaseReference child = ref.child(testUser.uID);
-    child.set(testUser.fbTest);
+    child.set(testUser.fbTest); */
     //DatabaseEvent event = await ref.once();
     //print(event.snapshot.value);
 

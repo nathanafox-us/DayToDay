@@ -4,11 +4,10 @@ import 'package:day_to_day/months.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:day_to_day/user.dart';
 import 'package:day_to_day/calendar.dart';
 import 'package:day_to_day/event_form.dart';
+import 'package:day_to_day/user_sync.dart';
 import 'dart:async';
 
 StreamController<bool> streamController = StreamController<bool>.broadcast();
