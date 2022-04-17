@@ -14,8 +14,27 @@ class Sync {
     }
   }
 
-  static sendEvents(String date, List<Events> events) {
+  static String hashEvent(Events event) {
+    String input = event.from.hashCode.toString() +
+        event.to.hashCode.toString() +
+        event.title;
+    return input;
+  }
+
+  static sendEvents(DatabaseReference ref, String date, List<Events> events) {
     print(date);
+    DatabaseReference day = ref.child(date);
+    for (Events event in events) {
+      String hash = hashEvent(event);
+      DatabaseReference eventRef = day.child(hash);
+      eventRef.child('from').set(event.from.toString());
+      eventRef.child('to').set(event.to.toString());
+      eventRef.child('page').set(event.page.toString());
+      eventRef.child('title').set(event.title);
+      eventRef.child('color').set(event.color.toString());
+      eventRef.child('allDay').set(event.allDay);
+      eventRef.child('type').set(event.eventType);
+    }
   }
 
   static sync() {
@@ -37,7 +56,8 @@ class Sync {
       print('Database created!');
       DatabaseReference eventsRef = ref.child('Events');
       print('Setting events');
-      globals.eventsList.forEach((date, events) => sendEvents(date, events));
+      globals.eventsList
+          .forEach((date, events) => sendEvents(eventsRef, date, events));
     } else {
       print('Not logged in :(');
       return;
