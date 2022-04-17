@@ -1,10 +1,12 @@
+import 'package:day_to_day/event_list_storage.dart';
 import 'package:day_to_day/inherited.dart';
+import 'events.dart';
 import 'package:day_to_day/months.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
 
 class EventForm extends StatefulWidget {
-  const EventForm({Key? key}) : super(key: key);
+  EventForm({Key? key}) : super(key: key);
 
   @override
   EventFormState createState() => EventFormState();
@@ -46,6 +48,7 @@ class EventFormState extends State<EventForm> {
   String colorChosenText = "Default";
   TimeOfDay fromObj = TimeOfDay.now();
   TimeOfDay toObj = TimeOfDay.now();
+  String type = "calendar";
   int hourF = 0;
   int minuteF = 0;
   int minuteT = 0;
@@ -55,14 +58,15 @@ class EventFormState extends State<EventForm> {
 
   @override
   Widget build(BuildContext context) {
-    String to;
     String title = "Default Event";
+    String to;
     int dayF = (StateWidget.of(context)?.clicked)!;
     int weekDayN;
     int hour = n.now.hour;
     int minute = n.now.minute;
     String? weekD;
     bool pastSixty = false;
+
     if (dayF == -2 && !chosenFrom) {
       selectedTime = n.now;
     } else if (!chosenFrom) {
@@ -97,10 +101,18 @@ class EventFormState extends State<EventForm> {
       }
 
       if (hour > 12) {
-        var hourReduced = hour %12;
-        //hour %= 12;
-        timeFrom = hourReduced.toString() + ":" + minuteStr + " PM";
-      } else if (hour == 12) {
+        if (hour == 24) {
+          var hourReduced = 12;
+          timeFrom = hourReduced.toString() + ":" + minuteStr + " AM";
+        }
+        else {
+          var hourReduced = hour %12;
+          //hour %= 12;
+          timeFrom = hourReduced.toString() + ":" + minuteStr + " PM";
+        }
+
+      }
+      else if (hour == 12) {
         timeFrom = hour.toString() + ":" + minuteStr + " PM";
       } else {
         var hourReduced = hour;
@@ -121,11 +133,17 @@ class EventFormState extends State<EventForm> {
         hour += 1;
       }
       String minuteStr = minute.toString();
+
       if (minute == 0) {
         minuteStr = minuteStr.toString() + "0";
       }
       if (hour == 24) {
         var hourReduced = 12;
+        midnight +=1;
+        timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
+      }
+      if (hour == 25) {
+        var hourReduced = 1;
         midnight +=1;
         timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
       }
@@ -143,7 +161,6 @@ class EventFormState extends State<EventForm> {
         timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
       }
       finalTimeTo = timeTo;
-      print(hour);
       hourT = hour;
       minuteT = minute;
     }
@@ -176,7 +193,10 @@ class EventFormState extends State<EventForm> {
           ", " +
           (selectedTime.year.toString());
     }
-
+  Color disable = Colors.white;
+    if (type != "calendar") {
+      disable = Colors.grey;
+    }
 
     return InheritedState(
       child: Scaffold(
@@ -201,6 +221,60 @@ class EventFormState extends State<EventForm> {
               ),
             ),
             const Divider(color: Colors.grey,),
+            Padding(padding: const EdgeInsets.only(
+                  top: 12, bottom: 12, left: 20, right: 20),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const Text("Event Type: "),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton( 
+                              style: type.contains("calendar") ? ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.red[200]!, width: 1)) 
+                                            : ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.blue[100]!, width: 1)),
+                              onPressed: () {
+                                setState(() {
+                                  type = "calendar";
+                                });
+                              }, 
+                              child: const Center(child: Text("Calendar"))),
+                            ElevatedButton( 
+                              style: type.contains("assignment") ? ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.red[200]!, width: 1)) 
+                                            : ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.blue[100]!, width: 1)),
+                              onPressed: () {
+                                setState(() {
+                                  type = "assignment";
+                                });
+                              }, 
+                              child: const Center(child: Text("Assignment"))),
+                            ElevatedButton( 
+                              style: type.contains("project") ? ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.red[200]!, width: 1)) 
+                                            : ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.blue[100]!, width: 1)),
+                              onPressed: () {
+                                setState(() {
+                                  type = "project";
+                                });
+                              }, 
+                              child: const Center(child: Text("Project"))),
+                            ElevatedButton( 
+                              style: type.contains("exam") ? ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.red[200]!, width: 1)) 
+                                            : ElevatedButton.styleFrom(side: BorderSide(
+                                            color: Colors.blue[100]!, width: 1)),
+                              onPressed: () {
+                                setState(() {
+                                  type = "exam";
+                                });
+                              }, 
+                              child: const Center(child: Text("Exam")))]
+                  )]),)),
             InkWell(
               child: Row(
                 children: [
@@ -292,7 +366,7 @@ class EventFormState extends State<EventForm> {
                     child: SizedBox(
                       child: Text(
                         repeatD,
-                        style: const TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20, color: disable),
                       ),
                       height: 45,
                     ),
@@ -300,7 +374,7 @@ class EventFormState extends State<EventForm> {
                 ],
               ),
               onTap: () {
-                onRepeat();
+                onRepeat(type);
               },
             ),
             const Divider(color: Colors.grey,),
@@ -370,16 +444,17 @@ class EventFormState extends State<EventForm> {
                 ),
                 TextButton(
                   onPressed: () {
-                    //print(title);
+                    //If the event was saved, write it to the respective file
+                    //!!!!!!TODO!!!!!
                     if (selectedTimeTo != null) {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
                           finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD,
-                          (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, eventType);
+                          (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, type);
                     }
                     else {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
                           finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month,
-                          selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, eventType);
+                          selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, type);
                     }
                     streamController.add(true);
                     Navigator.pop(context);
@@ -415,41 +490,42 @@ class EventFormState extends State<EventForm> {
 
   Future<void> chooseFromDay(
       BuildContext context, DateTime current, bool fromChoose) async {
-    DateTime? userChosenFrom = (await showDatePicker(
-      builder: (context, child) {
-        return Theme(
-            data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.dark(
-            primary: Colors.red[200]!,
-            onPrimary: Colors.white,
-            onSurface: Colors.white,
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              primary: Colors.red[200],
-            ),
-          ),
-        ), child: child!,
-        )},
-        context: context,
-        initialDate: current,
-        firstDate: DateTime(1980, 1),
-        lastDate: DateTime(2222)))!;
-    if (fromChoose) {
-      if (userChosenFrom != current) {
-        chosenFrom = true;
-        setState(() {
-          selectedTime = userChosenFrom;
+        DateTime? userChosenFrom = (await showDatePicker(
+          builder: (context, child) {
+            return Theme(
+                data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.dark(
+                primary: Colors.red[200]!,
+                onPrimary: Colors.white,
+                onSurface: Colors.white,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: Colors.red[200],
+                ),
+              ),
+            ), child: child!,
+            )},
+            context: context,
+            initialDate: current,
+            firstDate: DateTime(1980, 1),
+            lastDate: DateTime(2222)))!;
 
-        });
-      }
-    } else {
-      chosenTo = true;
-      setState(() {
-        selectedTimeTo = userChosenFrom;
-      });
+        if (fromChoose) {
+          if (userChosenFrom != current) {
+            chosenFrom = true;
+            setState(() {
+              selectedTime = userChosenFrom;
 
-    }
+            });
+          }
+        } else {
+          chosenTo = true;
+          setState(() {
+            selectedTimeTo = userChosenFrom;
+          });
+
+        }
 
   }
 
@@ -489,91 +565,95 @@ class EventFormState extends State<EventForm> {
     }
   }
 
-  void onRepeat() {
+  void onRepeat(String type) {
 
+    if (type == "calendar") {
       showDialog(context: context, builder: (context) {
         return StatefulBuilder(
-          builder: (context, setState) {
-            return Dialog(
-              elevation: 20,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-              child: SizedBox(
-                height: 300,
-                child:  Column(
-                  children: [
-                    RadioListTile(
-                        title: const Text("Don't Repeat"),
-                        value: SingingCharacter.none,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context, true);
-                          setState(() {
-                            repeatD = "Don't Repeat";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
-                    RadioListTile(
-                        title: const Text("Everyday"),
-                        value: SingingCharacter.daily,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context, true);
-                          setState(() {
-                            repeatD = "Everyday";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
-                    RadioListTile(
-                        title: const Text("Every week"),
-                        value: SingingCharacter.weekly,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context, true);
-                          setState(() {
-                            repeatD = "Every week";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
-                    RadioListTile(
-                        title: const Text("Every month"),
-                        value: SingingCharacter.monthly,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context,true);
-                          setState(() {
-                            repeatD = "Every month";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
-                    RadioListTile(
-                        title: const Text("Every year"),
-                        value: SingingCharacter.yearly,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context, true);
+            builder: (context, setState) {
+              return Dialog(
+                  elevation: 20,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                  child: SizedBox(
+                    height: 300,
+                    child:  Column(
+                      children: [
+                        RadioListTile(
+                            title: const Text("Don't Repeat"),
+                            value: SingingCharacter.none,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context, true);
+                              setState(() {
+                                repeatD = "Don't Repeat";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
+                        RadioListTile(
+                            title: const Text("Everyday"),
+                            value: SingingCharacter.daily,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context, true);
+                              setState(() {
+                                repeatD = "Everyday";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
+                        RadioListTile(
+                            title: const Text("Every week"),
+                            value: SingingCharacter.weekly,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context, true);
+                              setState(() {
+                                repeatD = "Every week";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
+                        RadioListTile(
+                            title: const Text("Every month"),
+                            value: SingingCharacter.monthly,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context,true);
+                              setState(() {
+                                repeatD = "Every month";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
+                        RadioListTile(
+                            title: const Text("Every year"),
+                            value: SingingCharacter.yearly,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context, true);
 
-                          setState(() {
-                            repeatD = "Every year";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
+                              setState(() {
+                                repeatD = "Every year";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
 
-                  ],
-                ),
-              )
-            );
-          });
+                      ],
+                    ),
+                  )
+              );
+            });
 
       }).then((value) {
         setState(() {
 
         });
       });
+    }
+
+
   }
 
   void onColor() {
