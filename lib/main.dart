@@ -69,7 +69,7 @@ class DayToDay extends StatelessWidget {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return const AppWidget();
+                return AppWidget();
               } else if (snapshot.hasError) {
                 return const Center(
                   child: Text('Error'),
@@ -189,7 +189,6 @@ class _MyStatefulWidgetState extends State<AppWidget>
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           controller: _tabController,
-          isScrollable: true,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: <Widget>[
             Tab(
