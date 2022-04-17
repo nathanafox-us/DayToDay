@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:day_to_day/globals.dart';
 import 'event_list_storage.dart';
 import 'event_form.dart';
@@ -5,16 +6,29 @@ import 'package:flutter/material.dart';
 import 'events.dart';
 import 'globals.dart' as globals;
 //import 'package:firebase_database/firebase_database.dart';
+StreamController<bool> streamController = StreamController<bool>.broadcast();
 
 class ProjectsWidget extends StatefulWidget {
   List<Events> projects = [];
-  ProjectsWidget({Key? key}) : super(key: key);
+  ProjectsWidget({Key? key, required this.stream}) : super(key: key);
+  final Stream<bool> stream;
 
   @override
   State<ProjectsWidget> createState() => ProjectsState();
 }
 
 class ProjectsState extends State<ProjectsWidget> {
+
+  @override
+  void initState() {
+
+    widget.stream.listen((event) {
+      setState(() {
+
+      });
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     projects = [];

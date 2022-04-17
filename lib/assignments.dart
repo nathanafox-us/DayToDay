@@ -5,7 +5,8 @@ import 'events.dart';
 
 class AssignmentsWidget extends StatefulWidget {
   List<Events> hw = [];
-  AssignmentsWidget({Key? key}) : super(key: key);
+  AssignmentsWidget({Key? key, required this.stream}) : super(key: key);
+  final Stream<bool> stream;
 
   @override
   State<AssignmentsWidget> createState() => AssignmentsState();
@@ -13,6 +14,17 @@ class AssignmentsWidget extends StatefulWidget {
 
 class AssignmentsState extends State<AssignmentsWidget> {
   int count = 2;
+
+  @override
+  void initState() {
+
+    widget.stream.listen((event) {
+      setState(() {
+
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

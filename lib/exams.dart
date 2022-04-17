@@ -5,13 +5,24 @@ import 'events.dart';
 
 class ExamsWidget extends StatefulWidget {
   List<Events> exams = [];
-  ExamsWidget({Key? key}) : super(key: key);
+  ExamsWidget({Key? key, required this.stream}) : super(key: key);
+  final Stream<bool> stream;
 
   @override
   State<ExamsWidget> createState() => ExamsState();
 }
 
 class ExamsState extends State<ExamsWidget> {
+  @override
+  void initState() {
+
+    widget.stream.listen((event) {
+      setState(() {
+
+      });
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     widget.exams = [];

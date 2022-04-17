@@ -1,7 +1,7 @@
 import 'package:day_to_day/event_list_storage.dart';
 import 'package:day_to_day/inherited.dart';
 import 'events.dart';
-import 'package:day_to_day/Months.dart';
+import 'package:day_to_day/months.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
@@ -92,6 +92,8 @@ class EventFormState extends State<EventForm> {
       pastSixty = true;
       minute = 0;
     }
+    print(hour);
+    print(minute);
 
     if (!chosenTFrom && !isSwitched) {
       String minuteStr = minute.toString();
@@ -100,10 +102,18 @@ class EventFormState extends State<EventForm> {
       }
 
       if (hour > 12) {
-        var hourReduced = hour %12;
-        //hour %= 12;
-        timeFrom = hourReduced.toString() + ":" + minuteStr + " PM";
-      } else if (hour == 12) {
+        if (hour == 24) {
+          var hourReduced = 12;
+          timeFrom = hourReduced.toString() + ":" + minuteStr + " AM";
+        }
+        else {
+          var hourReduced = hour %12;
+          //hour %= 12;
+          timeFrom = hourReduced.toString() + ":" + minuteStr + " PM";
+        }
+
+      }
+      else if (hour == 12) {
         timeFrom = hour.toString() + ":" + minuteStr + " PM";
       } else {
         var hourReduced = hour;
@@ -124,11 +134,17 @@ class EventFormState extends State<EventForm> {
         hour += 1;
       }
       String minuteStr = minute.toString();
+
       if (minute == 0) {
         minuteStr = minuteStr.toString() + "0";
       }
       if (hour == 24) {
         var hourReduced = 12;
+        midnight +=1;
+        timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
+      }
+      if (hour == 25) {
+        var hourReduced = 1;
         midnight +=1;
         timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
       }
@@ -146,7 +162,6 @@ class EventFormState extends State<EventForm> {
         timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
       }
       finalTimeTo = timeTo;
-      print(hour);
       hourT = hour;
       minuteT = minute;
     }

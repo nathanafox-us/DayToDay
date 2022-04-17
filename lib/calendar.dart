@@ -903,7 +903,8 @@ class CalendarState extends State<CalendarWidget> {
               ),
             );
           }
-        } else if (element.from.year == element.to.year) {
+        }
+        else if (element.from.year == element.to.year) {
           if (element.allDay) {
             secondLine = Center(
               child: Padding(

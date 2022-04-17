@@ -1,16 +1,12 @@
 import 'package:day_to_day/events.dart';
 import 'package:day_to_day/inherited.dart';
-import 'package:day_to_day/Months.dart';
-import 'package:day_to_day/ProjectsWidget.dart';
-import 'package:day_to_day/Assignments.dart';
-import 'package:day_to_day/Exams.dart';
+import 'package:day_to_day/projects_widget.dart';
+import 'package:day_to_day/assignments.dart';
+import 'package:day_to_day/exams.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/calendar.dart';
-import 'package:day_to_day/event_form.dart';
-import 'globals.dart';
 import 'dart:async';
 import 'event_list_storage.dart';
 
@@ -196,6 +192,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
           ),*/
         ],
         bottom: TabBar(
+          isScrollable: true,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           controller: _tabController,
@@ -229,26 +226,21 @@ class _MyStatefulWidgetState extends State<AppWidget>
       ),
       body: TabBarView(
         controller: _tabController,
+
         children: <Widget>[
           CalendarWidget(
             stream: streamController.stream,
           ),
           const ToDoListDirectoryWidget(),
-          AssignmentsWidget(),
-          ProjectsWidget(),
-          ExamsWidget(),
+          AssignmentsWidget(stream: streamController.stream,),
+          ProjectsWidget(stream: streamController.stream,),
+          ExamsWidget(stream: streamController.stream,),
         ],
+
       ),
     );
   }
 
   void onSearchButtonPressed() {}
-  void onAddEventButtonPressed() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      int? clicked = StateWidget.of(context)?.clicked;
 
-      //print(clicked);
-      return EventForm();
-    }));
-  }
 }
