@@ -18,5 +18,5 @@ class ToDoList {
     checked.add(false);
   }
 
+  ToDoList.hasAll(this.title, this.items, this.checked);
 }
-

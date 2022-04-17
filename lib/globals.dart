@@ -1,5 +1,4 @@
-import 'package:day_to_day/to_do_list.dart';
-
+import 'to_do_list.dart';
 import 'events.dart';
 
 DateTime timestamp = DateTime.fromMicrosecondsSinceEpoch(0);
