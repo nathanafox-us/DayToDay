@@ -5,15 +5,12 @@ import 'package:day_to_day/globals.dart' as globals;
 import 'package:firebase_database/firebase_database.dart';
 
 class Sync {
-  static String setUID() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      var _uID = FirebaseAuth.instance.currentUser?.uid;
-      return (_uID ?? 'null uID');
-    } else {
-      return 'null currentUser';
-    }
-  }
+  static FirebaseDatabase db = FirebaseDatabase.instance;
+  static String uID = (FirebaseAuth.instance.currentUser?.uid ?? 'null');
+  static bool loggedIn = (FirebaseAuth.instance.currentUser != null);
+  static DatabaseReference user = db.ref('Users').child(uID);
 
+  //concats the from DateTime hash, the to DateTime hash, and the title
   static String hashEvent(Events event) {
     String input = event.from.hashCode.toString() +
         event.to.hashCode.toString() +
@@ -21,12 +18,10 @@ class Sync {
     return input;
   }
 
-  static sendEvents(DatabaseReference ref, String date, List<Events> events) {
-    print(date);
-    DatabaseReference day = ref.child(date);
+  static sendEvents(DatabaseReference ref, List<Events> events) {
     for (Events event in events) {
       String hash = hashEvent(event);
-      DatabaseReference eventRef = day.child(hash);
+      DatabaseReference eventRef = ref.child(hash);
       eventRef.child('from').set(event.from.toString());
       eventRef.child('to').set(event.to.toString());
       eventRef.child('page').set(event.page.toString());
@@ -38,33 +33,76 @@ class Sync {
       color.child('r').set(event.color.red);
       color.child('g').set(event.color.green);
       color.child('b').set(event.color.blue);
+      //can retrieve with:
+      //  Color c = Color.fromARGB(color.a, color.r, color.g, color.b)
+      //or something similar
     }
   }
 
+  static sendToDo(DatabaseReference ref, List<ToDoList> todos) {
+    for (ToDoList todo in todos) {
+      DatabaseReference todoRef = ref.child(todo.title);
+      todoRef.child('items').set(todo.items);
+      todoRef.child('checked').set(todo.checked);
+    }
+  }
+
+  static sendEventsList(String date, List<Events> events) {
+    DatabaseReference ref = user.child('eventsList').child(date);
+    sendEvents(ref, events);
+  }
+
+  static sendDaily(List<Events> events) {
+    DatabaseReference ref = user.child('everyDay');
+    sendEvents(ref, events);
+  }
+
+  static sendWeekly(List<Events> events) {
+    DatabaseReference ref = user.child('everyWeek');
+    sendEvents(ref, events);
+  }
+
+  static sendMonthly(List<Events> events) {
+    DatabaseReference ref = user.child('everyMonth');
+    sendEvents(ref, events);
+  }
+
+  static sendYearly(List<Events> events) {
+    DatabaseReference ref = user.child('everyYear');
+    sendEvents(ref, events);
+  }
+
+  static sendAssignments(List<Events> events) {
+    DatabaseReference ref = user.child('assignments');
+    sendEvents(ref, events);
+  }
+
+  static sendHomework(List<Events> events) {
+    DatabaseReference ref = user.child('homework');
+    sendEvents(ref, events);
+  }
+
+  static sendToDoList(String date, List<ToDoList> todos) {
+    DatabaseReference ref = user.child('toDoList').child(date);
+    sendToDo(ref, todos);
+  }
+
   static sync() {
-    String uID = "TEST";
-    bool loggedIn = (FirebaseAuth.instance.currentUser != null);
-    int fbTest = 0;
-
+    print('Setting timestamp');
+    db.ref('timestamp').set(DateTime.now().toString());
     print('Syncing...');
-
+    /* uID = setUID(); //possibly redundant, unsure but better safe than sorry */
     //check timestamp and decide which way to sync
+    print('Setting events');
 
     //syncing Firebase FROM disc
-    if (loggedIn) {
-      print('Logged in');
-      uID = setUID();
-      print('uID is: ' + uID);
-      FirebaseDatabase db = FirebaseDatabase.instance;
-      DatabaseReference ref = db.ref('Users').child(uID);
-      print('Database created!');
-      DatabaseReference eventsRef = ref.child('Events');
-      print('Setting events');
-      globals.eventsList
-          .forEach((date, events) => sendEvents(eventsRef, date, events));
-    } else {
-      print('Not logged in :(');
-      return;
-    }
+    globals.eventsList.forEach((date, events) => sendEventsList(date, events));
+    sendDaily(globals.everyDay);
+    sendWeekly(globals.everyWeek);
+    sendMonthly(globals.everyMonth);
+    sendYearly(globals.everyYear);
+    sendAssignments(globals.assignments);
+    sendHomework(globals.homework);
+    globals.toDoList.forEach((date, todos) => sendToDoList(date, todos));
   }
 }
