@@ -32,7 +32,7 @@ class Sync {
       eventRef.child('page').set(event.page);
       eventRef.child('title').set(event.title);
       eventRef.child('allDay').set(event.allDay);
-      eventRef.child('eventType').set(event.eventType);
+      eventRef.child('eventType').set(event.type);
       DatabaseReference color = eventRef.child('color');
       color.child('a').set(event.color.alpha);
       color.child('r').set(event.color.red);

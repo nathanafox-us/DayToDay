@@ -55,10 +55,10 @@ class EventFormState extends State<EventForm> {
   int hourT = 0;
   String tagChosen = "Calendar";
   String eventType = "calendar";
+  String title = "Default Event";
 
   @override
   Widget build(BuildContext context) {
-    String title = "Default Event";
     String to;
     int dayF = (StateWidget.of(context)?.clicked)!;
     int weekDayN;
