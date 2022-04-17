@@ -153,12 +153,6 @@ class _MyStatefulWidgetState extends State<AppWidget>
                 FirebaseAuth.instance.signOut();
               },
             ),
-            ListTile(
-              title: const Text('Ex2'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
           ],
         ),
       ),
@@ -168,14 +162,14 @@ class _MyStatefulWidgetState extends State<AppWidget>
           style: TextStyle(color: appBarT),
         ),
         backgroundColor: appBarC,
-        actions: [
-          IconButton(
-            onPressed: () => onSearchButtonPressed(),
-            icon: Image.asset(
-              "assets/icons/search-icon.png",
-            ),
-            splashRadius: 20,
-          ),
+        actions: const [
+          //IconButton(
+            //onPressed: () => onSearchButtonPressed(),
+            //icon: Image.asset(
+              //"assets/icons/search-icon.png",
+            //),
+            //splashRadius: 20,
+          //),
           /*IconButton(
             onPressed: () => onFindMyDayPressed(equation, pageController),
             icon: Image.asset(
