@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'Events.dart';
+import 'events.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
@@ -70,7 +70,7 @@ class EventListStorage {
       from = DateTime(yearF, monthF, dayF, 0, 0, 0, 0, 0);
       to = DateTime(yearT, monthT, dayT, 0, 0, 0, 0, 0);
 
-      events.add(Events(from, to, title, color, allDay, page, type));
+      events.add(Events(title, color, allDay, page, from, to, type));
     }
 
     return events;

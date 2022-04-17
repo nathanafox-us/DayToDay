@@ -1,8 +1,8 @@
 import 'package:day_to_day/globals.dart';
-import 'EventListStorage.dart';
-import 'EventForm.dart';
+import 'event_form.dart';
+import 'event_list_storage.dart';
 import 'package:flutter/material.dart';
-import 'Events.dart';
+import 'events.dart';
 import 'globals.dart' as globals;
 //import 'package:firebase_database/firebase_database.dart';
 
@@ -18,7 +18,7 @@ class ProjectsState extends State<ProjectsWidget> {
   @override
   Widget build(BuildContext context) {
     projects = [];
-    globals.events.forEach((key, value) {
+    globals.eventsList.forEach((key, value) {
       for (int i = 0; i < value.length; i++) {
         if (value[i].type.contains("project")) {
           projects.add(value[i]);

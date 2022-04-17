@@ -1,6 +1,6 @@
-import 'Events.dart';
+import 'events.dart';
 
-Map<String, List<Events>> events = {};
+Map<String, List<Events>> eventsList = {};
 List<Events> projects = [];
 List<Events> everyDay = [];
 List<Events> everyMonth = [];

@@ -1,5 +1,5 @@
-import 'package:day_to_day/Events.dart';
-import 'package:day_to_day/Inherited.dart';
+import 'package:day_to_day/events.dart';
+import 'package:day_to_day/inherited.dart';
 import 'package:day_to_day/Months.dart';
 import 'package:day_to_day/ProjectsWidget.dart';
 import 'package:day_to_day/Assignments.dart';
@@ -8,11 +8,11 @@ import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:day_to_day/Calendar.dart';
-import 'package:day_to_day/EventForm.dart';
+import 'package:day_to_day/calendar.dart';
+import 'package:day_to_day/event_form.dart';
 import 'globals.dart';
 import 'dart:async';
-import 'EventListStorage.dart';
+import 'event_list_storage.dart';
 
 StreamController<bool> streamController = StreamController<bool>.broadcast();
 
@@ -231,7 +231,6 @@ class _MyStatefulWidgetState extends State<AppWidget>
         controller: _tabController,
         children: <Widget>[
           CalendarWidget(
-            widget.eventList,
             stream: streamController.stream,
           ),
           const ToDoListDirectoryWidget(),

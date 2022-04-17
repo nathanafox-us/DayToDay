@@ -1,6 +1,6 @@
-import 'package:day_to_day/EventListStorage.dart';
-import 'package:day_to_day/Inherited.dart';
-import 'Events.dart';
+import 'package:day_to_day/event_list_storage.dart';
+import 'package:day_to_day/inherited.dart';
+import 'events.dart';
 import 'package:day_to_day/Months.dart';
 import 'package:day_to_day/main.dart';
 import 'package:flutter/material.dart';
@@ -50,10 +50,14 @@ class EventFormState extends State<EventForm> {
   TimeOfDay fromObj = TimeOfDay.now();
   TimeOfDay toObj = TimeOfDay.now();
   String type = "Calendar";
-  String title = "Default Event";
+  int hourF = 0;
+  int minuteF = 0;
+  int minuteT = 0;
+  int hourT = 0;
 
   @override
   Widget build(BuildContext context) {
+    String title = "Default Event";
     String to;
     int dayF = (StateWidget.of(context)?.clicked)!;
     int weekDayN;
@@ -61,6 +65,7 @@ class EventFormState extends State<EventForm> {
     int minute = n.now.minute;
     String? weekD;
     bool pastSixty = false;
+
     if (dayF == -2 && !chosenFrom) {
       selectedTime = n.now;
     } else if (!chosenFrom) {
@@ -87,6 +92,7 @@ class EventFormState extends State<EventForm> {
       pastSixty = true;
       minute = 0;
     }
+
     if (!chosenTFrom && !isSwitched) {
       String minuteStr = minute.toString();
       if (minute == 0) {
@@ -94,18 +100,23 @@ class EventFormState extends State<EventForm> {
       }
 
       if (hour > 12) {
-        hour %= 12;
-        timeFrom = hour.toString() + ":" + minuteStr + " PM";
+        var hourReduced = hour %12;
+        //hour %= 12;
+        timeFrom = hourReduced.toString() + ":" + minuteStr + " PM";
       } else if (hour == 12) {
         timeFrom = hour.toString() + ":" + minuteStr + " PM";
       } else {
+        var hourReduced = hour;
         if (hour == 0) {
-          hour = 12;
+          hourReduced = 12;
         }
-        timeFrom = hour.toString() + ":" + minuteStr + " AM";
+        timeFrom = hourReduced.toString() + ":" + minuteStr + " AM";
       }
       finalTimeFrom = timeFrom;
+      hourF = hour;
+      minuteF = minute;
     }
+    var midnight = 0;
     if (!chosenTTo && !isSwitched) {
       hour = n.now.hour;
       hour += 1;
@@ -116,18 +127,28 @@ class EventFormState extends State<EventForm> {
       if (minute == 0) {
         minuteStr = minuteStr.toString() + "0";
       }
-      if (hour > 12) {
-        hour %= 12;
-        timeTo = hour.toString() + ":" + minuteStr + " PM";
+      if (hour == 24) {
+        var hourReduced = 12;
+        midnight +=1;
+        timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
+      }
+      else if (hour > 12) {
+        var hourReduced = hour % 12;
+        //hour %= 12;
+        timeTo = hourReduced.toString() + ":" + minuteStr + " PM";
       } else if (hour == 12) {
         timeTo = hour.toString() + ":" + minuteStr + " PM";
       } else {
+        var hourReduced = hour;
         if (hour == 0) {
-          hour = 12;
+          hourReduced = 12;
         }
-        timeTo = hour.toString() + ":" + minuteStr + " AM";
+        timeTo = hourReduced.toString() + ":" + minuteStr + " AM";
       }
       finalTimeTo = timeTo;
+      print(hour);
+      hourT = hour;
+      minuteT = minute;
     }
 
     weekDayN = selectedTime.weekday;
@@ -149,11 +170,12 @@ class EventFormState extends State<EventForm> {
           (selectedTimeTo?.year.toString())!;
     }
     else {
+      var dayOffset = selectedTime.day + midnight;
       to = weekD+
           ", " +
           n.monthShort[selectedTime.month]! +
           " " +
-          (selectedTime.day.toString()) +
+          (dayOffset.toString()) +
           ", " +
           (selectedTime.year.toString());
     }
@@ -385,27 +407,14 @@ class EventFormState extends State<EventForm> {
                     //If the event was saved, write it to the respective file
                     //!!!!!!TODO!!!!!
                     if (selectedTimeTo != null) {
-                      Events newEvent = Events(selectedTime.month, selectedTime.year, selectedTime.day, title, 
-                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!,
-                          colorChosenBubble, fromObj, toObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, 0,
-                          type);
-                      
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
-                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, 
-                          colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, 
-                          type);
-                      
+                          finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD,
+                          (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, type);
                     }
                     else {
-                      Events newEvent = Events(selectedTime.month, selectedTime.year, selectedTime.day, title, 
-                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month, selectedTime.year,
-                          colorChosenBubble, fromObj, toObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, 0,
-                          type);
-                      
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
-                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month, selectedTime.year, 
-                          colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, 
-                          type);
+                          finalTimeFrom, finalTimeTo, selectedTime.day, selectedTime.month,
+                          selectedTime.year, colorChosenBubble, toObj, fromObj, isSwitched, repeatD, (selectedTime.year - 1980) * 12 + selectedTime.month - 1, hourF, hourT, minuteF, minuteT, type);
                     }
                     streamController.add(true);
                     Navigator.pop(context);
