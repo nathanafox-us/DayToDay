@@ -38,10 +38,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^3.3.14
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_launcher_icons: ^0.9.2
+  flutter_native_splash: ^2.1.6
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -49,6 +51,19 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/dtdLogo1.png"
+
+flutter_native_splash:
+  color: "#de6749"
+  image: "assets/icons/dtdLogo1.png"
+  android12:
+    image: "assets/icons/dtdLogo1.png"
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -68,6 +83,9 @@ flutter:
     - assets/icons/search-icon.png
     - assets/icons/clock.png
     - assets/icons/repeat.png
+    - assets/icons/dayToDayLogo.jpg
+    - assets/icons/dtdLogo2.jpg
+    - assets/icons/dtdLogo1.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
