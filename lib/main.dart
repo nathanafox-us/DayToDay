@@ -1,13 +1,11 @@
 import 'package:day_to_day/inherited.dart';
 import 'package:day_to_day/login_widget.dart';
-import 'package:day_to_day/months.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:day_to_day/calendar.dart';
-import 'package:day_to_day/event_form.dart';
 import 'dart:async';
 
 StreamController<bool> streamController = StreamController<bool>.broadcast();
@@ -154,15 +152,6 @@ class _MyStatefulWidgetState extends State<AppWidget>
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => onAddEventButtonPressed(),
-        child: const Icon(
-          Icons.add,
-          size: 45,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.blueGrey,
-      ),
       appBar: AppBar(
         title: Text(
           'DayToDay',
@@ -242,12 +231,5 @@ class _MyStatefulWidgetState extends State<AppWidget>
   }
 
   void onSearchButtonPressed() {}
-  void onAddEventButtonPressed() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      int? clicked = StateWidget.of(context)?.clicked;
 
-      //print(clicked);
-      return const EventForm();
-    }));
-  }
 }
