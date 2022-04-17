@@ -96,17 +96,17 @@ class AppWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<AppWidget>
     with TickerProviderStateMixin {
-  late TabController _tabController;
+  late TabController tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    tabController = TabController(length: 5, vsync: this);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
@@ -188,7 +188,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
           isScrollable: true,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
-          controller: _tabController,
+          controller: tabController,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: <Widget>[
             Tab(
@@ -208,10 +208,10 @@ class _MyStatefulWidgetState extends State<AppWidget>
               text: "To-Do",
             ),
             const Tab(
-              text: "Projects",
+              text: "Assignments",
             ),
             const Tab(
-              text: "Assignments",
+              text: "Projects",
             ),
             const Tab(
               text: "Exams",
@@ -221,7 +221,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
         ),
       ),
       body: TabBarView(
-        controller: _tabController,
+        controller: tabController,
 
         children: <Widget>[
           CalendarWidget(

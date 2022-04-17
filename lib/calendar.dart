@@ -11,6 +11,7 @@ class CalendarWidget extends StatefulWidget {
   const CalendarWidget({Key? key, required this.stream}) : super(key: key);
   final Stream<bool> stream;
 
+
   @override
   State<CalendarWidget> createState() => CalendarState();
 }
@@ -23,6 +24,8 @@ class CalendarState extends State<CalendarWidget> {
   int clickedPosition = -1;
   List<Widget> dayClicked = [];
   Map<int, Events> span = {};
+  int pag = 0;
+  List<Events> deleteSearch = [];
 
   @override
   void initState() {
@@ -73,18 +76,21 @@ class CalendarState extends State<CalendarWidget> {
                 scrollDirection: Axis.vertical,
                 itemBuilder: (BuildContext context, int pages) {
                   int temporaryM = pages;
+                  pag = pages;
 
                   if (clickedPosition == -1) {
+                    Widget firstLine;
+                    Widget secondLine;
                     clickedPosition = getCurrentDay();
                     if (globals.eventsList[getCurrentDay().toString() +
-                        getCurrentMonth().toString() +
-                        getCurrentYear().toString()] !=
+                            getCurrentMonth().toString() +
+                            getCurrentYear().toString()] !=
                         null) {
                       globals.eventsList[getCurrentDay().toString() +
-                          getCurrentMonth().toString() +
-                          getCurrentYear().toString()]
+                              getCurrentMonth().toString() +
+                              getCurrentYear().toString()]
                           ?.forEach((element) {
-                        dayClicked.add(Row(
+                        firstLine = Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
@@ -102,67 +108,70 @@ class CalendarState extends State<CalendarWidget> {
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),
                           ],
-                        ));
+                        );
                         String timeF = TimeOfDay(
-                            hour: element.from.hour,
-                            minute: element.from.minute)
+                                hour: element.from.hour,
+                                minute: element.from.minute)
                             .format(context);
                         String timeT = TimeOfDay(
-                            hour: element.to.hour, minute: element.to.minute)
+                                hour: element.to.hour,
+                                minute: element.to.minute)
                             .format(context);
                         String repeatingString;
 
                         if (element.from.day == element.to.day &&
                             element.from.month == element.to.month &&
                             element.from.year == element.to.year) {
-                          dayClicked.add(Center(
+                          secondLine = Center(
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 20),
                               child: Text(timeF + " - " + timeT),
                             ),
-                          ));
+                          );
                         } else if (element.from.year == element.to.year) {
-                          dayClicked.add(Center(
+                          secondLine = Center(
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 20),
-                              child: Text(
-                                  Months().getMonthShort(element.from.month)! +
-                                      " " +
-                                      element.from.day.toString() +
-                                      ", " +
-                                      timeF +
-                                      " - " +
-                                      Months().getMonthShort(element.to.month)! +
-                                      " " +
-                                      element.to.day.toString() +
-                                      ", " +
-                                      timeT),
+                              child: Text(Months()
+                                      .getMonthShort(element.from.month)! +
+                                  " " +
+                                  element.from.day.toString() +
+                                  ", " +
+                                  timeF +
+                                  " - " +
+                                  Months().getMonthShort(element.to.month)! +
+                                  " " +
+                                  element.to.day.toString() +
+                                  ", " +
+                                  timeT),
                             ),
-                          ));
+                          );
                         } else {
-                          dayClicked.add(Center(
+                          secondLine = Center(
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 20),
-                              child: Text(
-                                  Months().getMonthShort(element.from.month)! +
-                                      " " +
-                                      element.from.day.toString() +
-                                      ", " +
-                                      element.from.year.toString() +
-                                      ", " +
-                                      timeF +
-                                      " - " +
-                                      Months().getMonthShort(element.to.month)! +
-                                      " " +
-                                      element.to.day.toString() +
-                                      ", " +
-                                      element.to.year.toString() +
-                                      ", " +
-                                      timeT),
+                              child: Text(Months()
+                                      .getMonthShort(element.from.month)! +
+                                  " " +
+                                  element.from.day.toString() +
+                                  ", " +
+                                  element.from.year.toString() +
+                                  ", " +
+                                  timeF +
+                                  " - " +
+                                  Months().getMonthShort(element.to.month)! +
+                                  " " +
+                                  element.to.day.toString() +
+                                  ", " +
+                                  element.to.year.toString() +
+                                  ", " +
+                                  timeT),
                             ),
-                          ));
+                          );
                         }
-                      });
+                        dayClicked.add(Column(children: [firstLine,secondLine],));
+                      }
+                      );
                     } else {
                       dayClicked.add(const Text("No events today"));
                     }
@@ -209,7 +218,7 @@ class CalendarState extends State<CalendarWidget> {
                             child: InkWell(
                               child: Container(
                                 padding:
-                                const EdgeInsets.only(bottom: 16, top: 10),
+                                    const EdgeInsets.only(bottom: 16, top: 10),
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Text(
@@ -239,12 +248,14 @@ class CalendarState extends State<CalendarWidget> {
                                 height: 25.0,
                                 width: 25.0,
                                 child: Center(
-                                  child: Text(
-                                      CalendarState().getCurrentDay().toString()),
+                                  child: Text(CalendarState()
+                                      .getCurrentDay()
+                                      .toString()),
                                 ),
                               ),
                             ),
-                            padding: const EdgeInsets.only(left: 120, right: 15),
+                            padding:
+                                const EdgeInsets.only(left: 120, right: 15),
                           ),
                         ],
                         //mainAxisSize: MainAxisSize.min,
@@ -289,7 +300,7 @@ class CalendarState extends State<CalendarWidget> {
                             scrollDirection: Axis.vertical,
                             physics: const ScrollPhysics(),
                             gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 7,
                               childAspectRatio: 1 / 1.1,
                             ),
@@ -367,12 +378,12 @@ class CalendarState extends State<CalendarWidget> {
                                   for (var element in globals.everyDay) {
                                     if (temporaryM >= element.page) {
                                       if (element.from.year ==
-                                          (yearsPassed + yearEarly) &&
+                                              (yearsPassed + yearEarly) &&
                                           element.from.month == userMonth) {
                                         if (day >= element.from.day) {
                                           dayInfo.add(Container(
                                             padding:
-                                            const EdgeInsets.only(top: 10),
+                                                const EdgeInsets.only(top: 10),
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.rectangle,
                                                 color: element.color),
@@ -382,7 +393,8 @@ class CalendarState extends State<CalendarWidget> {
                                         }
                                       } else {
                                         dayInfo.add(Container(
-                                          padding: const EdgeInsets.only(top: 10),
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
                                           decoration: BoxDecoration(
                                               shape: BoxShape.rectangle,
                                               color: element.color),
@@ -401,29 +413,29 @@ class CalendarState extends State<CalendarWidget> {
                                           userMonth,
                                           day);
                                       if (element.to
-                                          .difference(element.from)
-                                          .inDays !=
+                                              .difference(element.from)
+                                              .inDays !=
                                           0) {
                                         for (int i = 0;
-                                        i <=
-                                            element.to
-                                                .difference(element.from)
-                                                .inDays;
-                                        i++) {
+                                            i <=
+                                                element.to
+                                                    .difference(element.from)
+                                                    .inDays;
+                                            i++) {
                                           int dayCalc = element.from.day + i;
                                           int month = element.from.month;
                                           int yearCalc = element.from.year;
 
                                           if (dayCalc >
                                               DateTime(element.from.year,
-                                                  element.from.month + 1, 0)
+                                                      element.from.month + 1, 0)
                                                   .day) {
                                             dayCalc = 1;
                                             month += 1;
                                           }
                                           if (month > 12) {
                                             if (month % 12 == 0) {
-                                              yearCalc += month~/12;
+                                              yearCalc += month ~/ 12;
                                             }
                                             month = 1;
                                           }
@@ -433,12 +445,13 @@ class CalendarState extends State<CalendarWidget> {
 
                                           if (weekDay.weekday == dayOffset) {
                                             if (yearCalc ==
-                                                (yearsPassed + yearEarly) &&
+                                                    (yearsPassed + yearEarly) &&
                                                 month == userMonth) {
                                               if (day >= dayCalc) {
                                                 dayInfo.add(Container(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 10),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 10),
                                                   decoration: BoxDecoration(
                                                       shape: BoxShape.rectangle,
                                                       color: element.color),
@@ -462,12 +475,12 @@ class CalendarState extends State<CalendarWidget> {
                                       } else if (weekDay.weekday ==
                                           (element.from.weekday)) {
                                         if (element.from.year ==
-                                            (yearsPassed + yearEarly) &&
+                                                (yearsPassed + yearEarly) &&
                                             element.from.month == userMonth) {
                                           if (day >= element.from.day) {
                                             dayInfo.add(Container(
-                                              padding:
-                                              const EdgeInsets.only(top: 10),
+                                              padding: const EdgeInsets.only(
+                                                  top: 10),
                                               decoration: BoxDecoration(
                                                   shape: BoxShape.rectangle,
                                                   color: element.color),
@@ -478,7 +491,7 @@ class CalendarState extends State<CalendarWidget> {
                                         } else {
                                           dayInfo.add(Container(
                                             padding:
-                                            const EdgeInsets.only(top: 10),
+                                                const EdgeInsets.only(top: 10),
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.rectangle,
                                                 color: element.color),
@@ -494,21 +507,21 @@ class CalendarState extends State<CalendarWidget> {
                                 if (globals.everyMonth.isNotEmpty) {
                                   for (var element in globals.everyMonth) {
                                     if (element.to
-                                        .difference(element.from)
-                                        .inDays !=
+                                            .difference(element.from)
+                                            .inDays !=
                                         0) {
                                       for (int i = 0;
-                                      i <=
-                                          element.to
-                                              .difference(element.from)
-                                              .inDays;
-                                      i++) {
+                                          i <=
+                                              element.to
+                                                  .difference(element.from)
+                                                  .inDays;
+                                          i++) {
                                         int dayCalc = element.from.day + i;
                                         int monthCalc = element.from.month;
 
                                         if (dayCalc >
                                             DateTime(element.from.year,
-                                                element.from.month + 1, 0)
+                                                    element.from.month + 1, 0)
                                                 .day) {
                                           dayCalc = 1;
                                           monthCalc += 1;
@@ -519,8 +532,8 @@ class CalendarState extends State<CalendarWidget> {
                                         if (day == dayCalc) {
                                           if (temporaryM >= element.page) {
                                             dayInfo.add(Container(
-                                              padding:
-                                              const EdgeInsets.only(top: 10),
+                                              padding: const EdgeInsets.only(
+                                                  top: 10),
                                               decoration: BoxDecoration(
                                                   shape: BoxShape.rectangle,
                                                   color: element.color),
@@ -535,7 +548,7 @@ class CalendarState extends State<CalendarWidget> {
                                         if (temporaryM >= element.page) {
                                           dayInfo.add(Container(
                                             padding:
-                                            const EdgeInsets.only(top: 10),
+                                                const EdgeInsets.only(top: 10),
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.rectangle,
                                                 color: element.color),
@@ -550,21 +563,21 @@ class CalendarState extends State<CalendarWidget> {
                                 if (globals.everyYear.isNotEmpty) {
                                   for (var element in globals.everyYear) {
                                     if (element.to
-                                        .difference(element.from)
-                                        .inDays !=
+                                            .difference(element.from)
+                                            .inDays !=
                                         0) {
                                       for (int i = 0;
-                                      i <=
-                                          element.to
-                                              .difference(element.from)
-                                              .inDays;
-                                      i++) {
+                                          i <=
+                                              element.to
+                                                  .difference(element.from)
+                                                  .inDays;
+                                          i++) {
                                         int dayCalc = element.from.day + i;
                                         int month = element.from.month;
 
                                         if (dayCalc >
                                             DateTime(element.from.year,
-                                                element.from.month + 1, 0)
+                                                    element.from.month + 1, 0)
                                                 .day) {
                                           dayCalc = 1;
                                           month += 1;
@@ -577,7 +590,8 @@ class CalendarState extends State<CalendarWidget> {
                                             userMonth == month) {
                                           if (temporaryM >= element.page) {
                                             dayInfo.add(Container(
-                                              padding: const EdgeInsets.only(top: 10),
+                                              padding: const EdgeInsets.only(
+                                                  top: 10),
                                               decoration: BoxDecoration(
                                                   shape: BoxShape.rectangle,
                                                   color: element.color),
@@ -587,13 +601,13 @@ class CalendarState extends State<CalendarWidget> {
                                           }
                                         }
                                       }
-                                    }
-                                    else {
+                                    } else {
                                       if (day == element.from.day &&
                                           userMonth == element.from.month) {
                                         if (temporaryM >= element.page) {
                                           dayInfo.add(Container(
-                                            padding: const EdgeInsets.only(top: 10),
+                                            padding:
+                                                const EdgeInsets.only(top: 10),
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.rectangle,
                                                 color: element.color),
@@ -621,7 +635,7 @@ class CalendarState extends State<CalendarWidget> {
                                         alignment: Alignment.topCenter,
                                         child: Column(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: dayInfo,
                                         ),
                                       ),
@@ -642,17 +656,102 @@ class CalendarState extends State<CalendarWidget> {
                             itemCount: dayClicked.length,
                             itemBuilder: (BuildContext context, int index) {
                               return InkWell(
-                                  onLongPress: () {
+                                  onTap: () {
+                                    if (deleteSearch[index].type == "assignment") {
+                                    }
 
+                                  },
+                                  onLongPress: () {
+                                    showDialog<void>(
+                                      context: context,
+                                      builder: (BuildContext context) => AlertDialog(
+                                        title: const Text('Delete event?'),
+                                        content: const Text('Can\'t be undone'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(context),
+                                            child: const Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              String d = deleteSearch[index].from.day.toString();
+                                              String m = deleteSearch[index].from.month.toString();
+                                              String y = deleteSearch[index].from.year.toString();
+                                              print(deleteSearch[index].title);
+                                              print(deleteSearch[index].from.day);
+                                              print("In long press");
+
+                                              if (deleteSearch[index].to.difference(deleteSearch[index].from).inDays != 0) {
+                                                //print("i am here");
+                                                //print(deleteSearch[index].from.difference(deleteSearch[index].to).inDays);
+                                                for (int j = 0; j <= deleteSearch[index].to.difference(deleteSearch[index].from).inDays; j++) {
+                                                  d = (deleteSearch[index].from.day + j).toString();
+                                                  print(d);
+                                                  for (int i = 0; i < (globals.eventsList[d + m + y]?.length)!; i++) {
+                                                    print(globals.eventsList[d + m + y]?.length);
+
+                                                    if (globals.eventsList[d + m + y]?.elementAt(i).to.day == deleteSearch[index].to.day &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).to.month == deleteSearch[index].to.month &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).to.year == deleteSearch[index].to.year &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).to.hour == deleteSearch[index].to.hour &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).to.minute == deleteSearch[index].to.minute &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).from.day == deleteSearch[index].from.day &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).from.minute == deleteSearch[index].from.minute &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).from.year == deleteSearch[index].from.year &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).from.month == deleteSearch[index].from.month &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).from.hour == deleteSearch[index].from.hour &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).type == deleteSearch[index].type &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).allDay == deleteSearch[index].allDay &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).page == deleteSearch[index].page &&
+                                                        globals.eventsList[d + m + y]?.elementAt(i).title == deleteSearch[index].title
+                                                    ) {
+
+                                                      globals.eventsList[d + m + y]?.removeAt(i);
+                                                      print("hm");
+
+                                                    }
+                                                  }
+                                                }
+                                                _tapDate(deleteSearch[index].from.day, deleteSearch[index].from.year, deleteSearch[index].from.month, pag);
+                                              }
+                                              else {
+                                                for (int i = 0; i < (globals.eventsList[d + m + y]?.length)!; i++) {
+                                                  if (globals.eventsList[d + m + y]?.elementAt(i).to.day == deleteSearch[index].to.day &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).to.month == deleteSearch[index].to.month &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).to.year == deleteSearch[index].to.year &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).to.hour == deleteSearch[index].to.hour &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).to.minute == deleteSearch[index].to.minute &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).from.day == deleteSearch[index].from.day &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).from.minute == deleteSearch[index].from.minute &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).from.year == deleteSearch[index].from.year &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).from.month == deleteSearch[index].from.month &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).from.hour == deleteSearch[index].from.hour &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).type == deleteSearch[index].type &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).allDay == deleteSearch[index].allDay &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).page == deleteSearch[index].page &&
+                                                      globals.eventsList[d + m + y]?.elementAt(i).title == deleteSearch[index].title
+                                                  ) {
+                                                    globals.eventsList[d + m + y]?.removeAt(i);
+                                                    _tapDate(deleteSearch[index].from.day, deleteSearch[index].from.year, deleteSearch[index].from.month, pag);
+
+                                                  }
+                                                }
+                                              }
+
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Delete'),
+                                          ),
+                                        ],
+                                      ));
 
                                   },
                                   child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         dayClicked[index],
-                                      ]
-                                  )
-                              );
+                                      ]));
                             },
                             //children: [
                             //Column(
@@ -673,7 +772,7 @@ class CalendarState extends State<CalendarWidget> {
 
   void _tapDate(int day, int year, int month, int page) {
     dayClicked.clear();
-
+    deleteSearch.clear();
     setState(() {
       clickedPosition = day;
     });
@@ -718,7 +817,7 @@ class CalendarState extends State<CalendarWidget> {
             }
             if (monthCalc > 12) {
               if (month % 12 == 0) {
-                yearCalc += month~/12;
+                yearCalc += month ~/ 12;
               }
               monthCalc = 1;
             }
@@ -767,7 +866,7 @@ class CalendarState extends State<CalendarWidget> {
             }
             if (monthCalc > 12) {
               if (month % 12 == 0) {
-                yearCalc += month~/12;
+                yearCalc += month ~/ 12;
               }
               monthCalc = 1;
             }
@@ -800,30 +899,22 @@ class CalendarState extends State<CalendarWidget> {
     }
     if (globals.everyYear.isNotEmpty) {
       for (var element in globals.everyYear) {
-        if (element.to
-            .difference(element.from)
-            .inDays !=
-            0) {
+        if (element.to.difference(element.from).inDays != 0) {
           for (int i = 0;
-          i <=
-              element.to
-                  .difference(element.from)
-                  .inDays;
-          i++) {
+              i <= element.to.difference(element.from).inDays;
+              i++) {
             int dayCalc = element.from.day + i;
             int monthCalc = element.from.month;
             int yearCalc = element.from.year;
 
             if (dayCalc >
-                DateTime(element.from.year,
-                    element.from.month + 1, 0)
-                    .day) {
+                DateTime(element.from.year, element.from.month + 1, 0).day) {
               dayCalc = 1;
               month += 1;
             }
             if (month > 12) {
               if (month % 12 == 0) {
-                yearCalc += month~/12;
+                yearCalc += month ~/ 12;
               }
               month = 1;
             }
@@ -839,8 +930,7 @@ class CalendarState extends State<CalendarWidget> {
               }
             }
           }
-        }
-        else {
+        } else {
           if (day == element.from.day && month == element.from.month) {
             if (page >= element.page) {
               if (element.from.year == year && element.from.month == month) {
@@ -853,7 +943,6 @@ class CalendarState extends State<CalendarWidget> {
             }
           }
         }
-
       }
     }
     Widget firstLine = Spacer();
@@ -861,24 +950,23 @@ class CalendarState extends State<CalendarWidget> {
 
     if (temp.isNotEmpty) {
       for (var element in temp) {
-        firstLine =
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle, color: element.color),
-                    height: 15,
-                    width: 2,
-                  ),
-                  const Padding(padding: EdgeInsets.only(right: 10)),
-                  Text(
-                    element.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                ],
-              );
+        firstLine = Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(right: 10),
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle, color: element.color),
+              height: 15,
+              width: 2,
+            ),
+            const Padding(padding: EdgeInsets.only(right: 10)),
+            Text(
+              element.title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+          ],
+        );
         String timeF =
             TimeOfDay(hour: element.from.hour, minute: element.from.minute)
                 .format(context);
@@ -976,7 +1064,10 @@ class CalendarState extends State<CalendarWidget> {
             );
           }
         }
-        dayClicked.add(Column(children: [firstLine, secondLine],));
+        dayClicked.add(Column(
+          children: [firstLine, secondLine],
+        ));
+        deleteSearch.add(element);
       }
     } else {
       dayClicked.add(const Center(child: Text("No events today")));
@@ -986,7 +1077,6 @@ class CalendarState extends State<CalendarWidget> {
     access?.updateClicked(day, year, month);
     DatabaseReference _day = FirebaseDatabase.instance.ref().child("test");
     _day.set("Day tapped: ${day}");
-    print(day);
   }
 
   void navigationPress(int month, int year, BuildContext context) {
@@ -1102,6 +1192,7 @@ class CalendarState extends State<CalendarWidget> {
           );
         });
   }
+
   void onAddEventButtonPressed() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       int? clicked = StateWidget.of(context)?.clicked;

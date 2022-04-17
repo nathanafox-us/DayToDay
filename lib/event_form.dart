@@ -48,7 +48,7 @@ class EventFormState extends State<EventForm> {
   String colorChosenText = "Default";
   TimeOfDay fromObj = TimeOfDay.now();
   TimeOfDay toObj = TimeOfDay.now();
-  String type = "Calendar";
+  String type = "calendar";
   int hourF = 0;
   int minuteF = 0;
   int minuteT = 0;
@@ -193,7 +193,10 @@ class EventFormState extends State<EventForm> {
           ", " +
           (selectedTime.year.toString());
     }
-
+  Color disable = Colors.white;
+    if (type != "calendar") {
+      disable = Colors.grey;
+    }
 
     return InheritedState(
       child: Scaffold(
@@ -363,7 +366,7 @@ class EventFormState extends State<EventForm> {
                     child: SizedBox(
                       child: Text(
                         repeatD,
-                        style: const TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20, color: disable),
                       ),
                       height: 45,
                     ),
@@ -371,7 +374,7 @@ class EventFormState extends State<EventForm> {
                 ],
               ),
               onTap: () {
-                onRepeat();
+                onRepeat(type);
               },
             ),
             const Divider(color: Colors.grey,),
@@ -562,91 +565,95 @@ class EventFormState extends State<EventForm> {
     }
   }
 
-  void onRepeat() {
+  void onRepeat(String type) {
 
+    if (type == "calendar") {
       showDialog(context: context, builder: (context) {
         return StatefulBuilder(
-          builder: (context, setState) {
-            return Dialog(
-              elevation: 20,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-              child: SizedBox(
-                height: 300,
-                child:  Column(
-                  children: [
-                    RadioListTile(
-                        title: const Text("Don't Repeat"),
-                        value: SingingCharacter.none,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context, true);
-                          setState(() {
-                            repeatD = "Don't Repeat";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
-                    RadioListTile(
-                        title: const Text("Everyday"),
-                        value: SingingCharacter.daily,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context, true);
-                          setState(() {
-                            repeatD = "Everyday";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
-                    RadioListTile(
-                        title: const Text("Every week"),
-                        value: SingingCharacter.weekly,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context, true);
-                          setState(() {
-                            repeatD = "Every week";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
-                    RadioListTile(
-                        title: const Text("Every month"),
-                        value: SingingCharacter.monthly,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context,true);
-                          setState(() {
-                            repeatD = "Every month";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
-                    RadioListTile(
-                        title: const Text("Every year"),
-                        value: SingingCharacter.yearly,
-                        groupValue: repeatingChoose,
-                        onChanged: (SingingCharacter? value) {
-                          Navigator.pop(context, true);
+            builder: (context, setState) {
+              return Dialog(
+                  elevation: 20,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                  child: SizedBox(
+                    height: 300,
+                    child:  Column(
+                      children: [
+                        RadioListTile(
+                            title: const Text("Don't Repeat"),
+                            value: SingingCharacter.none,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context, true);
+                              setState(() {
+                                repeatD = "Don't Repeat";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
+                        RadioListTile(
+                            title: const Text("Everyday"),
+                            value: SingingCharacter.daily,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context, true);
+                              setState(() {
+                                repeatD = "Everyday";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
+                        RadioListTile(
+                            title: const Text("Every week"),
+                            value: SingingCharacter.weekly,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context, true);
+                              setState(() {
+                                repeatD = "Every week";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
+                        RadioListTile(
+                            title: const Text("Every month"),
+                            value: SingingCharacter.monthly,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context,true);
+                              setState(() {
+                                repeatD = "Every month";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
+                        RadioListTile(
+                            title: const Text("Every year"),
+                            value: SingingCharacter.yearly,
+                            groupValue: repeatingChoose,
+                            onChanged: (SingingCharacter? value) {
+                              Navigator.pop(context, true);
 
-                          setState(() {
-                            repeatD = "Every year";
-                            repeatingChoose = value;
-                          });
-                        }
-                    ),
+                              setState(() {
+                                repeatD = "Every year";
+                                repeatingChoose = value;
+                              });
+                            }
+                        ),
 
-                  ],
-                ),
-              )
-            );
-          });
+                      ],
+                    ),
+                  )
+              );
+            });
 
       }).then((value) {
         setState(() {
 
         });
       });
+    }
+
+
   }
 
   void onColor() {
