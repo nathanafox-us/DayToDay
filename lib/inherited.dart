@@ -60,6 +60,15 @@ class _InheritedStateState extends State<InheritedState> {
     if (monthFrom < 10) {
       mfStr = '0' + mfStr;
     }
+    if (eventType == "assignment") {
+      globals.assignments.add(Events(title, color, allDay, page, from, to, eventType));
+    }
+    else if (eventType == "project") {
+      globals.projects.add(Events(title, color, allDay, page, from, to, eventType));
+    }
+    else if (eventType == "exam") {
+      globals.exams.add(Events(title, color, allDay, page, from, to, eventType));
+    }
 
     if (repeat == "Everyday") {
       globals.everyDay

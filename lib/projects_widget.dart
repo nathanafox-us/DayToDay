@@ -9,8 +9,8 @@ import 'globals.dart' as globals;
 StreamController<bool> streamController = StreamController<bool>.broadcast();
 
 class ProjectsWidget extends StatefulWidget {
-  List<Events> projects = [];
-  ProjectsWidget({Key? key, required this.stream}) : super(key: key);
+
+  const ProjectsWidget({Key? key, required this.stream}) : super(key: key);
   final Stream<bool> stream;
 
   @override
@@ -27,46 +27,123 @@ class ProjectsState extends State<ProjectsWidget> {
 
       });
     });
+
     super.initState();
   }
+  bool isPlaying = true;
+
+  bool visibleList = false;
+  bool visibleButton = false;
+
   @override
   Widget build(BuildContext context) {
-    projects = [];
-    globals.eventsList.forEach((key, value) {
-      for (int i = 0; i < value.length; i++) {
-        if (value[i].type.contains("project")) {
-          projects.add(value[i]);
-        }
-      }
-    });
-    print("\n\n\nProjects: " + projects.length.toString());
+
+    if (globals.completedProjects.isNotEmpty) {
+      visibleButton = true;
+    }
+    Color textColor = Colors.black;
+    var systemColor = MediaQuery.of(context).platformBrightness;
+    bool darkMode = systemColor == Brightness.dark;
+    if (darkMode) {
+      textColor = Colors.white;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text("Projects List")),
         backgroundColor: const Color.fromARGB(255, 255, 82, 82),
       ),
-      body: ListView.builder(
-        itemCount: projects.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-              child: CheckboxListTile(
-                  dense: true,
-                  activeColor: Colors.red[400],
-                  controlAffinity: ListTileControlAffinity.leading,
-                  value: false,
-                  onChanged: (value) {
-                    setState(() {
-                      projects.removeAt(index);
-                    });
-                  },
-                  title: Text(
-                    projects[index].title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Color.fromARGB(255, 12, 12, 12)),
-                  )));
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: projects.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                    child: CheckboxListTile(
+                        dense: true,
+                        activeColor: Colors.red[400],
+                        controlAffinity: ListTileControlAffinity.leading,
+                        value: false,
+                        onChanged: (value) {
+                          setState(() {
+                            completedProjects.add(globals.projects[index]);
+                            projects.removeAt(index);
+                            if (globals.completedProjects.isNotEmpty) {
+                              visibleButton = true;
+                            }
+                          });
+                        },
+                        title: Text(projects[index].title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: textColor,
+                            ))));
+              },
+            ),
+          ),
+          Visibility(
+            visible: visibleButton,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            child: TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  isPlaying = !isPlaying;
+                  visibleList = !visibleList;
+                });
+              },
+              icon: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) => RotationTransition(
+                    turns: child.key == const ValueKey('firstIcon') ? Tween<double>(begin: 0, end: 1).animate(animation) : Tween<double>(begin: 0, end: 1).animate(animation),
+                    child: FadeTransition(opacity: animation, child: child),
+                  ),
+                  child: isPlaying ? const Icon(Icons.arrow_right_outlined, key: ValueKey('secondIcon')) : const Icon(Icons.arrow_drop_down_sharp, key: ValueKey('firstIcon'),)),
+              label: const Text(
+                "Completed",
+                style: TextStyle(fontSize: 22),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Visibility(
+              visible: visibleList,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: ListView.builder(
+                itemCount: completedProjects.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                      child: CheckboxListTile(
+                          dense: true,
+                          activeColor: Colors.red[400],
+                          controlAffinity: ListTileControlAffinity.leading,
+                          value: true,
+                          onChanged: (value) {
+                            setState(() {
+                              projects.add(completedProjects[index]);
+                              completedProjects.removeAt(index);
+                              if (globals.completedProjects.isEmpty) {
+                                visibleButton = false;
+                              }
+                            });
+                          },
+                          title: Text(completedProjects[index].title,
+                              style: const TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.grey,
+                              ))));
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

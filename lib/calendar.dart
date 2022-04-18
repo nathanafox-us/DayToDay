@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:day_to_day/inherited.dart';
 import 'package:day_to_day/months.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +79,7 @@ class CalendarState extends State<CalendarWidget> {
                   pag = pages;
 
                   if (clickedPosition == -1) {
+                    deleteSearch.clear();
                     Widget firstLine;
                     Widget secondLine;
                     clickedPosition = getCurrentDay();
@@ -179,8 +179,10 @@ class CalendarState extends State<CalendarWidget> {
                           );
                         }
                         dayClicked.add(Column(children: [firstLine,secondLine],));
+                        deleteSearch.add(element);
                       }
                       );
+
                     } else {
                       dayClicked.add(const Text("No events today"));
                     }
@@ -763,10 +765,75 @@ class CalendarState extends State<CalendarWidget> {
                                                         globals.eventsList[d + m + y]?.elementAt(i).title == deleteSearch[index].title
                                                     ) {
                                                       globals.eventsList[d + m + y]?.removeAt(i);
-                                                      _tapDate(deleteSearch[index].from.day, deleteSearch[index].from.year, deleteSearch[index].from.month, pag);
-
                                                     }
                                                   }
+                                                  if (globals.projects.isNotEmpty) {
+                                                    for (int i = 0; i <globals.projects.length; i++) {
+                                                      if (globals.projects.elementAt(i).to.day == deleteSearch[index].to.day &&
+                                                          globals.projects.elementAt(i).to.month == deleteSearch[index].to.month &&
+                                                          globals.projects.elementAt(i).to.year == deleteSearch[index].to.year &&
+                                                          globals.projects.elementAt(i).to.hour == deleteSearch[index].to.hour &&
+                                                          globals.projects.elementAt(i).to.minute == deleteSearch[index].to.minute &&
+                                                          globals.projects.elementAt(i).from.day == deleteSearch[index].from.day &&
+                                                          globals.projects.elementAt(i).from.minute == deleteSearch[index].from.minute &&
+                                                          globals.projects.elementAt(i).from.year == deleteSearch[index].from.year &&
+                                                          globals.projects.elementAt(i).from.month == deleteSearch[index].from.month &&
+                                                          globals.projects.elementAt(i).from.hour == deleteSearch[index].from.hour &&
+                                                          globals.projects.elementAt(i).type == deleteSearch[index].type &&
+                                                          globals.projects.elementAt(i).allDay == deleteSearch[index].allDay &&
+                                                          globals.projects.elementAt(i).page == deleteSearch[index].page &&
+                                                          globals.projects.elementAt(i).title == deleteSearch[index].title
+                                                      )
+                                                      {
+                                                        globals.projects.removeAt(i);
+                                                      }
+                                                    }
+                                                  }
+                                                  if (globals.exams.isNotEmpty) {
+                                                    for (int i = 0; i <globals.exams.length; i++) {
+                                                      if (globals.exams.elementAt(i).to.day == deleteSearch[index].to.day &&
+                                                          globals.exams.elementAt(i).to.month == deleteSearch[index].to.month &&
+                                                          globals.exams.elementAt(i).to.year == deleteSearch[index].to.year &&
+                                                          globals.exams.elementAt(i).to.hour == deleteSearch[index].to.hour &&
+                                                          globals.exams.elementAt(i).to.minute == deleteSearch[index].to.minute &&
+                                                          globals.exams.elementAt(i).from.day == deleteSearch[index].from.day &&
+                                                          globals.exams.elementAt(i).from.minute == deleteSearch[index].from.minute &&
+                                                          globals.exams.elementAt(i).from.year == deleteSearch[index].from.year &&
+                                                          globals.exams.elementAt(i).from.month == deleteSearch[index].from.month &&
+                                                          globals.exams.elementAt(i).from.hour == deleteSearch[index].from.hour &&
+                                                          globals.exams.elementAt(i).type == deleteSearch[index].type &&
+                                                          globals.exams.elementAt(i).allDay == deleteSearch[index].allDay &&
+                                                          globals.exams.elementAt(i).page == deleteSearch[index].page &&
+                                                          globals.exams.elementAt(i).title == deleteSearch[index].title
+                                                      )
+                                                      {
+                                                        globals.exams.removeAt(i);
+                                                      }
+                                                    }
+                                                  }
+                                                  if (globals.assignments.isNotEmpty) {
+                                                    for (int i = 0; i <globals.assignments.length; i++) {
+                                                      if (globals.assignments.elementAt(i).to.day == deleteSearch[index].to.day &&
+                                                          globals.assignments.elementAt(i).to.month == deleteSearch[index].to.month &&
+                                                          globals.assignments.elementAt(i).to.year == deleteSearch[index].to.year &&
+                                                          globals.assignments.elementAt(i).to.hour == deleteSearch[index].to.hour &&
+                                                          globals.assignments.elementAt(i).to.minute == deleteSearch[index].to.minute &&
+                                                          globals.assignments.elementAt(i).from.day == deleteSearch[index].from.day &&
+                                                          globals.assignments.elementAt(i).from.minute == deleteSearch[index].from.minute &&
+                                                          globals.assignments.elementAt(i).from.year == deleteSearch[index].from.year &&
+                                                          globals.assignments.elementAt(i).from.month == deleteSearch[index].from.month &&
+                                                          globals.assignments.elementAt(i).from.hour == deleteSearch[index].from.hour &&
+                                                          globals.assignments.elementAt(i).type == deleteSearch[index].type &&
+                                                          globals.assignments.elementAt(i).allDay == deleteSearch[index].allDay &&
+                                                          globals.assignments.elementAt(i).page == deleteSearch[index].page &&
+                                                          globals.assignments.elementAt(i).title == deleteSearch[index].title
+                                                      )
+                                                      {
+                                                        globals.assignments.removeAt(i);
+                                                      }
+                                                    }
+                                                  }
+                                                  _tapDate(deleteSearch[index].from.day, deleteSearch[index].from.year, deleteSearch[index].from.month, pag);
                                                 }
 
                                                 Navigator.pop(context);
@@ -804,6 +871,7 @@ class CalendarState extends State<CalendarWidget> {
   void _tapDate(int day, int year, int month, int page) {
     dayClicked.clear();
     deleteSearch.clear();
+    print(globals.assignments.length);
     setState(() {
       clickedPosition = day;
     });
@@ -827,7 +895,6 @@ class CalendarState extends State<CalendarWidget> {
     } else {
       temp = [];
     }
-    List<String> repeatingStrings = [];
     if (globals.everyDay.isNotEmpty) {
       for (var element in globals.everyDay) {
         if (page >= element.page) {

@@ -9,5 +9,13 @@ List<Events> everyMonth = [];
 List<Events> everyWeek = [];
 List<Events> everyYear = [];
 List<Events> assignments = [];
-List<Events> homework = [];
+List<Events> exams = [];
 Map<String, List<ToDoList>> toDoList = {};
+
+
+
+List<Events> completedProjects = [];
+List<Events> completedExams = [];
+List<Events> completedAssignments = [];
+
+

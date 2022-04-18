@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:day_to_day/globals.dart';
 import 'event_form.dart';
+import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
-import 'events.dart';
 
-class AssignmentsWidget extends StatefulWidget {
-  List<Events> hw = [];
+class AssignmentsWidget extends StatefulWidget{
   AssignmentsWidget({Key? key, required this.stream}) : super(key: key);
   final Stream<bool> stream;
 
@@ -19,50 +19,127 @@ class AssignmentsState extends State<AssignmentsWidget> {
   void initState() {
 
     widget.stream.listen((event) {
-      setState(() {
-
-      });
+      setState(() {});
     });
     super.initState();
   }
 
+  bool isPlaying = true;
+
+  bool visibleList = false;
+  bool visibleButton = false;
+
   @override
   Widget build(BuildContext context) {
-    widget.hw = [];
-    globals.eventsList.forEach((key, value) {
-      for (int i = 0; i < value.length; i++) {
-        if (value[i].type.contains("assign")) {
-          widget.hw.add(value[i]);
-        }
-      }
-    });
+    print(globals.assignments.length);
+
+    if (globals.completedAssignments.isNotEmpty) {
+      visibleButton = true;
+    }
+    Color textColor = Colors.black;
+    var systemColor = MediaQuery.of(context).platformBrightness;
+    bool darkMode = systemColor == Brightness.dark;
+    if (darkMode) {
+      textColor = Colors.white;
+    }
+    print(globals.assignments.length);
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text("Assignments List")),
         backgroundColor: const Color.fromARGB(255, 255, 82, 82),
       ),
-      body: ListView.builder(
-        itemCount: widget.hw.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-              child: CheckboxListTile(
-                  dense: true,
-                  activeColor: Colors.red[400],
-                  controlAffinity: ListTileControlAffinity.leading,
-                  value: false,
-                  onChanged: (value) {
-                    setState(() {
-                      widget.hw.removeAt(index);
-                    });
-                  },
-                  title: Text(
-                    widget.hw[index].title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Color.fromARGB(255, 12, 12, 12)),
-                  )));
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: assignments.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                    child: CheckboxListTile(
+                        dense: true,
+                        activeColor: Colors.red[400],
+                        controlAffinity: ListTileControlAffinity.leading,
+                        value: false,
+                        onChanged: (value) {
+                          setState(() {
+                            completedAssignments.add(globals.assignments[index]);
+                            assignments.removeAt(index);
+                            if (globals.completedAssignments.isNotEmpty) {
+                              visibleButton = true;
+                            }
+                          });
+                        },
+                        title: Text(assignments[index].title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: textColor,
+                            ))));
+              },
+            ),
+          ),
+          Visibility(
+            visible: visibleButton,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            child: TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  isPlaying = !isPlaying;
+                  visibleList = !visibleList;
+                });
+              },
+              icon: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) => RotationTransition(
+                    turns: child.key == const ValueKey('firstIcon') ? Tween<double>(begin: 0, end: 1).animate(animation) : Tween<double>(begin: 0, end: 1).animate(animation),
+                    child: FadeTransition(opacity: animation, child: child),
+                  ),
+                  child: isPlaying ? const Icon(Icons.arrow_right_outlined, key: ValueKey('secondIcon')) : const Icon(Icons.arrow_drop_down_sharp, key: ValueKey('firstIcon'),)),
+              label: const Text(
+                "Completed",
+                style: TextStyle(fontSize: 22),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Visibility(
+              visible: visibleList,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: ListView.builder(
+                itemCount: completedAssignments.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                      child: CheckboxListTile(
+                          dense: true,
+                          activeColor: Colors.red[400],
+                          controlAffinity: ListTileControlAffinity.leading,
+                          value: true,
+                          onChanged: (value) {
+                            setState(() {
+                              assignments.add(completedAssignments[index]);
+                              completedAssignments.removeAt(index);
+                              if (globals.completedAssignments.isEmpty) {
+                                visibleButton = false;
+                              }
+                            });
+                          },
+                          title: Text(completedAssignments[index].title,
+                              style: const TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.grey,
+                              ))));
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

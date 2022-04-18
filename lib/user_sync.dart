@@ -211,7 +211,7 @@ class Sync {
       sendMonthly(globals.everyMonth);
       sendYearly(globals.everyYear);
       sendAssignments(globals.assignments);
-      sendHomework(globals.homework);
+      sendHomework(globals.exams);
       globals.toDoList.forEach((date, todos) => sendToDoList(date, todos));
     } else {
       //syncing disc FROM firebase
@@ -244,9 +244,9 @@ class Sync {
         globals.assignments.clear();
       }
       if (snap.child('homework').exists) {
-        globals.homework = await getHomework();
+        globals.exams = await getHomework();
       } else {
-        globals.homework.clear();
+        globals.exams.clear();
       }
       await getToDoList();
     }
