@@ -654,7 +654,7 @@ class CalendarState extends State<CalendarWidget> {
       clickedPosition = day;
     });
 
-    Sync.sync();
+    Sync.sync(DateTime.now());
     /* Student testUser = Student();
     print('User created');
     testUser.uID = day.toString();
