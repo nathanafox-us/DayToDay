@@ -102,6 +102,9 @@ class _MyStatefulWidgetState extends State<AppWidget>
 
   @override
   void initState() {
+    Timer syncTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      Sync.sync();
+    });
     super.initState();
     tabController = TabController(length: 5, vsync: this);
   }
@@ -166,11 +169,11 @@ class _MyStatefulWidgetState extends State<AppWidget>
         backgroundColor: appBarC,
         actions: const [
           //IconButton(
-            //onPressed: () => onSearchButtonPressed(),
-            //icon: Image.asset(
-              //"assets/icons/search-icon.png",
-            //),
-            //splashRadius: 20,
+          //onPressed: () => onSearchButtonPressed(),
+          //icon: Image.asset(
+          //"assets/icons/search-icon.png",
+          //),
+          //splashRadius: 20,
           //),
           /*IconButton(
             onPressed: () => onFindMyDayPressed(equation, pageController),
@@ -212,27 +215,29 @@ class _MyStatefulWidgetState extends State<AppWidget>
             const Tab(
               text: "Exams",
             ),
-      
           ],
         ),
       ),
       body: TabBarView(
         controller: tabController,
-
         children: <Widget>[
           CalendarWidget(
             stream: streamController.stream,
           ),
           const ToDoListDirectoryWidget(),
-          AssignmentsWidget(stream: streamController.stream,),
-          ProjectsWidget(stream: streamController.stream,),
-          ExamsWidget(stream: streamController.stream,),
+          AssignmentsWidget(
+            stream: streamController.stream,
+          ),
+          ProjectsWidget(
+            stream: streamController.stream,
+          ),
+          ExamsWidget(
+            stream: streamController.stream,
+          ),
         ],
-
       ),
     );
   }
 
   void onSearchButtonPressed() {}
-
 }

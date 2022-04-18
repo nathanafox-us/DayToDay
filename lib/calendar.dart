@@ -1131,7 +1131,6 @@ class CalendarState extends State<CalendarWidget> {
     setState(() {
       clickedPosition = day;
     });
-    Sync.sync();
 
     List<Events> temp;
     String dayString = day.toString();
@@ -1437,8 +1436,6 @@ class CalendarState extends State<CalendarWidget> {
 
     final access = StateWidget.of(context);
     access?.updateClicked(day, year, month);
-    DatabaseReference _day = FirebaseDatabase.instance.ref().child("test");
-    _day.set("Day tapped: ${day}");
   }
 
   void navigationPress(int month, int year, BuildContext context) {
