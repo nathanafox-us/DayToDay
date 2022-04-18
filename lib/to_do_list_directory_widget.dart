@@ -16,11 +16,15 @@ void newList() {
 
   DateTime todaysDate = DateTime.now();
 
-  String key = todaysDate.month.toString() +
-      "/" +
-      todaysDate.day.toString() +
-      "/" +
-      todaysDate.year.toString();
+  int month = todaysDate.month.toInt();
+  int day = todaysDate.day.toInt();
+  int year = todaysDate.year.toInt();
+
+  String key = (month / 10).toString() +
+      (month % 10).toString() +
+      (day / 10).toString() +
+      (day % 10).toString() +
+      year.toString();
 
   if (!globals.toDoList.containsKey(key)) {
     list.add(ToDoList(key + " To Do List"));
