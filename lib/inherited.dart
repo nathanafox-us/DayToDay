@@ -129,6 +129,7 @@ class _InheritedStateState extends State<InheritedState> {
         return a.from.hour.compareTo(b.from.hour);
       }
     });
+    globals.timestamp = DateTime.now();
   }
 
   @override
