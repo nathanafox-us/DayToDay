@@ -224,7 +224,7 @@ class Sync {
   }
 
   static sync([DateTime? ts]) async {
-    print('Global timestamp: ' + globals.timestamp.toString());
+    //print('Global timestamp: ' + globals.timestamp.toString());
     if (ts != null) {
       globals.timestamp = ts;
     }
@@ -237,7 +237,7 @@ class Sync {
     }
 
     print('Syncing...');
-    print('Global timestamp: ' + globals.timestamp.toString());
+    //print('Global timestamp: ' + globals.timestamp.toString());
 
     //check timestamp and decide which way to sync
     //Whichever data is more recent takes priority

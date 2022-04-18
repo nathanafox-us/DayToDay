@@ -103,7 +103,7 @@ class _MyStatefulWidgetState extends State<AppWidget>
   @override
   void initState() {
     Sync.sync();
-    Timer syncTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    Timer syncTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       Sync.sync();
     });
     super.initState();
