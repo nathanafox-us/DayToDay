@@ -224,6 +224,7 @@ class Sync {
   }
 
   static sync([DateTime? ts]) async {
+    print('Global timestamp: ' + globals.timestamp.toString());
     if (ts != null) {
       globals.timestamp = ts;
     }
@@ -236,13 +237,16 @@ class Sync {
     }
 
     print('Syncing...');
+    print('Global timestamp: ' + globals.timestamp.toString());
 
     //check timestamp and decide which way to sync
     //Whichever data is more recent takes priority
     if (timestamp.isBefore(globals.timestamp)) {
+      print('setting...');
       //syncing Firebase FROM disc
       //updating database timestamp
       timestamp = globals.timestamp;
+      print(globals.timestamp.toString());
       user.child('timestamp').set(timestamp.toString());
       globals.eventsList
           .forEach((date, events) => sendEventsList(date, events));
@@ -258,9 +262,11 @@ class Sync {
       sendCompletedProjects(globals.completedProjects);
       globals.toDoList.forEach((date, todos) => sendToDoList(date, todos));
     } else {
+      print('getting...');
       //syncing disc FROM firebase
       //updating local timestamp
       globals.timestamp = timestamp;
+      print(globals.timestamp.toString());
       await getEventsList();
       if (snap.child('everyDay').exists) {
         globals.everyDay = await getDaily();

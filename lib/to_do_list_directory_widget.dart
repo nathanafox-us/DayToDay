@@ -17,9 +17,7 @@ void newList() {
   DateTime todaysDate = DateTime.now();
 
   String key = todaysDate.month.toString() +
-      "/" +
       todaysDate.day.toString() +
-      "/" +
       todaysDate.year.toString();
 
   if (!globals.toDoList.containsKey(key)) {
@@ -27,7 +25,7 @@ void newList() {
     globals.toDoList[key] = list;
   }
 
-  // Sync.sync(DateTime.now());
+  Sync.sync(DateTime.now());
 }
 
 class ToDoListDirectoryWidget extends StatelessWidget {
