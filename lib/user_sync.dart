@@ -82,8 +82,28 @@ class Sync {
     sendEvents(ref, events);
   }
 
-  static void sendHomework(List<Events> events) {
-    DatabaseReference ref = user.child('homework');
+  static void sendExams(List<Events> events) {
+    DatabaseReference ref = user.child('exams');
+    sendEvents(ref, events);
+  }
+
+  static void sendProjects(List<Events> events) {
+    DatabaseReference ref = user.child('projects');
+    sendEvents(ref, events);
+  }
+
+  static void sendCompletedAssignments(List<Events> events) {
+    DatabaseReference ref = user.child('completedAssignments');
+    sendEvents(ref, events);
+  }
+
+  static void sendCompletedExams(List<Events> events) {
+    DatabaseReference ref = user.child('completedExams');
+    sendEvents(ref, events);
+  }
+
+  static void sendCompletedProjects(List<Events> events) {
+    DatabaseReference ref = user.child('completedProjects');
     sendEvents(ref, events);
   }
 
@@ -169,8 +189,28 @@ class Sync {
     return await getEvents(ref);
   }
 
-  static Future<List<Events>> getHomework() async {
-    DatabaseReference ref = user.child('homework');
+  static Future<List<Events>> getExams() async {
+    DatabaseReference ref = user.child('exams');
+    return await getEvents(ref);
+  }
+
+  static Future<List<Events>> getProjects() async {
+    DatabaseReference ref = user.child('projects');
+    return await getEvents(ref);
+  }
+
+  static Future<List<Events>> getCompletedAssignments() async {
+    DatabaseReference ref = user.child('completedAssignments');
+    return await getEvents(ref);
+  }
+
+  static Future<List<Events>> getCompletedExams() async {
+    DatabaseReference ref = user.child('completedExams');
+    return await getEvents(ref);
+  }
+
+  static Future<List<Events>> getCompletedProjects() async {
+    DatabaseReference ref = user.child('completedProjects');
     return await getEvents(ref);
   }
 
@@ -211,7 +251,11 @@ class Sync {
       sendMonthly(globals.everyMonth);
       sendYearly(globals.everyYear);
       sendAssignments(globals.assignments);
-      sendHomework(globals.exams);
+      sendExams(globals.exams);
+      sendProjects(globals.projects);
+      sendCompletedAssignments(globals.completedAssignments);
+      sendCompletedExams(globals.completedExams);
+      sendCompletedProjects(globals.completedProjects);
       globals.toDoList.forEach((date, todos) => sendToDoList(date, todos));
     } else {
       //syncing disc FROM firebase
@@ -243,10 +287,30 @@ class Sync {
       } else {
         globals.assignments.clear();
       }
-      if (snap.child('homework').exists) {
-        globals.exams = await getHomework();
+      if (snap.child('exams').exists) {
+        globals.exams = await getExams();
       } else {
         globals.exams.clear();
+      }
+      if (snap.child('projects').exists) {
+        globals.projects = await getProjects();
+      } else {
+        globals.projects.clear();
+      }
+      if (snap.child('completedAssignments').exists) {
+        globals.completedAssignments = await getCompletedAssignments();
+      } else {
+        globals.completedAssignments.clear();
+      }
+      if (snap.child('completedExams').exists) {
+        globals.completedExams = await getCompletedExams();
+      } else {
+        globals.completedExams.clear();
+      }
+      if (snap.child('completedProjects').exists) {
+        globals.completedProjects = await getCompletedProjects();
+      } else {
+        globals.completedProjects.clear();
       }
       await getToDoList();
     }
