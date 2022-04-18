@@ -183,7 +183,7 @@ class Sync {
     }
   }
 
-  static sync({DateTime? ts}) async {
+  static sync([DateTime? ts]) async {
     if (ts != null) {
       globals.timestamp = ts;
     }
