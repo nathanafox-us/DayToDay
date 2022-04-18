@@ -1,6 +1,9 @@
 import 'package:day_to_day/inherited.dart';
 import 'package:day_to_day/login_widget.dart';
-import 'package:day_to_day/months.dart';
+import 'package:day_to_day/events.dart';
+import 'package:day_to_day/projects_widget.dart';
+import 'package:day_to_day/assignments.dart';
+import 'package:day_to_day/exams.dart';
 import 'package:day_to_day/to_do_list_directory_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,7 @@ import 'package:day_to_day/calendar.dart';
 import 'package:day_to_day/event_form.dart';
 import 'package:day_to_day/user_sync.dart';
 import 'dart:async';
+import 'event_list_storage.dart';
 
 StreamController<bool> streamController = StreamController<bool>.broadcast();
 
@@ -67,7 +71,7 @@ class DayToDay extends StatelessWidget {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return const AppWidget();
+                return AppWidget();
               } else if (snapshot.hasError) {
                 return const Center(
                   child: Text('Error'),
@@ -85,29 +89,35 @@ class DayToDay extends StatelessWidget {
 }
 
 class AppWidget extends StatefulWidget {
-  const AppWidget({Key? key}) : super(key: key);
+  AppWidget({Key? key}) : super(key: key);
+  List<Events> eventList = [];
+
   @override
   State<AppWidget> createState() => _MyStatefulWidgetState();
 }
 
 class _MyStatefulWidgetState extends State<AppWidget>
     with TickerProviderStateMixin {
-  late TabController _tabController;
+  late TabController tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    tabController = TabController(length: 5, vsync: this);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var pass = EventListStorage("Project").readEvents().then((value) {
+      widget.eventList = value;
+    });
+
     var systemColor = MediaQuery.of(context).platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
     Color labelColorChange;
@@ -145,23 +155,8 @@ class _MyStatefulWidgetState extends State<AppWidget>
                 FirebaseAuth.instance.signOut();
               },
             ),
-            ListTile(
-              title: const Text('Ex2'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => onAddEventButtonPressed(),
-        child: const Icon(
-          Icons.add,
-          size: 45,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.blueGrey,
       ),
       appBar: AppBar(
         title: Text(
@@ -169,14 +164,14 @@ class _MyStatefulWidgetState extends State<AppWidget>
           style: TextStyle(color: appBarT),
         ),
         backgroundColor: appBarC,
-        actions: [
-          IconButton(
-            onPressed: () => onSearchButtonPressed(),
-            icon: Image.asset(
-              "assets/icons/search-icon.png",
-            ),
-            splashRadius: 20,
-          ),
+        actions: const [
+          //IconButton(
+            //onPressed: () => onSearchButtonPressed(),
+            //icon: Image.asset(
+              //"assets/icons/search-icon.png",
+            //),
+            //splashRadius: 20,
+          //),
           /*IconButton(
             onPressed: () => onFindMyDayPressed(equation, pageController),
             icon: Image.asset(
@@ -186,10 +181,10 @@ class _MyStatefulWidgetState extends State<AppWidget>
           ),*/
         ],
         bottom: TabBar(
+          isScrollable: true,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
-          controller: _tabController,
-          isScrollable: true,
+          controller: tabController,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: <Widget>[
             Tab(
@@ -209,45 +204,35 @@ class _MyStatefulWidgetState extends State<AppWidget>
               text: "To-Do",
             ),
             const Tab(
-              text: "Projects",
+              text: "Assignments",
             ),
             const Tab(
-              text: "Assignments",
+              text: "Projects",
             ),
             const Tab(
               text: "Exams",
             ),
+      
           ],
         ),
       ),
       body: TabBarView(
-        controller: _tabController,
+        controller: tabController,
+
         children: <Widget>[
           CalendarWidget(
             stream: streamController.stream,
           ),
           const ToDoListDirectoryWidget(),
-          const Center(
-            child: Text("Projects"),
-          ),
-          const Center(
-            child: Text("HW"),
-          ),
-          const Center(
-            child: Text("Exams"),
-          )
+          AssignmentsWidget(stream: streamController.stream,),
+          ProjectsWidget(stream: streamController.stream,),
+          ExamsWidget(stream: streamController.stream,),
         ],
+
       ),
     );
   }
 
   void onSearchButtonPressed() {}
-  void onAddEventButtonPressed() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      int? clicked = StateWidget.of(context)?.clicked;
 
-      //print(clicked);
-      return const EventForm();
-    }));
-  }
 }

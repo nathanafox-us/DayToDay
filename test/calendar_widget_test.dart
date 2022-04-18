@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 StreamController<bool> streamController = StreamController<bool>.broadcast();
 
 void main() {
-  /*
+
   testWidgets('Testing that correct month displayed at app startup', (WidgetTester tester) async {
     // Create the widget by telling the tester to build it.
     await tester.pumpWidget(MaterialApp(home: Material(child: CalendarWidget(stream: streamController.stream,))));
@@ -25,11 +25,11 @@ void main() {
     // Ensure that the item is no longer on screen.
     expect(find.text('2022'), findsOneWidget);
   });
-  */
+
   testWidgets('Test if add event button brings up new page',
       (WidgetTester tester) async {
     await tester
-        .pumpWidget(const MaterialApp(home: Material(child: AppWidget())));
+        .pumpWidget(MaterialApp(home: Material(child: AppWidget())));
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 
@@ -39,7 +39,7 @@ void main() {
   testWidgets('Test if cancel button on event add page goes back to calendar',
       (WidgetTester tester) async {
     await tester
-        .pumpWidget(const MaterialApp(home: Material(child: AppWidget())));
+        .pumpWidget(MaterialApp(home: Material(child: AppWidget())));
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(TextButton).first);

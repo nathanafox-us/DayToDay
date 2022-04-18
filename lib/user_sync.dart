@@ -32,7 +32,7 @@ class Sync {
       eventRef.child('page').set(event.page);
       eventRef.child('title').set(event.title);
       eventRef.child('allDay').set(event.allDay);
-      eventRef.child('eventType').set(event.eventType);
+      eventRef.child('eventType').set(event.type);
       DatabaseReference color = eventRef.child('color');
       color.child('a').set(event.color.alpha);
       color.child('r').set(event.color.red);
@@ -211,7 +211,7 @@ class Sync {
       sendMonthly(globals.everyMonth);
       sendYearly(globals.everyYear);
       sendAssignments(globals.assignments);
-      sendHomework(globals.homework);
+      sendHomework(globals.exams);
       globals.toDoList.forEach((date, todos) => sendToDoList(date, todos));
     } else {
       //syncing disc FROM firebase
@@ -244,9 +244,9 @@ class Sync {
         globals.assignments.clear();
       }
       if (snap.child('homework').exists) {
-        globals.homework = await getHomework();
+        globals.exams = await getHomework();
       } else {
-        globals.homework.clear();
+        globals.exams.clear();
       }
       await getToDoList();
     }
