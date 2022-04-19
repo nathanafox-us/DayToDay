@@ -375,6 +375,7 @@ class AssignmentsState extends State<AssignmentsWidget> {
                     }
 
                     Navigator.pop(context);
+                    globals.timestamp = DateTime.now();
                   },
                   child: const Text('Delete'),
                 ),
@@ -383,6 +384,5 @@ class AssignmentsState extends State<AssignmentsWidget> {
           visibleButton = false;
         }));
     print('ayyy im syncin here');
-    Sync.sync(DateTime.now());
   }
 }

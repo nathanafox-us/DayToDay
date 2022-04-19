@@ -362,6 +362,7 @@ class ExamsState extends State<ExamsWidget> {
                     }
 
                     Navigator.pop(context);
+                    globals.timestamp = DateTime.now();
                   },
                   child: const Text('Delete'),
                 ),
@@ -370,6 +371,5 @@ class ExamsState extends State<ExamsWidget> {
           visibleButton = false;
         }));
     print('ayyyy im syncin exams hea');
-    Sync.sync(DateTime.now());
   }
 }

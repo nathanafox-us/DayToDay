@@ -372,6 +372,7 @@ class ProjectsState extends State<ProjectsWidget> {
                       }
                     }
 
+                    globals.timestamp = DateTime.now();
                     Navigator.pop(context);
                   },
                   child: const Text('Delete'),
@@ -381,6 +382,5 @@ class ProjectsState extends State<ProjectsWidget> {
           visibleButton = false;
         }));
     print('hey pauly watch me delete this project');
-    Sync.sync(DateTime.now());
   }
 }
