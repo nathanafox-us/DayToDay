@@ -12,6 +12,8 @@ class ToDoListWidget extends StatefulWidget {
 }
 
 class _ToDoListWidgetState extends State<ToDoListWidget> {
+  final textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +70,45 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                       )));
             }
           }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: displayAddTask,
+        child: const Icon(
+          Icons.add,
+          size: 45,
+          color: Colors.white,
+        ),
+      ),
     );
+  }
+
+  Future<void> displayAddTask() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: const Text('Add task'),
+            actions: <Widget>[
+              TextButton(child: const Text('Add'), onPressed: addItem),
+              TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  })
+            ],
+            content: TextField(
+              controller: textController,
+              textInputAction: TextInputAction.next,
+            ));
+      },
+    );
+  }
+
+  void addItem() {
+    setState(() {
+      widget.list.addItem(textController.text.trim());
+    });
+    //Sync.sync(DateTime.now());
+    textController.clear();
+    Navigator.of(context).pop();
   }
 }

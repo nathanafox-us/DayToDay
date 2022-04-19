@@ -20,14 +20,20 @@ void newList() {
   int day = todaysDate.day.toInt();
   int year = todaysDate.year.toInt();
 
-  String key = (month / 10).toString() +
-      (month % 10).toString() +
-      (day / 10).toString() +
+  String key = ((day / 10).toInt()).toString() +
       (day % 10).toString() +
+      ((month / 10).toInt()).toString() +
+      (month % 10).toString() +
       year.toString();
 
   if (!globals.toDoList.containsKey(key)) {
-    list.add(ToDoList(key + " To Do List"));
+    String title = key.substring(2, 4) +
+        "." +
+        key.substring(0, 2) +
+        "." +
+        key.substring(4) +
+        " To Do List";
+    list.add(ToDoList(title));
     globals.toDoList[key] = list;
   }
 
@@ -48,7 +54,8 @@ class ToDoListDirectoryWidget extends StatelessWidget {
       // for loop to make each card of the list
       itemBuilder: (context, int index) {
         // getting around nulls
-        String key = globals.toDoList.keys.elementAt(index);
+        String key = globals.toDoList.keys
+            .elementAt(globals.toDoList.length - 1 - index);
         String? tempTitle = "";
         String title = "";
         ToDoList? tempToDo;
