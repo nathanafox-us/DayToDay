@@ -82,8 +82,28 @@ class Sync {
     sendEvents(ref, events);
   }
 
-  static void sendHomework(List<Events> events) {
-    DatabaseReference ref = user.child('homework');
+  static void sendExams(List<Events> events) {
+    DatabaseReference ref = user.child('exams');
+    sendEvents(ref, events);
+  }
+
+  static void sendProjects(List<Events> events) {
+    DatabaseReference ref = user.child('projects');
+    sendEvents(ref, events);
+  }
+
+  static void sendCompletedAssignments(List<Events> events) {
+    DatabaseReference ref = user.child('completedAssignments');
+    sendEvents(ref, events);
+  }
+
+  static void sendCompletedExams(List<Events> events) {
+    DatabaseReference ref = user.child('completedExams');
+    sendEvents(ref, events);
+  }
+
+  static void sendCompletedProjects(List<Events> events) {
+    DatabaseReference ref = user.child('completedProjects');
     sendEvents(ref, events);
   }
 
@@ -169,8 +189,28 @@ class Sync {
     return await getEvents(ref);
   }
 
-  static Future<List<Events>> getHomework() async {
-    DatabaseReference ref = user.child('homework');
+  static Future<List<Events>> getExams() async {
+    DatabaseReference ref = user.child('exams');
+    return await getEvents(ref);
+  }
+
+  static Future<List<Events>> getProjects() async {
+    DatabaseReference ref = user.child('projects');
+    return await getEvents(ref);
+  }
+
+  static Future<List<Events>> getCompletedAssignments() async {
+    DatabaseReference ref = user.child('completedAssignments');
+    return await getEvents(ref);
+  }
+
+  static Future<List<Events>> getCompletedExams() async {
+    DatabaseReference ref = user.child('completedExams');
+    return await getEvents(ref);
+  }
+
+  static Future<List<Events>> getCompletedProjects() async {
+    DatabaseReference ref = user.child('completedProjects');
     return await getEvents(ref);
   }
 
@@ -183,7 +223,8 @@ class Sync {
     }
   }
 
-  static sync({DateTime? ts}) async {
+  static sync([DateTime? ts]) async {
+    //print('Global timestamp: ' + globals.timestamp.toString());
     if (ts != null) {
       globals.timestamp = ts;
     }
@@ -196,13 +237,16 @@ class Sync {
     }
 
     print('Syncing...');
+    //print('Global timestamp: ' + globals.timestamp.toString());
 
     //check timestamp and decide which way to sync
     //Whichever data is more recent takes priority
     if (timestamp.isBefore(globals.timestamp)) {
+      print('setting...');
       //syncing Firebase FROM disc
       //updating database timestamp
       timestamp = globals.timestamp;
+      print(globals.timestamp.toString());
       user.child('timestamp').set(timestamp.toString());
       globals.eventsList
           .forEach((date, events) => sendEventsList(date, events));
@@ -211,12 +255,18 @@ class Sync {
       sendMonthly(globals.everyMonth);
       sendYearly(globals.everyYear);
       sendAssignments(globals.assignments);
-      sendHomework(globals.homework);
+      sendExams(globals.exams);
+      sendProjects(globals.projects);
+      sendCompletedAssignments(globals.completedAssignments);
+      sendCompletedExams(globals.completedExams);
+      sendCompletedProjects(globals.completedProjects);
       globals.toDoList.forEach((date, todos) => sendToDoList(date, todos));
     } else {
+      print('getting...');
       //syncing disc FROM firebase
       //updating local timestamp
       globals.timestamp = timestamp;
+      print(globals.timestamp.toString());
       await getEventsList();
       if (snap.child('everyDay').exists) {
         globals.everyDay = await getDaily();
@@ -243,10 +293,30 @@ class Sync {
       } else {
         globals.assignments.clear();
       }
-      if (snap.child('homework').exists) {
-        globals.homework = await getHomework();
+      if (snap.child('exams').exists) {
+        globals.exams = await getExams();
       } else {
-        globals.homework.clear();
+        globals.exams.clear();
+      }
+      if (snap.child('projects').exists) {
+        globals.projects = await getProjects();
+      } else {
+        globals.projects.clear();
+      }
+      if (snap.child('completedAssignments').exists) {
+        globals.completedAssignments = await getCompletedAssignments();
+      } else {
+        globals.completedAssignments.clear();
+      }
+      if (snap.child('completedExams').exists) {
+        globals.completedExams = await getCompletedExams();
+      } else {
+        globals.completedExams.clear();
+      }
+      if (snap.child('completedProjects').exists) {
+        globals.completedProjects = await getCompletedProjects();
+      } else {
+        globals.completedProjects.clear();
       }
       await getToDoList();
     }

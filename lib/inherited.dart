@@ -60,6 +60,16 @@ class _InheritedStateState extends State<InheritedState> {
     if (monthFrom < 10) {
       mfStr = '0' + mfStr;
     }
+    if (eventType == "assignment") {
+      globals.assignments
+          .add(Events(title, color, allDay, page, from, to, eventType));
+    } else if (eventType == "project") {
+      globals.projects
+          .add(Events(title, color, allDay, page, from, to, eventType));
+    } else if (eventType == "exam") {
+      globals.exams
+          .add(Events(title, color, allDay, page, from, to, eventType));
+    }
 
     if (repeat == "Everyday") {
       globals.everyDay
@@ -110,7 +120,7 @@ class _InheritedStateState extends State<InheritedState> {
         }
       }
     }
-    //Sync.sync(DateTime.now());
+    Sync.sync(DateTime.now());
 
     globals.eventsList[dfStr + mfStr + yearFrom.toString()]?.sort((a, b) {
       if (a.from.hour == b.from.hour) {
@@ -119,6 +129,7 @@ class _InheritedStateState extends State<InheritedState> {
         return a.from.hour.compareTo(b.from.hour);
       }
     });
+    globals.timestamp = DateTime.now();
   }
 
   @override

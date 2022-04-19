@@ -37,7 +37,7 @@ void newList() {
     globals.toDoList[key] = list;
   }
 
-  // Sync.sync(DateTime.now());
+  Sync.sync(DateTime.now());
 }
 
 class ToDoListDirectoryWidget extends StatelessWidget {

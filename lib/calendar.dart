@@ -24,7 +24,7 @@ class CalendarState extends State<CalendarWidget> {
   String display = "";
   int clickedPosition = -1;
   List<Widget> dayClicked = [];
-  Map<int, Events> span = {};
+  Map<String, Events> span = {};
   int pag = 0;
   List<Events> deleteSearch = [];
 
@@ -54,7 +54,9 @@ class CalendarState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     Months monthView;
-    var systemColor = MediaQuery.of(context).platformBrightness;
+    var systemColor = MediaQuery
+        .of(context)
+        .platformBrightness;
     bool darkMode = systemColor == Brightness.dark;
 
     return InheritedState(
@@ -80,6 +82,7 @@ class CalendarState extends State<CalendarWidget> {
                   pag = pages;
 
                   if (clickedPosition == -1) {
+                    deleteSearch.clear();
                     Widget firstLine;
                     Widget secondLine;
                     clickedPosition = getCurrentDay();
@@ -178,7 +181,9 @@ class CalendarState extends State<CalendarWidget> {
                             ),
                           );
                         }
-                        dayClicked.add(Column(children: [firstLine,secondLine],));
+                        dayClicked.add(Column(
+                          children: [firstLine, secondLine],));
+                        deleteSearch.add(element);
                       }
                       );
                     } else {
@@ -380,11 +385,51 @@ class CalendarState extends State<CalendarWidget> {
                                 dayInfo.add(textStyleToday);
                                 if (todayE != null) {
                                   for (var element in todayE) {
+                                    if (element.to
+                                        .difference(element.from)
+                                        .inDays != 0) {
+                                      for (int i = 0; i <= element.to.difference(element.from).inDays; i++) {
+                                        int dayCalc = element.from.day + i;
+                                        int month = element.from.month;
+                                        int yearCalc = element.from.year;
+
+                                        if (dayCalc >
+                                            DateTime(element.from.year,
+                                                element.from.month + 1, 0)
+                                                .day) {
+                                          dayCalc = 1;
+                                          month += 1;
+                                        }
+                                        if (month > 12) {
+                                          if (month % 12 == 0) {
+                                            yearCalc += month ~/ 12;
+                                          }
+                                          month = 1;
+                                        }
+                                        span[(dayCalc.toString() + month.toString() + yearCalc.toString())] = element;
+                                      }
+                                    }
+                                    else {
+                                      dayInfo.add(Container(
+                                        padding:
+                                        const EdgeInsets.only(top: 10),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            color: element.color),
+                                        height: 2,
+                                        width: 40,
+                                      ));
+                                    }
+                                  }
+                                }
+                                if (span.isNotEmpty) {
+                                  if (span[day.toString() + userMonth.toString() + (yearEarly + yearsPassed).toString()] != null) {
                                     dayInfo.add(Container(
-                                      padding: const EdgeInsets.only(top: 10),
+                                      padding:
+                                      const EdgeInsets.only(top: 10),
                                       decoration: BoxDecoration(
                                           shape: BoxShape.rectangle,
-                                          color: element.color),
+                                          color: span[day.toString() + userMonth.toString() + (yearEarly + yearsPassed).toString()]?.color),
                                       height: 2,
                                       width: 40,
                                     ));
@@ -431,8 +476,7 @@ class CalendarState extends State<CalendarWidget> {
                                           day);
                                       if (element.to
                                           .difference(element.from)
-                                          .inDays !=
-                                          0) {
+                                          .inDays != 0) {
                                         for (int i = 0;
                                         i <=
                                             element.to
@@ -489,7 +533,8 @@ class CalendarState extends State<CalendarWidget> {
                                             }
                                           }
                                         }
-                                      } else if (weekDay.weekday ==
+                                      }
+                                      else if (weekDay.weekday ==
                                           (element.from.weekday)) {
                                         if (element.from.year ==
                                             (yearsPassed + yearEarly) &&
@@ -560,7 +605,8 @@ class CalendarState extends State<CalendarWidget> {
                                           }
                                         }
                                       }
-                                    } else {
+                                    }
+                                    else {
                                       if (day == element.from.day) {
                                         if (temporaryM >= element.page) {
                                           dayInfo.add(Container(
@@ -656,11 +702,12 @@ class CalendarState extends State<CalendarWidget> {
                                           children: dayInfo,
                                         ),
                                       ),
-                                      onTap: () => _tapDate(
-                                          day,
-                                          yearEarly + yearsPassed,
-                                          userMonth,
-                                          temporaryM),
+                                      onTap: () =>
+                                          _tapDate(
+                                              day,
+                                              yearEarly + yearsPassed,
+                                              userMonth,
+                                              temporaryM),
                                     ),
                                   ),
                                 );
@@ -674,108 +721,665 @@ class CalendarState extends State<CalendarWidget> {
                             itemBuilder: (BuildContext context, int index) {
                               return InkWell(
                                   onTap: () {
-                                    if (deleteSearch[index].type == "assignment") {
-                                    }
-
+                                    if (deleteSearch[index].type ==
+                                        "assignment") {}
                                   },
                                   onLongPress: () {
                                     showDialog<void>(
                                         context: context,
-                                        builder: (BuildContext context) => AlertDialog(
-                                          title: const Text('Delete event?'),
-                                          content: const Text('Can\'t be undone'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(context),
-                                              child: const Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                String d = deleteSearch[index].from.day.toString();
-                                                String m = deleteSearch[index].from.month.toString();
-                                                String y = deleteSearch[index].from.year.toString();
-                                                print(deleteSearch[index].title);
-                                                print(deleteSearch[index].from.day);
-                                                print("In long press");
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                              title: const Text(
+                                                  'Delete event?'),
+                                              content: const Text(
+                                                  'Can\'t be undone'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    String d = deleteSearch[index]
+                                                        .from.day.toString();
+                                                    String m = deleteSearch[index]
+                                                        .from.month.toString();
+                                                    String y = deleteSearch[index]
+                                                        .from.year.toString();
+                                                    print(deleteSearch[index]
+                                                        .title);
+                                                    print(
+                                                        deleteSearch[index].from
+                                                            .day);
+                                                    print("In long press");
 
-                                                if (deleteSearch[index].to.difference(deleteSearch[index].from).inDays != 0) {
-                                                  //print("i am here");
-                                                  //print(deleteSearch[index].from.difference(deleteSearch[index].to).inDays);
-                                                  for (int j = 0; j <= deleteSearch[index].to.difference(deleteSearch[index].from).inDays; j++) {
-                                                    d = (deleteSearch[index].from.day + j).toString();
+                                                    if (deleteSearch[index].to
+                                                        .difference(
+                                                        deleteSearch[index]
+                                                            .from)
+                                                        .inDays != 0) {
+                                                      //print("i am here");
+                                                      //print(deleteSearch[index].from.difference(deleteSearch[index].to).inDays);
+                                                      for (int j = 0; j <=
+                                                          deleteSearch[index].to
+                                                              .difference(
+                                                              deleteSearch[index]
+                                                                  .from)
+                                                              .inDays; j++) {
+                                                        d = (deleteSearch[index]
+                                                            .from.day + j)
+                                                            .toString();
 
-                                                    if (int.parse(d) <= 9) {
-                                                      d = "0" + d;
-                                                    }
-                                                    if (int.parse(m) <= 9) {
-                                                      m = "0" + m;
-                                                    }
-                                                    //print(d);
-                                                    for (int i = 0; i < (globals.eventsList[d + m + y]?.length)!; i++) {
-                                                      //print(globals.eventsList[d + m + y]?.length);
+                                                        if (int.parse(d) <= 9) {
+                                                          d = "0" + d;
+                                                        }
+                                                        if (int.parse(m) <= 9) {
+                                                          m = "0" + m;
+                                                        }
+                                                        //print(d);
+                                                        for (int i = 0; i <
+                                                            (globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.length)!; i++) {
+                                                          //print(globals.eventsList[d + m + y]?.length);
 
 
-                                                      if (globals.eventsList[d + m + y]?.elementAt(i).to.day == deleteSearch[index].to.day &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).to.month == deleteSearch[index].to.month &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).to.year == deleteSearch[index].to.year &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).to.hour == deleteSearch[index].to.hour &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).to.minute == deleteSearch[index].to.minute &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).from.day == deleteSearch[index].from.day &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).from.minute == deleteSearch[index].from.minute &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).from.year == deleteSearch[index].from.year &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).from.month == deleteSearch[index].from.month &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).from.hour == deleteSearch[index].from.hour &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).type == deleteSearch[index].type &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).allDay == deleteSearch[index].allDay &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).page == deleteSearch[index].page &&
-                                                          globals.eventsList[d + m + y]?.elementAt(i).title == deleteSearch[index].title
-                                                      ) {
-
-                                                        globals.eventsList[d + m + y]?.removeAt(i);
-                                                        print("hm");
-
+                                                          if (globals
+                                                              .eventsList[d +
+                                                              m + y]
+                                                              ?.elementAt(i)
+                                                              .to
+                                                              .day ==
+                                                              deleteSearch[index]
+                                                                  .to.day &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .to
+                                                                  .month ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .month &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .to
+                                                                  .year ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .year &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .to
+                                                                  .hour ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .hour &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .to
+                                                                  .minute ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .minute &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .from
+                                                                  .day ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .day &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .from
+                                                                  .minute ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .minute &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .from
+                                                                  .year ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .year &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .from
+                                                                  .month ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .month &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .from
+                                                                  .hour ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .hour &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .type ==
+                                                                  deleteSearch[index]
+                                                                      .type &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .allDay ==
+                                                                  deleteSearch[index]
+                                                                      .allDay &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .page ==
+                                                                  deleteSearch[index]
+                                                                      .page &&
+                                                              globals
+                                                                  .eventsList[d +
+                                                                  m + y]
+                                                                  ?.elementAt(i)
+                                                                  .title ==
+                                                                  deleteSearch[index]
+                                                                      .title
+                                                          ) {
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.removeAt(i);
+                                                            print("hm");
+                                                          }
+                                                        }
                                                       }
+                                                      _tapDate(
+                                                          deleteSearch[index]
+                                                              .from.day,
+                                                          deleteSearch[index]
+                                                              .from.year,
+                                                          deleteSearch[index]
+                                                              .from.month, pag);
                                                     }
-                                                  }
-                                                  _tapDate(deleteSearch[index].from.day, deleteSearch[index].from.year, deleteSearch[index].from.month, pag);
-                                                }
-                                                else {
-                                                  if (int.parse(d) <= 9) {
-                                                    d = "0" + d;
-                                                  }
-                                                  if (int.parse(m) <= 9) {
-                                                    m = "0" + m;
-                                                  }
-                                                  for (int i = 0; i < (globals.eventsList[d + m + y]?.length)!; i++) {
-                                                    if (globals.eventsList[d + m + y]?.elementAt(i).to.day == deleteSearch[index].to.day &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).to.month == deleteSearch[index].to.month &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).to.year == deleteSearch[index].to.year &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).to.hour == deleteSearch[index].to.hour &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).to.minute == deleteSearch[index].to.minute &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).from.day == deleteSearch[index].from.day &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).from.minute == deleteSearch[index].from.minute &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).from.year == deleteSearch[index].from.year &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).from.month == deleteSearch[index].from.month &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).from.hour == deleteSearch[index].from.hour &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).type == deleteSearch[index].type &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).allDay == deleteSearch[index].allDay &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).page == deleteSearch[index].page &&
-                                                        globals.eventsList[d + m + y]?.elementAt(i).title == deleteSearch[index].title
-                                                    ) {
-                                                      globals.eventsList[d + m + y]?.removeAt(i);
-                                                      _tapDate(deleteSearch[index].from.day, deleteSearch[index].from.year, deleteSearch[index].from.month, pag);
-
+                                                    else {
+                                                      if (int.parse(d) <= 9) {
+                                                        d = "0" + d;
+                                                      }
+                                                      if (int.parse(m) <= 9) {
+                                                        m = "0" + m;
+                                                      }
+                                                      for (int i = 0; i <
+                                                          (globals
+                                                              .eventsList[d +
+                                                              m + y]
+                                                              ?.length)!; i++) {
+                                                        if (globals
+                                                            .eventsList[d + m +
+                                                            y]
+                                                            ?.elementAt(i)
+                                                            .to
+                                                            .day ==
+                                                            deleteSearch[index]
+                                                                .to.day &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .to
+                                                                .month ==
+                                                                deleteSearch[index]
+                                                                    .to.month &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .to
+                                                                .year ==
+                                                                deleteSearch[index]
+                                                                    .to.year &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .to
+                                                                .hour ==
+                                                                deleteSearch[index]
+                                                                    .to.hour &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .to
+                                                                .minute ==
+                                                                deleteSearch[index]
+                                                                    .to
+                                                                    .minute &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .from
+                                                                .day ==
+                                                                deleteSearch[index]
+                                                                    .from.day &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .from
+                                                                .minute ==
+                                                                deleteSearch[index]
+                                                                    .from
+                                                                    .minute &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .from
+                                                                .year ==
+                                                                deleteSearch[index]
+                                                                    .from
+                                                                    .year &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .from
+                                                                .month ==
+                                                                deleteSearch[index]
+                                                                    .from
+                                                                    .month &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .from
+                                                                .hour ==
+                                                                deleteSearch[index]
+                                                                    .from
+                                                                    .hour &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .type ==
+                                                                deleteSearch[index]
+                                                                    .type &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .allDay ==
+                                                                deleteSearch[index]
+                                                                    .allDay &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .page ==
+                                                                deleteSearch[index]
+                                                                    .page &&
+                                                            globals
+                                                                .eventsList[d +
+                                                                m + y]
+                                                                ?.elementAt(i)
+                                                                .title ==
+                                                                deleteSearch[index]
+                                                                    .title
+                                                        ) {
+                                                          globals.eventsList[d +
+                                                              m + y]?.removeAt(
+                                                              i);
+                                                        }
+                                                      }
+                                                      if (globals.projects
+                                                          .isNotEmpty) {
+                                                        for (int i = 0; i <
+                                                            globals.projects
+                                                                .length; i++) {
+                                                          if (globals.projects
+                                                              .elementAt(i)
+                                                              .to
+                                                              .day ==
+                                                              deleteSearch[index]
+                                                                  .to.day &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .month ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .month &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .year ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .year &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .hour ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .hour &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .minute ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .minute &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .day ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .day &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .minute ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .minute &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .year ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .year &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .month ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .month &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .hour ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .hour &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .type ==
+                                                                  deleteSearch[index]
+                                                                      .type &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .allDay ==
+                                                                  deleteSearch[index]
+                                                                      .allDay &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .page ==
+                                                                  deleteSearch[index]
+                                                                      .page &&
+                                                              globals.projects
+                                                                  .elementAt(i)
+                                                                  .title ==
+                                                                  deleteSearch[index]
+                                                                      .title
+                                                          ) {
+                                                            globals.projects
+                                                                .removeAt(i);
+                                                          }
+                                                        }
+                                                      }
+                                                      if (globals.exams
+                                                          .isNotEmpty) {
+                                                        for (int i = 0; i <
+                                                            globals.exams
+                                                                .length; i++) {
+                                                          if (globals.exams
+                                                              .elementAt(i)
+                                                              .to
+                                                              .day ==
+                                                              deleteSearch[index]
+                                                                  .to.day &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .month ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .month &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .year ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .year &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .hour ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .hour &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .minute ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .minute &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .day ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .day &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .minute ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .minute &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .year ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .year &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .month ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .month &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .hour ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .hour &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .type ==
+                                                                  deleteSearch[index]
+                                                                      .type &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .allDay ==
+                                                                  deleteSearch[index]
+                                                                      .allDay &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .page ==
+                                                                  deleteSearch[index]
+                                                                      .page &&
+                                                              globals.exams
+                                                                  .elementAt(i)
+                                                                  .title ==
+                                                                  deleteSearch[index]
+                                                                      .title
+                                                          ) {
+                                                            globals.exams
+                                                                .removeAt(i);
+                                                          }
+                                                        }
+                                                      }
+                                                      if (globals.assignments
+                                                          .isNotEmpty) {
+                                                        for (int i = 0; i <
+                                                            globals.assignments
+                                                                .length; i++) {
+                                                          if (globals
+                                                              .assignments
+                                                              .elementAt(i)
+                                                              .to
+                                                              .day ==
+                                                              deleteSearch[index]
+                                                                  .to.day &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .month ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .month &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .year ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .year &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .hour ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .hour &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .to
+                                                                  .minute ==
+                                                                  deleteSearch[index]
+                                                                      .to
+                                                                      .minute &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .day ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .day &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .minute ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .minute &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .year ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .year &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .month ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .month &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .from
+                                                                  .hour ==
+                                                                  deleteSearch[index]
+                                                                      .from
+                                                                      .hour &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .type ==
+                                                                  deleteSearch[index]
+                                                                      .type &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .allDay ==
+                                                                  deleteSearch[index]
+                                                                      .allDay &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .page ==
+                                                                  deleteSearch[index]
+                                                                      .page &&
+                                                              globals
+                                                                  .assignments
+                                                                  .elementAt(i)
+                                                                  .title ==
+                                                                  deleteSearch[index]
+                                                                      .title
+                                                          ) {
+                                                            globals.assignments
+                                                                .removeAt(i);
+                                                          }
+                                                        }
+                                                      }
+                                                      _tapDate(
+                                                          deleteSearch[index]
+                                                              .from.day,
+                                                          deleteSearch[index]
+                                                              .from.year,
+                                                          deleteSearch[index]
+                                                              .from.month, pag);
                                                     }
-                                                  }
-                                                }
 
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Delete'),
-                                            ),
-                                          ],
-                                        ));
-
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Delete'),
+                                                ),
+                                              ],
+                                            ));
                                   },
                                   child: Column(
                                       mainAxisAlignment:
@@ -807,7 +1411,6 @@ class CalendarState extends State<CalendarWidget> {
     setState(() {
       clickedPosition = day;
     });
-    Sync.sync();
 
     List<Events> temp;
     String dayString = day.toString();
@@ -821,13 +1424,11 @@ class CalendarState extends State<CalendarWidget> {
     if (globals
         .eventsList[dayString + monthString + year.toString()] !=
         null) {
-
       temp = (globals
           .eventsList[day.toString() + monthString + year.toString()])!;
     } else {
       temp = [];
     }
-    List<String> repeatingStrings = [];
     if (globals.everyDay.isNotEmpty) {
       for (var element in globals.everyDay) {
         if (page >= element.page) {
@@ -844,9 +1445,13 @@ class CalendarState extends State<CalendarWidget> {
     if (globals.everyWeek.isNotEmpty) {
       for (var element in globals.everyWeek) {
         DateTime weekDay = DateTime(year, month, day);
-        if (element.to.difference(element.from).inDays != 0) {
+        if (element.to
+            .difference(element.from)
+            .inDays != 0) {
           for (int i = 0;
-          i <= element.to.difference(element.from).inDays;
+          i <= element.to
+              .difference(element.from)
+              .inDays;
           i++) {
             int dayCalc = element.from.day + i;
             int monthCalc = element.from.month;
@@ -893,9 +1498,13 @@ class CalendarState extends State<CalendarWidget> {
     }
     if (globals.everyMonth.isNotEmpty) {
       for (var element in globals.everyMonth) {
-        if (element.to.difference(element.from).inDays != 0) {
+        if (element.to
+            .difference(element.from)
+            .inDays != 0) {
           for (int i = 0;
-          i <= element.to.difference(element.from).inDays;
+          i <= element.to
+              .difference(element.from)
+              .inDays;
           i++) {
             int dayCalc = element.from.day + i;
             int monthCalc = element.from.month;
@@ -941,9 +1550,13 @@ class CalendarState extends State<CalendarWidget> {
     }
     if (globals.everyYear.isNotEmpty) {
       for (var element in globals.everyYear) {
-        if (element.to.difference(element.from).inDays != 0) {
+        if (element.to
+            .difference(element.from)
+            .inDays != 0) {
           for (int i = 0;
-          i <= element.to.difference(element.from).inDays;
+          i <= element.to
+              .difference(element.from)
+              .inDays;
           i++) {
             int dayCalc = element.from.day + i;
             int monthCalc = element.from.month;
@@ -990,6 +1603,15 @@ class CalendarState extends State<CalendarWidget> {
     Widget firstLine = Spacer();
     Widget secondLine = Spacer();
 
+    if (span.isNotEmpty) {
+      if (span[day.toString() + month.toString() + year.toString()] != null) {
+        if (span[day.toString() + month.toString() + year.toString()]?.from.day != day) {
+          temp.add((span[day.toString() + month.toString() + year.toString()])!);
+        }
+      }
+    }
+
+
     if (temp.isNotEmpty) {
       for (var element in temp) {
         firstLine = Row(
@@ -1033,7 +1655,8 @@ class CalendarState extends State<CalendarWidget> {
               ),
             );
           }
-        } else if (element.from.year == element.to.year) {
+        }
+        else if (element.from.year == element.to.year) {
           if (element.allDay) {
             secondLine = Center(
               child: Padding(
@@ -1117,8 +1740,6 @@ class CalendarState extends State<CalendarWidget> {
 
     final access = StateWidget.of(context);
     access?.updateClicked(day, year, month);
-    DatabaseReference _day = FirebaseDatabase.instance.ref().child("test");
-    _day.set("Day tapped: ${day}");
   }
 
 
@@ -1221,10 +1842,12 @@ class CalendarState extends State<CalendarWidget> {
                             n.getMonthShort(month + 1).toString(),
                             style: const TextStyle(fontSize: 12),
                           ),
-                          onPressed: () => navigationPress(month, year, context),
+                          onPressed: () =>
+                              navigationPress(month, year, context),
                           style: ElevatedButton.styleFrom(
                             primary: monthName,
-                            side: const BorderSide(width: 1.0, color: Colors.red),
+                            side: const BorderSide(width: 1.0,
+                                color: Colors.red),
                             shape: const CircleBorder(),
                           ),
                         ),
@@ -1238,9 +1861,6 @@ class CalendarState extends State<CalendarWidget> {
 
   void onAddEventButtonPressed() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      int? clicked = StateWidget.of(context)?.clicked;
-
-      //print(clicked);
       return EventForm();
     }));
   }
