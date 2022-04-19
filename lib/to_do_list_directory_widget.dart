@@ -28,9 +28,9 @@ void newList() {
 
   if (!globals.toDoList.containsKey(key)) {
     String title = key.substring(2, 4) +
-        "." +
+        "-" +
         key.substring(0, 2) +
-        "." +
+        "-" +
         key.substring(4) +
         " To Do List";
     list.add(ToDoList(title));
