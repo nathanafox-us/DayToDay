@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:day_to_day/to_do_list.dart';
 import 'package:day_to_day/user_sync.dart';
-import 'package:day_to_day/globals.dart';
 
 class ToDoListWidget extends StatefulWidget {
   final ToDoList list;
@@ -123,8 +122,7 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
     setState(() {
       widget.list.addItem(textController.text.trim());
     });
-
-    //Sync.sync(DateTime.now());
+    Sync.sync(DateTime.now());
     textController.clear();
     Navigator.of(context).pop();
   }
