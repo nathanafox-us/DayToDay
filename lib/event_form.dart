@@ -405,27 +405,27 @@ class EventFormState extends State<EventForm> {
               },
             ),
             const Divider(color: Colors.grey,),
-            InkWell(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children:  [
-                  const Padding(padding: EdgeInsets.only(left: 48)),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 40,
-                    padding: const EdgeInsets.only(left: 25),
-                    child: Text(
-                      "Tag: " + tagChosen,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                onTag();
-              },
-            ),
-            const Divider(color: Colors.grey,),
+            //InkWell(
+              //child: Row(
+                //crossAxisAlignment: CrossAxisAlignment.center,
+                //children:  [
+                  //const Padding(padding: EdgeInsets.only(left: 48)),
+                  //Container(
+                    //alignment: Alignment.center,
+                    //height: 40,
+                    //padding: const EdgeInsets.only(left: 25),
+                    //child: Text(
+                      //"Tag: " + tagChosen,
+                      //style: TextStyle(fontSize: 20),
+                    //),
+                  //),
+                //],
+              //),
+              //onTap: () {
+                //onTag();
+              //},
+            //),
+            //const Divider(color: Colors.grey,),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -445,7 +445,6 @@ class EventFormState extends State<EventForm> {
                 TextButton(
                   onPressed: () {
                     //If the event was saved, write it to the respective file
-                    //!!!!!!TODO!!!!!
                     if (selectedTimeTo != null) {
                       StateWidget.of(context)?.addEvent(selectedTime.day, selectedTime.year, selectedTime.month, title,
                           finalTimeFrom, finalTimeTo, (selectedTimeTo?.day)!, (selectedTimeTo?.month)!, (selectedTimeTo?.year)!, colorChosenBubble, toObj, fromObj, isSwitched, repeatD,

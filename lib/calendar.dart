@@ -388,7 +388,9 @@ class CalendarState extends State<CalendarWidget> {
                                     if (element.to
                                         .difference(element.from)
                                         .inDays != 0) {
-                                      for (int i = 0; i <= element.to.difference(element.from).inDays; i++) {
+                                      for (int i = 0; i <= element.to
+                                          .difference(element.from)
+                                          .inDays; i++) {
                                         int dayCalc = element.from.day + i;
                                         int month = element.from.month;
                                         int yearCalc = element.from.year;
@@ -406,7 +408,9 @@ class CalendarState extends State<CalendarWidget> {
                                           }
                                           month = 1;
                                         }
-                                        span[(dayCalc.toString() + month.toString() + yearCalc.toString())] = element;
+                                        span[(dayCalc.toString() +
+                                            month.toString() +
+                                            yearCalc.toString())] = element;
                                       }
                                     }
                                     else {
@@ -423,13 +427,19 @@ class CalendarState extends State<CalendarWidget> {
                                   }
                                 }
                                 if (span.isNotEmpty) {
-                                  if (span[day.toString() + userMonth.toString() + (yearEarly + yearsPassed).toString()] != null) {
+                                  if (span[day.toString() +
+                                      userMonth.toString() +
+                                      (yearEarly + yearsPassed).toString()] !=
+                                      null) {
                                     dayInfo.add(Container(
                                       padding:
                                       const EdgeInsets.only(top: 10),
                                       decoration: BoxDecoration(
                                           shape: BoxShape.rectangle,
-                                          color: span[day.toString() + userMonth.toString() + (yearEarly + yearsPassed).toString()]?.color),
+                                          color: span[day.toString() +
+                                              userMonth.toString() +
+                                              (yearEarly + yearsPassed)
+                                                  .toString()]?.color),
                                       height: 2,
                                       width: 40,
                                     ));
@@ -747,12 +757,7 @@ class CalendarState extends State<CalendarWidget> {
                                                         .from.month.toString();
                                                     String y = deleteSearch[index]
                                                         .from.year.toString();
-                                                    print(deleteSearch[index]
-                                                        .title);
-                                                    print(
-                                                        deleteSearch[index].from
-                                                            .day);
-                                                    print("In long press");
+
 
                                                     if (deleteSearch[index].to
                                                         .difference(
@@ -784,8 +789,6 @@ class CalendarState extends State<CalendarWidget> {
                                                                 m + y]
                                                                 ?.length)!; i++) {
                                                           //print(globals.eventsList[d + m + y]?.length);
-
-
                                                           if (globals
                                                               .eventsList[d +
                                                               m + y]
@@ -1375,6 +1378,8 @@ class CalendarState extends State<CalendarWidget> {
                                                     }
 
                                                     Navigator.pop(context);
+                                                    globals.timestamp = DateTime.now();
+                                                    //Sync.sync(DateTime.now());
                                                   },
                                                   child: const Text('Delete'),
                                                 ),
@@ -1605,8 +1610,10 @@ class CalendarState extends State<CalendarWidget> {
 
     if (span.isNotEmpty) {
       if (span[day.toString() + month.toString() + year.toString()] != null) {
-        if (span[day.toString() + month.toString() + year.toString()]?.from.day != day) {
-          temp.add((span[day.toString() + month.toString() + year.toString()])!);
+        if (span[day.toString() + month.toString() + year.toString()]?.from
+            .day != day) {
+          temp.add(
+              (span[day.toString() + month.toString() + year.toString()])!);
         }
       }
     }
