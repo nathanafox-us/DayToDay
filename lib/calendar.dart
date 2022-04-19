@@ -1373,7 +1373,7 @@ class CalendarState extends State<CalendarWidget> {
                                                           deleteSearch[index]
                                                               .from.month, pag);
                                                     }
-
+                                                    globals.timestamp = DateTime.now();
                                                     Navigator.pop(context);
                                                   },
                                                   child: const Text('Delete'),

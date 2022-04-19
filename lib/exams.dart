@@ -63,6 +63,7 @@ class ExamsState extends State<ExamsWidget> {
                         setState(() {
                           globals.completedExams.add(globals.exams[index]);
                           exams.removeAt(index);
+                          globals.timestamp = DateTime.now();
                           if (globals.completedExams.isNotEmpty) {
                             visibleButton = true;
                           }
@@ -133,6 +134,7 @@ class ExamsState extends State<ExamsWidget> {
                           setState(() {
                             exams.add(globals.completedExams[index]);
                             globals.completedExams.removeAt(index);
+                            globals.timestamp = DateTime.now();
                             if (globals.completedExams.isEmpty) {
                               visibleButton = false;
                             }

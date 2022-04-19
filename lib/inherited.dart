@@ -120,7 +120,8 @@ class _InheritedStateState extends State<InheritedState> {
         }
       }
     }
-    Sync.sync(DateTime.now());
+    globals.timestamp = DateTime.now();
+    //Sync.sync(DateTime.now());
 
     globals.eventsList[dfStr + mfStr + yearFrom.toString()]?.sort((a, b) {
       if (a.from.hour == b.from.hour) {

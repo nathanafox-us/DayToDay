@@ -68,6 +68,7 @@ class ProjectsState extends State<ProjectsWidget> {
                         setState(() {
                           completedProjects.add(globals.projects[index]);
                           projects.removeAt(index);
+                          globals.timestamp = DateTime.now();
                           if (globals.completedProjects.isNotEmpty) {
                             visibleButton = true;
                           }
@@ -138,6 +139,7 @@ class ProjectsState extends State<ProjectsWidget> {
                           setState(() {
                             projects.add(completedProjects[index]);
                             completedProjects.removeAt(index);
+                            globals.timestamp = DateTime.now();
                             if (globals.completedProjects.isEmpty) {
                               visibleButton = false;
                             }
