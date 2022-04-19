@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:day_to_day/to_do_list.dart';
 import 'package:day_to_day/user_sync.dart';
+import 'package:day_to_day/globals.dart';
 
 class ToDoListWidget extends StatefulWidget {
   final ToDoList list;

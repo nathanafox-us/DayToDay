@@ -142,18 +142,28 @@ class Sync {
     return events;
   }
 
-  static Future<List<ToDoList>> getToDos(DatabaseReference ref) async {
+  /* static Future<List<ToDoList>> getToDos(String key) async {
     List<ToDoList> todos = [];
-    DataSnapshot snap = await ref.get();
-    for (var dbList in snap.children) {
-      String title = dbList.child('title').value! as String;
-      List<String> items = dbList.child('title').value! as List<String>;
-      List<bool?> checked = dbList.child('checked').value! as List<bool?>;
-      ToDoList todo = ToDoList.hasAll(title, items, checked);
-      todos.add(todo);
+    DataSnapshot items =
+        await user.child('toDoList').child(key).child('items').get();
+    print(items.value is Map);
+    print(items.toString());
+    print(items.value.toString());
+    print(items.child('items').toString);
+    String title = items.key as String;
+    //List<String> items =
+    //    List.from(snap.child(title).child('items').value as Iterable<dynamic>);
+    print(items.toString());
+    for (var dbList in items.children) {
+      String title = dbList.key! as String;
+      print(title);
+      List<bool?> checked =
+          dbList.child(title).child('checked').value! as List<bool?>;
+      //ToDoList todo = ToDoList.hasAll(title, items, checked);
+      //todos.add(todo);
     }
     return todos;
-  }
+  } */
 
   static Future<void> getEventsList() async {
     DatabaseReference ref = user.child('eventsList');
@@ -214,14 +224,16 @@ class Sync {
     return await getEvents(ref);
   }
 
-  static Future<void> getToDoList() async {
+  /* static Future<void> getToDoList() async {
+    print('Getting todolist');
     DatabaseReference ref = user.child('toDoList');
     DataSnapshot snap = await ref.get();
     for (var child in snap.children) {
-      List<ToDoList> todos = await getToDos(child.ref);
+      print('Key: ' + child.key.toString());
+      List<ToDoList> todos = await getToDos(child.key!);
       globals.toDoList[child.key!] = todos;
     }
-  }
+  } */
 
   static sync([DateTime? ts]) async {
     //print('Global timestamp: ' + globals.timestamp.toString());
@@ -318,7 +330,7 @@ class Sync {
       } else {
         globals.completedProjects.clear();
       }
-      await getToDoList();
+      //await getToDoList();
     }
   }
 }
