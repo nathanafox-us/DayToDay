@@ -12,5 +12,10 @@ class ToDoList {
     checked.add(false);
   }
 
+  void removeItem(int index) {
+    items.removeAt(index);
+    checked.removeAt(index);
+  }
+
   ToDoList.hasAll(this.title, this.items, this.checked);
 }
