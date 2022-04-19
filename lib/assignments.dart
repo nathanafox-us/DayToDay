@@ -68,6 +68,7 @@ class AssignmentsState extends State<AssignmentsWidget> {
                         setState(() {
                           completedAssignments.add(globals.assignments[index]);
                           assignments.removeAt(index);
+                          globals.timestamp = DateTime.now();
                           if (globals.completedAssignments.isNotEmpty) {
                             visibleButton = true;
                           }
@@ -138,6 +139,7 @@ class AssignmentsState extends State<AssignmentsWidget> {
                           setState(() {
                             assignments.add(completedAssignments[index]);
                             completedAssignments.removeAt(index);
+                            globals.timestamp = DateTime.now();
                             if (globals.completedAssignments.isEmpty) {
                               visibleButton = false;
                             }
