@@ -38,7 +38,7 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                         setState(() {
                           widget.list.removeItem(index);
                         });
-                        Sync.sync(DateTime.now());
+                        //Sync.sync(DateTime.now());
                       },
                       child: CheckboxListTile(
                           dense: true,
@@ -65,7 +65,7 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                         setState(() {
                           widget.list.removeItem(index);
                         });
-                        Sync.sync(DateTime.now());
+                        //Sync.sync(DateTime.now());
                       },
                       child: CheckboxListTile(
                           dense: true,
@@ -123,6 +123,8 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
     setState(() {
       widget.list.addItem(textController.text.trim());
     });
+
+    //Sync.sync(DateTime.now());
     textController.clear();
     Navigator.of(context).pop();
   }
