@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:day_to_day/to_do_list.dart';
+import 'package:day_to_day/user_sync.dart';
 
 class ToDoListWidget extends StatefulWidget {
   final ToDoList list;
@@ -12,6 +13,8 @@ class ToDoListWidget extends StatefulWidget {
 }
 
 class _ToDoListWidgetState extends State<ToDoListWidget> {
+  final textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,45 +32,98 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
             if (darkMode) {
               return Card(
                   //color: Colors.red[400], if we want the cards to be colored
-                  child: CheckboxListTile(
-                      dense: true,
-                      activeColor: Colors.red[400],
-                      controlAffinity: ListTileControlAffinity.leading,
-                      value: widget.list.checked[index],
-                      onChanged: (value) {
+                  child: GestureDetector(
+                      onLongPress: () {
                         setState(() {
-                          widget.list.checked[index] = value;
+                          widget.list.removeItem(index);
                         });
+                        //Sync.sync(DateTime.now());
                       },
-                      title: Text(
-                        widget.list.items[index],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.white),
-                      )));
+                      child: CheckboxListTile(
+                          dense: true,
+                          activeColor: Colors.red[400],
+                          controlAffinity: ListTileControlAffinity.leading,
+                          value: widget.list.checked[index],
+                          onChanged: (value) {
+                            setState(() {
+                              widget.list.checked[index] = value;
+                            });
+                          },
+                          title: Text(
+                            widget.list.items[index],
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white),
+                          ))));
             } else {
               return Card(
                   //color: Colors.red[400], if we want the cards to be colored
-                  child: CheckboxListTile(
-                      dense: true,
-                      activeColor: Colors.red[400],
-                      controlAffinity: ListTileControlAffinity.leading,
-                      value: widget.list.checked[index],
-                      onChanged: (value) {
+                  child: GestureDetector(
+                      onLongPress: () {
                         setState(() {
-                          widget.list.checked[index] = value;
+                          widget.list.removeItem(index);
                         });
+                        //Sync.sync(DateTime.now());
                       },
-                      title: Text(
-                        widget.list.items[index],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Color.fromARGB(255, 12, 12, 12)),
-                      )));
+                      child: CheckboxListTile(
+                          dense: true,
+                          activeColor: Colors.red[400],
+                          controlAffinity: ListTileControlAffinity.leading,
+                          value: widget.list.checked[index],
+                          onChanged: (value) {
+                            setState(() {
+                              widget.list.checked[index] = value;
+                            });
+                          },
+                          title: Text(
+                            widget.list.items[index],
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Color.fromARGB(255, 12, 12, 12)),
+                          ))));
             }
           }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: displayAddTask,
+        child: const Icon(
+          Icons.add,
+          size: 45,
+          color: Colors.white,
+        ),
+      ),
     );
+  }
+
+  Future<void> displayAddTask() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: const Text('Add task'),
+            actions: <Widget>[
+              TextButton(child: const Text('Add'), onPressed: addItem),
+              TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  })
+            ],
+            content: TextField(
+              controller: textController,
+              textInputAction: TextInputAction.next,
+            ));
+      },
+    );
+  }
+
+  void addItem() {
+    setState(() {
+      widget.list.addItem(textController.text.trim());
+    });
+    Sync.sync(DateTime.now());
+    textController.clear();
+    Navigator.of(context).pop();
   }
 }
